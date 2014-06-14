@@ -1,5 +1,7 @@
 # .bashrc
 
+if [ -n "$PS1" ] && [ -e ~/.bash_interactive ] ; then . ~/.bash_interactive ; fi
+
 ################################################################################
 # History
 

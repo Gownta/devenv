@@ -11,7 +11,7 @@ set nolist
 set number
 set numberwidth=5
 set ruler
-set scrolljump=5
+set scrolljump=1
 set scrolloff=5
 set shiftwidth=2
 set showcmd
