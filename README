@@ -1,7 +1,12 @@
 dotfiles
 ========
 
-Symlink the ~/.dotfiles to these files.
+My standard dotfiles. Symlink the actual dotfiles from ~/ to point to
+the ones in this repo.
+
+
+Notes
+=====
 
 To clone from FBDev: git clone ssh://git@github.com/Gownta/dotfiles
                      (this is the SSH url provided on github.com)
