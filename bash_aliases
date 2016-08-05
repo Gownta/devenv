@@ -11,3 +11,7 @@ alias ig='egrep -ns --colour=auto'
 alias clear='for qwedc in {1..100} ; do echo " " ; done ; clear'
 alias freq='sort | uniq -c | sort -nr'
 alias l='echo "`whoami` `hostname` `pwd`"'
+
+function mkcd {
+    mkdir -p "$1" && cd "$1"
+}
