@@ -49,12 +49,7 @@ fi
 
 function ips1cmd() {
   echo $PWD | \
-      sed 's,/home/njormrod,~,' | \
-      sed 's,/data/users/njormrod,local,' | \
-      sed 's,local/repos,r,' | \
-      sed 's,^r/configerator/source,r/cfg/s,' | \
-      sed 's,^r/configerator,r/cfg,' | \
-      sed 's,\([0-9]\)fbsource/fbcode,\1f,'
+      sed 's,/home/njormrod,~,'
 }
 
 function ipromptcmd () {
