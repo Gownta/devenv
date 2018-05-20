@@ -70,7 +70,7 @@ export PS1='\[\033[1;96m\]\T $(ips1cmd) \$\[\033[0m\] '
 # Miscellaneous
 
 shopt -s checkwinsize
-export PATH="$HOME/dev/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 export EDITOR=/usr/bin/vim
 complete -d cd
 
