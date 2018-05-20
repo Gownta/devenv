@@ -12,15 +12,14 @@ set number
 set numberwidth=5
 set ruler
 set scrolljump=1
-set scrolloff=5
+set scrolloff=1
 set shiftwidth=2
 set showcmd
 set showmatch
 set showmode
-set sidescroll=10
+set smartcase
 set softtabstop=2
-set tabstop=2
-set tags=tags;/
+set tabstop=8
 set undolevels=1000
 set viminfo='50,"50
 
@@ -31,3 +30,4 @@ set viminfo='50,"50
 :map Q <Nop>
 
 syntax on
+colorscheme desert
