@@ -15,7 +15,7 @@ alias freq='sort | uniq -c | sort -nr'
 
 alias bbr='b admarket/up2x/reader:up2x_reader_server'
 alias bbw='b admarket/up2x/writer:up2x_writer_server'
-alias bbu='b admarket/up2x/reader:up2x_reader_server admarket/up2x/writer:up2x_writer_server admarket/up2x/util:loadtest2x admarket/up2x/util:lookup_shard admarket/up2x/util:open_segment_file'
+alias bbu='b admarket/up2x/reader:up2x_reader_server admarket/up2x/writer:up2x_writer_server admarket/up2x/util:loadtest2x admarket/up2x/util:lookup_shard admarket/up2x/util:open_segment_file admarket/up2x/client:up2x_beh_reader'
 alias bbe='b experimental/njormrod/tmp:test'
 
 alias f1="awk '{print \$1}'"
@@ -33,11 +33,14 @@ alias c2="cd ~/repos/2fbsource/fbcode"
 alias c3="cd ~/repos/3fbsource/fbcode"
 alias c4="cd ~/repos/4fbsource/fbcode"
 alias c5="cd ~/repos/5fbsource/fbcode"
-alias cr="cd `hg root`/fbcode"
+alias c6="cd ~/repos/6configerator/source"
+alias cr='cd `hg root`/fbcode'
 
 alias dce=~/dev/dce/dce_candidate.sh
 alias codemod="codemod --extensions='*'"
 alias qq="source ~/.bash_profile"
+
+alias h="hg"
 
 function mkcd {
     mkdir -p "$1" && cd "$1"
