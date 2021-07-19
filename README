@@ -2,5 +2,4 @@ dotfiles
 ========
 
 My standard dotfiles. Symlink the actual dotfiles from ~/ to point to
-the ones in this repo. Alternatively, call out to these dotfiles from
-customized ones in the home directory.
+the ones in this repo.
