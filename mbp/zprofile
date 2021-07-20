@@ -17,12 +17,14 @@ fi
 # ssh into one of my devservers
 
 if true ; then
-  host[1]="devbig857.prn1"
-  host[2]="alpha-pi"
-  top=2
+  host[1]="devbig857.prn1 (tmux)"
+  host[2]="devbig857.prn1"
+  host[3]="alpha-pi"
+  top=3
 
   full[1]="devbig857.prn1.facebook.com"
-  full[2]="192.168.0.21"
+  full[2]="devbig857.prn1.facebook.com"
+  full[3]="192.168.0.21"
 
   echo "Commander, where can I ssh you?"
 
@@ -49,7 +51,7 @@ if true ; then
     where="${full[$REPLY]}"
 
     echo "ssh'ing into $where"
-    if [[ "$where" == dev* ]] ; then
+    if [[ "$REPLY" == "1" ]] ; then
       echo "Automatically starting up tmux"
       ssh -t $where 'tmux attach -d'
     else

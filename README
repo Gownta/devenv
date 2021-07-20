@@ -3,3 +3,14 @@ dotfiles
 
 My standard dotfiles. Symlink the actual dotfiles from ~/ to point to
 the ones in this repo.
+
+
+Notes
+=====
+
+1. Configuring iTerm2 and tmux
+
+I want to send hex codes to tmux using iterm keyboard shortcuts.
+In profile>keys, override command-[number] to Send Hex Code 0x02 0x3[number].
+Also need to remove command-number override in general>keys>navigation shortcuts
+Also add command-` to 0x02 0x3b, which is 'ctrl-b ;', which changes panes
