@@ -2,15 +2,15 @@ dotfiles
 ========
 
 My standard dotfiles. Symlink the actual dotfiles from ~/ to point to
-the ones in this repo. Alternatively, call out to these dotfiles from
-customized ones in the home directory.
+the ones in this repo.
 
-Advise putting original dotfiles in originals/.
 
 Notes
 =====
 
-To clone from FBDev: git clone ssh://git@github.com/Gownta/dotfiles
-                     (this is the SSH url provided on github.com)
-To commit from FBDev: generate an access token from Seetings > Applications
-                      use this token as my password
+1. Configuring iTerm2 and tmux
+
+I want to send hex codes to tmux using iterm keyboard shortcuts.
+In profile>keys, override command-[number] to Send Hex Code 0x02 0x3[number].
+Also need to remove command-number override in general>keys>navigation shortcuts
+Also add command-` to 0x02 0x3b, which is 'ctrl-b ;', which changes panes

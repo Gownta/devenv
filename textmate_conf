@@ -1,0 +1,36 @@
+########
+# README
+########
+
+# symlink as ~/.tm_properties
+
+
+#######
+# Notes
+#######
+
+
+
+##############
+# Information:
+##############
+
+# https://gist.github.com/dvessel/1478685
+# https://tm2tips.tumblr.com/post/14262423719/list-of-settings
+
+
+###########
+# Knowledge
+###########
+
+# `[ *.txt ]` causes subsequent configuration to only apply to matched files
+
+
+######################
+# Actual Configuration
+######################
+
+# Settings
+fontName = "Menlo"
+fontSize = 20
+tabSize = 4

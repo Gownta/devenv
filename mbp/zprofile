@@ -1,0 +1,61 @@
+
+
+########################################
+# say my name
+
+if [ -z "$SSH_CONNECTION" ] ; then
+echo '    _   ___      __          __              ____                                __
+   / | / (_)____/ /_  ____  / /___ ______   / __ \_________ ___  _________  ____/ /
+  /  |/ / / ___/ __ \/ __ \/ / __ `/ ___/  / / / / ___/ __ `__ \/ ___/ __ \/ __  /
+ / /|  / / /__/ / / / /_/ / / /_/ (__  )  / /_/ / /  / / / / / / /  / /_/ / /_/ /
+/_/ |_/_/\___/_/ /_/\____/_/\__,_/____/   \____/_/  /_/ /_/ /_/_/   \____/\__,_/
+'
+fi
+
+
+########################################
+# ssh into one of my devservers
+
+if true ; then
+  host[1]="devbig857.prn1 (tmux)"
+  host[2]="devbig857.prn1"
+  host[3]="alpha-pi"
+  top=3
+
+  full[1]="devbig857.prn1.facebook.com"
+  full[2]="devbig857.prn1.facebook.com"
+  full[3]="192.168.0.21"
+
+  echo "Commander, where can I ssh you?"
+
+  echo "  (0) localhost"
+  echo -e "  (1) ${host[1]}\t\t(default)"
+  for i in $(seq 2 $top) ; do
+    echo "  ($i) ${host[$i]}"
+  done
+
+  echo
+  echo -n "Destination [0-$top]: "
+  while true ; do
+    read
+    if [[ "$REPLY" == "" ]] ; then REPLY=1 ; fi
+    if test `echo "$REPLY" | egrep "^[0-9]*$"` ; then
+      if [[ "$REPLY" -ge 0 && "$REPLY" -le "$top" ]] ; then break ; fi
+      echo -n "We haven't conquered that host yet. [0-$top]: "
+    else
+      echo -n "That destination is above your pay grade, sir. [0-$top]: "
+    fi
+  done
+
+  if [[ "$REPLY" -ne "0" ]] ; then
+    where="${full[$REPLY]}"
+
+    echo "ssh'ing into $where"
+    if [[ "$REPLY" == "1" ]] ; then
+      echo "Automatically starting up tmux"
+      ssh -t $where 'tmux attach -d'
+    else
+      ssh $where
+    fi
+  fi
+fi

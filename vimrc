@@ -34,7 +34,7 @@ set number
 set numberwidth=5
 set ruler
 set scrolljump=1
-set scrolloff=5
+set scrolloff=1
 set shiftwidth=2
 set showcmd
 set showmatch

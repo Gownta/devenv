@@ -5,7 +5,7 @@
     ui = true
 
 [alias]
-    st = status    
+    st = status
     l = log --graph --abbrev-commit --decorate --author njormrod --format=format:' %C(yellow)%h %C(cyan)%ar%C(reset)%d%n %s%n'
     b = branch
 
