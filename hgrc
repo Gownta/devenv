@@ -1,0 +1,35 @@
+[ui]
+username = Nicholas Ormrod <njormrod@fb.com>
+
+[alias]
+log = log --template "Commit:\t{node|short}\nAuthor:\t{author}\nDate:\t{date|date}\n\n{indent(desc, '    ')}\n\n"
+bo = bookmarks
+l = log
+d = diff
+blame = blame -blnpu
+amend = amend --rebase
+
+#[committemplate]
+#title="[thrift] Defactory-ify "
+#summary=The factory is just a glorified wrapper. Use thrift's new non-factory API.
+#testplan=\n  sandcastle
+#reviewers=\nsethelliott
+
+#[committemplate]
+#title="[contextprop] "
+#testplan=\n  buck test contextprop/cpp/...
+#reviewers=\nmschmohl, aknott, zmarine
+# fbtags=accept2ship
+
+[merge-patterns]
+materialized_configs/** = internal:local
+
+#[committemplate]
+# fbtags=accept2ship
+
+# in <repo>/.hg/hgrc
+# [smartlog]
+# names = master
+
+[hint]
+ack = update-prev sl-short-headers amend-autorebase commitcloud-old-commits revnum-deprecate undo graph-renderer buck-shelve
