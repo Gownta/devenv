@@ -20,6 +20,7 @@ save_and_symlink .bash_aliases bash_aliases
 save_and_symlink .bash_logout bash_logout
 save_and_symlink .bash_profile bash_profile
 save_and_symlink .bashrc bash_rc
+save_and_symlink .gitconfig gitconfig
 save_and_symlink .hgrc hgrc
 save_and_symlink .tmux.conf tmux.conf
 save_and_symlink .vimrc vimrc

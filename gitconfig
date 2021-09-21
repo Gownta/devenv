@@ -1,0 +1,19 @@
+[user]
+    email = njormrod@fb.com
+    name = Nicholas Ormrod
+[color]
+    ui = true
+
+[alias]
+    st = status    
+    l = log --graph --abbrev-commit --decorate --author njormrod --format=format:' %C(yellow)%h %C(cyan)%ar%C(reset)%d%n %s%n'
+    b = branch
+
+
+[http]
+    proxy = fwdproxy:8080
+[https]
+    proxy = fwdproxy:8080
+[diff]
+    algorithm = patience
+    context = 5
