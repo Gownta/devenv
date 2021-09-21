@@ -1,8 +1,10 @@
 dotfiles
 ========
 
-My standard dotfiles. Symlink the actual dotfiles from ~/ to point to
-the ones in this repo.
+- https://www.internalfb.com/intern/wiki/Open_Source/Maintain_a_FB_OSS_Project/Devserver_GitHub_Access/
+- Start with git pull
+- git push origin master when done commits
+- use save_and_set_home_dotfiles to set devserver dotfiles
 
 
 Notes
