@@ -1,4 +1,7 @@
 
+if [[ -v TMUX ]] ; then
+  return
+fi
 
 ########################################
 # say my name
