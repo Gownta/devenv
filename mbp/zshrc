@@ -1,7 +1,10 @@
 
 PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)%F{cyan}%~ $%f '
 RPROMPT='%*'
+
+# man ls to see color options
 export CLICOLOR=1
+export LSCOLORS=cxgxcxdxfxegedabagacad
 
 bindkey -v
 
