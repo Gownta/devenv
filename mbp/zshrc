@@ -1,6 +1,7 @@
 
-PROMPT='%(?..%F{red}%B[Exit %?]%b%f )%F{cyan}%~ $%f '
+PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f )%F{cyan}%~ $%f '
 RPROMPT='%*'
+CLICOLOR=1
 
 bindkey -v
 
