@@ -1,7 +1,7 @@
 " vimrc
 
 " clang format on save
-if 1
+if 0
   if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim

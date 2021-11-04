@@ -26,3 +26,13 @@ To clone from FBDev: git clone ssh://git@github.com/Gownta/dotfiles
 To commit from FBDev: generate an access token from Seetings > Applications
                       use this token as my password
                       git push origin master
+
+
+Things to install
+=================
+
+Not dotfiles, but stuff that I also set up on new machines:
+
+Bazel
+  https://docs.bazel.build
+  --prefix=$HOME/dev/bazel, instead of --use

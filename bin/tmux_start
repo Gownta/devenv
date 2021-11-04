@@ -1,0 +1,25 @@
+
+session="me"
+tmux start-server
+
+setup_tmux_window() {
+  local d=$1
+  tmux splitw -h
+  if [[ ! -z "$d" ]] ; then
+    tmux send-keys -t 1 "cd $d;clear" C-m
+  fi
+  tmux send-keys -t 2 "cd $d;clear" C-m
+  tmux select-pane -t 2
+}
+
+tmux new-session -d -s $session -n "star"
+setup_tmux_window "~/dev/starlang"
+tmux new-window -t $session:2 -n "x"
+setup_tmux_window "~/dev/starlang"
+tmux new-window -t $session:3 -n "dotfiles"
+setup_tmux_window "~/dev/dotfiles"
+tmux new-window -t $session:4 -n "home"
+setup_tmux_window "~/"
+
+tmux select-window -t 1
+tmux attach-session -t $session
