@@ -8,6 +8,7 @@ export LSCOLORS=cxgxcxdxfxegedabagacad
 
 bindkey -v
 
+path+=$HOME/dev/bazel/bin
 
 ########################################
 # aliases

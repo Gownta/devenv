@@ -9,7 +9,7 @@ bash_source_callout ~/.bash_aliases
 bash_source_callout /etc/bashrc
 
 # Variables
-export PATH="$HOME/dev/bin:$PATH:$HOME/dev/bazel/bin"
+export PATH="$HOME/dev/bin:$PATH"
 export EDITOR=/usr/bin/vim
 
 # Command edit mode
