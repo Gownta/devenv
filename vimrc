@@ -19,6 +19,20 @@ if 0
   augroup END
 endif
 
+" remember last position
+" https://vim.fandom.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+set viminfo='10,\"100,:20,%,n~/.viminfo
+function! ResCur()
+  if line("'\"") <= line("$")
+    normal! g`"
+    return 1
+  endif
+endfunction
+augroup resCur
+  autocmd!
+  autocmd BufWinEnter * call ResCur()
+augroup END
+
 
 set autoindent
 set backspace=indent,eol,start
@@ -45,7 +59,6 @@ set softtabstop=2
 set tabstop=8
 set tags=tags;/
 set undolevels=1000
-set viminfo='50,"50
 
 :highlight ExtraWhitespace ctermbg=red guibg=red
 :au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
