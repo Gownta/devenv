@@ -22,12 +22,15 @@ fi
 if true ; then
   host[1]="devbig857.prn1 (tmux)"
   host[2]="devbig857.prn1"
-  host[3]="alpha-pi"
+  host[3]="devbig857.prn1 (-L 3000)"
   top=3
 
   full[1]="devbig857.prn1.facebook.com"
   full[2]="devbig857.prn1.facebook.com"
-  full[3]="192.168.0.21"
+  full[3]="devbig857.prn1.facebook.com"
+
+  #host[3]="alpha-pi"
+  #full[3]="192.168.0.21"
 
   echo "Commander, where can I ssh you?"
 
@@ -57,6 +60,9 @@ if true ; then
     if [[ "$REPLY" == "1" ]] ; then
       echo "Automatically starting up tmux"
       ssh -t $where 'tmux attach -d'
+    elif [[ "$REPLY" == "3" ]] ; then
+      echo "Tunneling in on :3000"
+      ssh -L 3000:localhost:3000 $where
     else
       ssh $where
     fi

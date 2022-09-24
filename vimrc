@@ -1,5 +1,8 @@
 " vimrc
 
+" https://www.baeldung.com/linux/vim-background-colors
+" https://linuxhint.com/best_vim_color_schemes/
+
 " clang format on save
 if 0
   if empty(glob('~/.vim/autoload/plug.vim'))
@@ -67,4 +70,8 @@ set undolevels=1000
 :map Q <Nop>
 
 syntax on
+set termguicolors
+set background=dark
 colorscheme desert
+:highlight Normal ctermbg=NONE
+:highlight NonText ctermbg=NONE
