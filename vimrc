@@ -3,24 +3,34 @@
 " https://www.baeldung.com/linux/vim-background-colors
 " https://linuxhint.com/best_vim_color_schemes/
 
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
+
+" Get a nice color scheme
+" As found at https://vimcolorschemes.com/
+" https://github.com/EdenEast/nightfox.nvim
+"Plug 'EdenEast/nightfox.nvim' " Vim-Plug
+" https://github.com/fenetikm/falcon
+"Plug '~/dev/from_github/falcon'
+
 " clang format on save
 if 0
-  if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-  endif
-
-  call plug#begin('~/.vim/plugged')
   "Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'chiel92/vim-autoformat'
+  "Plug 'chiel92/vim-autoformat'
   "Plug 'mileszs/ack.vim'
-  call plug#end()
 
   augroup autofmt
     autocmd! FileType c,cpp autocmd BufWrite <buffer> :Autoformat
   augroup END
 endif
+
+call plug#end()
+
 
 " remember last position
 " https://vim.fandom.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
@@ -59,7 +69,7 @@ set showmode
 set sidescroll=10
 set smartcase
 set softtabstop=2
-set tabstop=8
+set tabstop=2
 set tags=tags;/
 set undolevels=1000
 
@@ -72,6 +82,10 @@ set undolevels=1000
 syntax on
 set termguicolors
 set background=dark
-colorscheme desert
+"colorscheme desert
+"colorscheme torte
 :highlight Normal ctermbg=NONE
 :highlight NonText ctermbg=NONE
+
+" Starlang
+au BufRead,BufNewFile *.star set filetype=star

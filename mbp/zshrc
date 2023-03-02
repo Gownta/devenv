@@ -46,3 +46,8 @@ function mkcd {
 function cf {
     cd $(dirname $1)
 }
+
+########################################
+# Secrets
+
+source ~/.secrets

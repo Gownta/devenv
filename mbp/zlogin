@@ -20,14 +20,20 @@ fi
 # ssh into one of my devservers
 
 if true ; then
-  host[1]="devbig857.prn1 (tmux)"
-  host[2]="devbig857.prn1"
-  host[3]="devbig857.prn1 (-L 3000)"
-  top=3
+  host[1]="devvm1773.nao0 (tmux)"
+  host[2]="devvm1773.nao0"
+  host[3]="devvm1773.nao0 (-L 3000)"
+  host[4]="devbig857.prn1 (tmux)"
+  host[5]="devbig857.prn1"
+  host[6]="devbig857.prn1 (-L 3000)"
+  top=6
 
-  full[1]="devbig857.prn1.facebook.com"
-  full[2]="devbig857.prn1.facebook.com"
-  full[3]="devbig857.prn1.facebook.com"
+  full[1]="devvm1773.nao0.facebook.com"
+  full[2]="devvm1773.nao0.facebook.com"
+  full[3]="devvm1773.nao0.facebook.com"
+  full[4]="devbig857.prn1.facebook.com"
+  full[5]="devbig857.prn1.facebook.com"
+  full[6]="devbig857.prn1.facebook.com"
 
   #host[3]="alpha-pi"
   #full[3]="192.168.0.21"
@@ -57,10 +63,10 @@ if true ; then
     where="${full[$REPLY]}"
 
     echo "ssh'ing into $where"
-    if [[ "$REPLY" == "1" ]] ; then
+    if [[ "$REPLY" == "1" || "$REPLY" == "4" ]] ; then
       echo "Automatically starting up tmux"
       ssh -t $where 'tmux attach -d'
-    elif [[ "$REPLY" == "3" ]] ; then
+    elif [[ "$REPLY" == "3" || "$REPLY" == "6" ]] ; then
       echo "Tunneling in on :3000"
       ssh -L 3000:localhost:3000 $where
     else
