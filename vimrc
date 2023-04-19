@@ -80,7 +80,7 @@ set undolevels=1000
 :map Q <Nop>
 
 syntax on
-set termguicolors
+"set termguicolors
 set background=dark
 "colorscheme desert
 "colorscheme torte
