@@ -88,4 +88,5 @@ set background=dark
 :highlight NonText ctermbg=NONE
 
 " Starlang
-au BufRead,BufNewFile *.star set filetype=star
+autocmd BufReadPost,BufNewFile *.star set filetype=star
+autocmd FileType star source ~/dev/starlang/tools/vim/star_vimrc.vim

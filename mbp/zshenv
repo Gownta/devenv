@@ -1,1 +1,2 @@
-EDITOR=/usr/bin/vim
+export EDITOR=/usr/bin/vim
+export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin

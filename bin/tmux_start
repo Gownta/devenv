@@ -6,20 +6,23 @@ setup_tmux_window() {
   local d=$1
   tmux splitw -h
   if [[ ! -z "$d" ]] ; then
-    tmux send-keys -t 1 "cd $d;clear" C-m
+    tmux send-keys -t 1 "cd;cd $d;clear" C-m
   fi
-  tmux send-keys -t 2 "cd $d;clear" C-m
+  tmux send-keys -t 2 "cd;cd $d;clear" C-m
   tmux select-pane -t 2
 }
 
-tmux new-session -d -s $session -n "star"
-setup_tmux_window "~/dev/starlang"
-tmux new-window -t $session:2 -n "x"
-setup_tmux_window "~/dev/starlang"
-tmux new-window -t $session:3 -n "dotfiles"
-setup_tmux_window "~/dev/dotfiles"
-tmux new-window -t $session:4 -n "home"
-setup_tmux_window "~/"
+count=1
+while read -r line ; do
+  if [ $count -eq 1 ] ; then
+    tmux new-session -d -s $session -n ""
+    setup_tmux_window "$line"
+  else
+    tmux new-window -t $session:$count -n ""
+    setup_tmux_window "$line"
+  fi
+  count=$((count + 1))
+done < ~/.tmux.panes
 
 tmux select-window -t 1
 tmux attach-session -t $session

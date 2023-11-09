@@ -6,10 +6,20 @@ RPROMPT='%*'
 export CLICOLOR=1
 export LSCOLORS=cxgxcxdxfxegedabagacad
 
+# To install rust:
+# Instructions from https://www.rust-lang.org/tools/install are to run
+# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Which I have done, with the following settings:
+export RUSTUP_HOME=$HOME/dev/rust/rustup
+export CARGO_HOME=$HOME/dev/rust/cargo
+path+=$CARGO_HOME/bin
+
 bindkey -v
 
 path+=$HOME/dev/bazel/bin
 path+=$HOME/dev/bin
+# python's pip lives here
+path+=$HOME/.local/bin
 
 ########################################
 # aliases
@@ -50,4 +60,5 @@ function cf {
 ########################################
 # Secrets
 
+source ~/.zshenv
 source ~/.secrets
