@@ -21,6 +21,8 @@ path+=$HOME/dev/bin
 # python's pip lives here
 path+=$HOME/.local/bin
 
+setopt HIST_IGNORE_DUPS
+
 ########################################
 # aliases
 
