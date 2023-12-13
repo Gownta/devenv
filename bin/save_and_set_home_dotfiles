@@ -16,6 +16,8 @@ save_and_symlink () {
   ln -s $d/$to ~/$from
 }
 
+exit 1
+
 save_and_symlink .bash_aliases bash_aliases
 save_and_symlink .bash_logout bash_logout
 save_and_symlink .bash_profile bash_profile
