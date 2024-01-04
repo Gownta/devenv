@@ -1,22 +1,26 @@
+DevEnv
+======
+
+# Setup
+
+1. Clone this repo
+2. Determine which configs should be used, from configs/ and/or envs/, and symlink them from ~.
+3. Follow steps in the README to configure additional things.
+
+Optionally:
+- Create a ~/.secrets file containing things that should not be committed to source control (eg OPENAI_API_KEY)
+- Create ~/.tmux.panes, one line per window, each line optionally containing a directory
+
+
 Organization
 ============
 
 bin/
-  Contains binaries used for configuration
+  Contains developer environment binaries
 configs/
   Contains configuration files for various applications
 envs/
   Contains specifications for specific environments
-
-
-dotfiles
-========
-
-- https://www.internalfb.com/intern/wiki/Open_Source/Maintain_a_FB_OSS_Project/Devserver_GitHub_Access/
-- Start with git pull
-- git push origin master when done commits
-- use save_and_set_home_dotfiles to set devserver dotfiles
-  - will save originals in originals/
 
 
 Notes
@@ -37,6 +41,13 @@ To clone from FBDev: git clone ssh://git@github.com/Gownta/dotfiles
 To commit from FBDev: generate an access token from Seetings > Applications
                       use this token as my password
                       git push origin master
+
+Getting the repo on a devserver
+  - https://www.internalfb.com/intern/wiki/Open_Source/Maintain_a_FB_OSS_Project/Devserver_GitHub_Access/
+  - Start with git pull
+  - git push origin master when done commits
+  - use save_and_set_home_dotfiles to set devserver dotfiles
+    - will save originals in originals/
 
 
 Things to install

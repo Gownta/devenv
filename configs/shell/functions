@@ -1,0 +1,25 @@
+function mkcd {
+    mkdir -p "$1" && cd "$1"
+}
+
+function cf {
+    cd "$(dirname $1)"
+}
+
+function cr {
+    cd `hg root`/fbcode
+}
+
+function ccp {
+    cd `hg root`/fbcode/contextprop/cpp
+}
+
+function cnjo {
+    cd `hg root`/fbcode/scripts/njormrod
+}
+
+function maybe_source {
+    if [ -f $1 ] ; then
+        source $1
+    fi
+}

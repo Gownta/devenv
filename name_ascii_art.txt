@@ -1,3 +1,6 @@
+# generated on http://patorjk.com/software/taag
+# ascii art font: slant
+# note: the terminal must have an appropriate font, like Courier
     _   ___      __          __              ____                                __
    / | / (_)____/ /_  ____  / /___ ______   / __ \_________ ___  _________  ____/ /
   /  |/ / / ___/ __ \/ __ \/ / __ `/ ___/  / / / / ___/ __ `__ \/ ___/ __ \/ __  /

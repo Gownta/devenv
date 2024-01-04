@@ -1,9 +1,7 @@
-# bash_aliases
-
 # Default options on common commands
 alias grep='grep --color=auto -s'
-alias fgrep='fgrep --color=auto -s'
-alias egrep='egrep --color=auto -s'
+alias fgrep='grep -F'
+alias egrep='grep -E'
 alias ls='ls --color=auto'
 alias cd='cd -P'
 
@@ -41,23 +39,3 @@ alias c3="cd ~/repos/3fbsource/fbcode"
 alias c4="cd ~/repos/4fbsource/fbcode"
 alias c5="cd ~/repos/5fbsource/fbcode"
 alias c6="cd ~/repos/6configerator/source"
-
-function mkcd {
-    mkdir -p "$1" && cd "$1"
-}
-
-function cr {
-    cd `hg root`/fbcode
-}
-
-function ccp {
-    cd `hg root`/fbcode/contextprop/cpp
-}
-
-function cf {
-    cd $(dirname $1)
-}
-
-function cnjo {
-    cd `hg root`/fbcode/scripts/njormrod
-}

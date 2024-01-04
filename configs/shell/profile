@@ -1,0 +1,8 @@
+# Generic profile
+
+export NJORMROD_DEVENV="$HOME/dev/dotfiles"
+source "$NJORMROD_DEVENV/configs/shell/env"
+source "$NJORMROD_DEVENV/configs/shell/aliases"
+source "$NJORMROD_DEVENV/configs/shell/functions"
+
+maybe_source ~/.secrets

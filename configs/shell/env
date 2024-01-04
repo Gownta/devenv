@@ -1,0 +1,31 @@
+# Once
+if [ ! -z "$NJORMROD_ENV_CREATED" ] ; then
+  return
+fi
+export NJORMROD_ENV_CREATED=1
+
+# Duplicatively defined
+export NJORMROD_DEVENV="$HOME/dev/dotfiles"
+
+# Rust
+# Instructions from https://www.rust-lang.org/tools/install are to run
+# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+export RUSTUP_HOME=$HOME/dev/rust/rustup
+export CARGO_HOME=$HOME/dev/rust/cargo
+export PATH="$CARGO_HOME/bin:$PATH"
+
+# Path
+export PATH="$HOME/.local/bin:$PATH" # python's pip lives here?
+export PATH="$HOME/dev/bazel/bin:$PATH"
+export PATH="$HOME/dev/bin:$PATH" # last, so dev/bin goes first
+
+# General
+export EDITOR=/usr/bin/vim
+
+# Common command controls
+# man ls to see color options
+export CLICOLOR=1
+export LSCOLORS=cxgxcxdxfxegedabagacad
+
+# Cosmos
+export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin

@@ -69,20 +69,3 @@ fi
 
 shopt -s checkwinsize
 complete -d cd
-
-################################################################################
-# Keychain
-
-# sudo apt-get insall keychain
-#/usr/bin/keychain $HOME/.ssh/id_rsa
-#source $HOME/.keychain/$HOSTNAME-sh
-
-################################################################################
-# ssh english
-
-# echo "  (0) localhost"
-# echo -e "  (1) ${host[1]}\t\t(default)"
-# echo -n "Destination [0-$top]: "
-# echo -n "We haven't conquered that host yet. [0-$top]: " (number greater than top)
-# echo -n "That destination is above your pay grade, sir. [0-$top]: " (non-number)
-# echo "Automatically starting up tmux"

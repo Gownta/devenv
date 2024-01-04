@@ -1,0 +1,10 @@
+if [[ -v TMUX ]] ; then
+  return
+fi
+
+if [ -z "$SSH_CONNECTION" ] ; then
+  tail -n5 "$NJORMROD_DEVENV/name_ascii_art.txt"
+  echo
+fi
+
+. "$NJORMROD_DEVENV/configs/shell/ssh_command.sh"
