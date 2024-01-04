@@ -1,6 +1,6 @@
 # Generic profile
 
-export NJORMROD_DEVENV="$HOME/dev/dotfiles"
+export NJORMROD_DEVENV="$HOME/dev/devenv"
 source "$NJORMROD_DEVENV/configs/shell/env"
 source "$NJORMROD_DEVENV/configs/shell/aliases"
 source "$NJORMROD_DEVENV/configs/shell/functions"

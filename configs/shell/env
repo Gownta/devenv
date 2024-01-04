@@ -5,7 +5,7 @@ fi
 export NJORMROD_ENV_CREATED=1
 
 # Duplicatively defined
-export NJORMROD_DEVENV="$HOME/dev/dotfiles"
+export NJORMROD_DEVENV="$HOME/dev/devenv"
 
 # Rust
 # Instructions from https://www.rust-lang.org/tools/install are to run
