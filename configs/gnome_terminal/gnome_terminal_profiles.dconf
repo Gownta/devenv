@@ -1,0 +1,20 @@
+[/]
+default='fc732fbe-9ba5-4c81-a0b9-089eecd592fc'
+list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', 'fc732fbe-9ba5-4c81-a0b9-089eecd592fc']
+
+[:fc732fbe-9ba5-4c81-a0b9-089eecd592fc]
+audible-bell=false
+background-color='rgb(23,20,33)'
+background-transparency-percent=52
+cursor-blink-mode='off'
+cursor-shape='ibeam'
+default-size-columns=177
+default-size-rows=50
+font='FreeMono 16'
+foreground-color='rgb(208,207,204)'
+palette=['rgb(23,20,33)', 'rgb(192,28,40)', 'rgb(38,162,105)', 'rgb(162,115,76)', 'rgb(18,72,139)', 'rgb(163,71,186)', 'rgb(42,161,179)', 'rgb(208,207,204)', 'rgb(94,92,100)', 'rgb(246,97,81)', 'rgb(51,209,122)', 'rgb(233,173,12)', 'rgb(42,123,222)', 'rgb(192,97,203)', 'rgb(51,199,222)', 'rgb(255,255,255)']
+use-system-font=false
+use-theme-colors=true
+use-theme-transparency=true
+use-transparent-background=false
+visible-name='njormrod'

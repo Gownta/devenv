@@ -1,0 +1,6 @@
+GNOME terminal uses dconf
+
+This config file was acquired via
+  dconf dump /org/gnome/terminal/legacy/profiles:/
+and presumably can be reloaded using
+  dconf load /org/gnome/terminal/legacy/profiles:/ < the-file.dconf
