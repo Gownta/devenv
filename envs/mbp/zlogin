@@ -3,7 +3,7 @@ if [[ -v TMUX ]] ; then
 fi
 
 if [ -z "$SSH_CONNECTION" ] ; then
-  tail -n5 "$NJORMROD_DEVENV/name_ascii_art.txt"
+  tail -n5 "$NJORMROD_DEVENV/art/name_ascii_art.txt"
   echo
 fi
 
