@@ -36,12 +36,14 @@ if [[ "$REPLY" -ne "0" ]] ; then
   else
     where="${full[$REPLY]}"
 
-    echo "moshing into $where"
+    echo "ssh'ing into $where"
     if [[ "$REPLY" == "1" || "$REPLY" == "4" ]] ; then
       echo "Automatically starting up tmux"
-      mosh -6 $where -- tmux a
+      ssh -t $where 'tmux attach -d'
+      #mosh -6 $where -- tmux a
     else
-      mosh -6 $where
+      ssh $where
+      #mosh -6 $where
     fi
   fi
 fi
