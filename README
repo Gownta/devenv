@@ -55,6 +55,8 @@ Things to install
 
 Not dotfiles, but stuff that I also set up on new machines:
 
+Mosh
+  mbp > Managed Software Center > Mosh
 Bazel
   https://docs.bazel.build
   --prefix=$HOME/dev/bazel, instead of --use
