@@ -36,15 +36,12 @@ if [[ "$REPLY" -ne "0" ]] ; then
   else
     where="${full[$REPLY]}"
 
-    echo "ssh'ing into $where"
+    echo "moshing into $where"
     if [[ "$REPLY" == "1" || "$REPLY" == "4" ]] ; then
       echo "Automatically starting up tmux"
-      ssh -t $where 'tmux attach -d'
-    elif [[ "$REPLY" == "3" || "$REPLY" == "6" ]] ; then
-      echo "Tunneling in on :3000"
-      ssh -L 3000:localhost:3000 $where
+      mosh -6 $where -- tmux a
     else
-      ssh $where
+      mosh -6 $where
     fi
   fi
 fi
