@@ -1,10 +1,12 @@
 host[1]="devvm1773.nao0 (tmux)"
 host[2]="devvm1773.nao0"
-host[3]="localhost (tmux)"
-top=3
+host[3]="devvm1773.nao0 (-L)"
+host[4]="localhost (tmux)"
+top=4
 
 full[1]="devvm1773.nao0.facebook.com"
 full[2]="devvm1773.nao0.facebook.com"
+full[3]="devvm1773.nao0.facebook.com"
 
 #host[3]="alpha-pi"
 #full[3]="192.168.0.21"
@@ -31,18 +33,22 @@ while true ; do
 done
 
 if [[ "$REPLY" -ne "0" ]] ; then
-  if [[ "$REPLY" -eq "3" ]] ; then
+  if [[ "$REPLY" -eq "4" ]] ; then
     tmux a
   else
     where="${full[$REPLY]}"
 
     echo "ssh'ing into $where"
-    if [[ "$REPLY" == "1" || "$REPLY" == "4" ]] ; then
+    if [[ "$REPLY" == "1" ]] ; then
       echo "Automatically starting up tmux"
       ssh -t $where 'tmux attach -d'
       #mosh -6 $where -- tmux a
     else
-      ssh $where
+      if [[ "$REPLY" == "3" ]] ; then
+        ssh $where -L 3000:localhost:3000
+      else
+        ssh $where
+      fi
       #mosh -6 $where
     fi
   fi
