@@ -7,4 +7,4 @@ if [ -z "$SSH_CONNECTION" ] ; then
   echo
 fi
 
-. "$NJORMROD_DEVENV/configs/shell/ssh_command.sh"
+python3 "$NJORMROD_DEVENV/configs/shell/ssh_command.py"
