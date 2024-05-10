@@ -58,6 +58,8 @@ def get_dst_cmd(dsts, default=None):
         flavor = "Destination"
         while True:
             dst = input(f"{flavor} [0-{n-1}]: ")
+            if dst == "" and default is not None:
+                return default
             try:
                 i = int(dst)
                 if i < 0 or i >= n:
