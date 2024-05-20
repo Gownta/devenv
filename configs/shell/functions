@@ -10,10 +10,6 @@ function cr {
     cd `hg root`/fbcode
 }
 
-function ccp {
-    cd `hg root`/fbcode/contextprop/cpp
-}
-
 function cnjo {
     cd `hg root`/fbcode/scripts/njormrod
 }
