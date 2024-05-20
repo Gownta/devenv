@@ -10,6 +10,14 @@ DevEnv
 Optionally:
 - Create a ~/.secrets file containing things that should not be committed to source control (eg OPENAI_API_KEY, METAGEN_KEY)
 - Create ~/.tmux.panes, one line per window, each line optionally containing a directory
+- Add an ssh key in github
+  eg command: `~/.ssh$ ssh-keygen -t ed25519 -C "nicholas.ormrod+github@gmail.com"`
+
+
+Debugging
+=========
+
+Connecting to github is hard on a devserver. See this wiki page for info: https://www.internalfb.com/intern/wiki/Open_Source/Maintain_a_FB_OSS_Project/Devserver_GitHub_Access/
 
 
 Organization
