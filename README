@@ -8,7 +8,7 @@ DevEnv
 3. Follow steps in the README to configure additional things.
 
 Optionally:
-- Create a ~/.secrets file containing things that should not be committed to source control (eg OPENAI_API_KEY)
+- Create a ~/.secrets file containing things that should not be committed to source control (eg OPENAI_API_KEY, METAGEN_KEY)
 - Create ~/.tmux.panes, one line per window, each line optionally containing a directory
 
 
