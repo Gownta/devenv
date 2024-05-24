@@ -19,9 +19,9 @@ call plug#begin('~/.vim/plugged')
 "Plug '~/dev/from_github/falcon'
 
 " clang format on save
-if 0
+if 1
   "Plug 'ctrlpvim/ctrlp.vim'
-  "Plug 'chiel92/vim-autoformat'
+  Plug 'chiel92/vim-autoformat'
   "Plug 'mileszs/ack.vim'
 
   augroup autofmt
@@ -72,6 +72,7 @@ set softtabstop=2
 set tabstop=2
 set tags=tags;/
 set undolevels=1000
+set viminfo='50,"50
 
 :highlight ExtraWhitespace ctermbg=red guibg=red
 :au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
@@ -82,10 +83,11 @@ set undolevels=1000
 syntax on
 "set termguicolors
 set background=dark
+colorscheme darkblue
 "colorscheme desert
 "colorscheme torte
-:highlight Normal ctermbg=NONE
-:highlight NonText ctermbg=NONE
+:highlight Normal guibg=NONE ctermbg=NONE
+:highlight NonText guibg=NONE ctermbg=NONE
 
 " Starlang
 autocmd BufReadPost,BufNewFile *.star set filetype=star

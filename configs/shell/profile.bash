@@ -11,6 +11,10 @@ HISTFILESIZE=50000
 export HISTTIMEFORMAT="[ %y/%m/%d - %H:%M:%S ]  "
 export HISTIGNORE="ls:cd ..:pwd:hostname"
 
+# etc/
+maybe_source /etc/bashrc
+maybe_source /etc/bash_completion
+
 # Misc
 shopt -s checkwinsize
 complete -d cd
@@ -33,7 +37,6 @@ function ips1cmd() {
 
 function ipromptcmd () {
   local stat="$?"
-  color=
   if [[ "$stat" -ne 0 ]] ; then
     echo -e "\033[1;91m[Exit $stat]\033[0m" 1>&2
   fi

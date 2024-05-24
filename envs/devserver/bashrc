@@ -1,0 +1,8 @@
+# If noninterctive, return immediately
+[[ $- != *i* ]] && return
+
+source /usr/facebook/ops/rc/master.bashrc
+
+export NJORMROD_DEVENV="$HOME/dev/devenv"
+source "$NJORMROD_DEVENV/configs/shell/profile"
+source "$NJORMROD_DEVENV/configs/shell/profile.bash"
