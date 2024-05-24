@@ -18,3 +18,5 @@
 [diff]
     algorithm = patience
     context = 5
+[http "https://git.internal.tfbnw.net/"]
+	sslCert = /var/facebook/credentials/njormrod/x509/njormrod.pem
