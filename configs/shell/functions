@@ -14,6 +14,10 @@ function cnjo {
     cd `hg root`/fbcode/scripts/njormrod
 }
 
+function cad {
+    cd `hg root`/fbcode/scripts/njormrod/ad
+}
+
 function maybe_source {
     if [ -f $1 ] ; then
         source $1

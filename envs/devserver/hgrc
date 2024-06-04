@@ -13,6 +13,8 @@ dl = sl -r "draft() - obsolete() - present(bookmark('re:ad_.*'))" -T '{sl}'
 
 [committemplate]
 reviewers=yfeldblum, skrueger
+title="(autodiff.v3) "
+testplan="\n  buck2 test scripts/njormrod/cli/... scripts/njormrod/ad/..."
 # fbtags=accept2ship
 
 [merge-patterns]

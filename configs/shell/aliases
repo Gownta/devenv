@@ -12,6 +12,7 @@ alias qq="source ~/.bash_profile"
 alias hgr="hg rebase -s 'draft()' -d master"
 alias codemod="/data/users/njormrod/repos/www/scripts/bin/codemod --extensions='*'"
 alias autodiff="buck2 run scripts/njormrod/autodiff:autodiff --"
+alias ad="buck2 run scripts/njormrod/ad:autodiff --"
 
 # New commands
 alias clear='for qwedc in {1..100} ; do echo " " ; done ; clear'
@@ -21,6 +22,7 @@ alias vimr='vim -R'
 alias njor='b r scripts/njormrod/tmp:main'
 alias t='c;b t'
 alias b="c;b"
+alias tad='b t scripts/njormrod/ad/... scripts/njormrod/cli/...'
 
 # Indexing shorthand
 alias f1="awk '{print \$1}'"
