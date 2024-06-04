@@ -47,5 +47,5 @@ function ipromptcmd () {
 }
 export PROMPT_COMMAND=ipromptcmd
 flair="\$"
-flair=$'\033[0;31m\u2771\033[38;5;208m\u2771\033[0;32m\u2771'
+#flair=$'\033[0;31m\u2771\033[38;5;208m\u2771\033[0;32m\u2771'
 export PS1=$'\[\033[1;96m\]\T $(ips1cmd) ${flair}\[\033[0m\] '
