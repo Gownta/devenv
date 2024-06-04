@@ -16,6 +16,8 @@ reviewers=yfeldblum, skrueger
 # fbtags=accept2ship
 
 [merge-patterns]
+# Learn about merge patters here: https://repo.mercurial-scm.org/hg/help/merge-tools
+# Note: internal:merge-local will resolve all conflicts in favor of p1, while internal:local takes the whole p1 file
 materialized_configs/** = internal:local
 xplat/staticdocs/websites/fbcref/src/json/** = internal:local
 
