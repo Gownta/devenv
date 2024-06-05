@@ -21,4 +21,3 @@ System Settings
 - Set Appearance to Dark Mode
 - Undo inverse mouse
 - Set default browser to chrome
-
