@@ -25,3 +25,10 @@ System Settings
 - Set Appearance to Dark Mode
 - Undo inverse mouse
 - Set default browser to chrome
+
+Homebrew
+- work mbp: https://fb.workplace.com/groups/hack.of.the.day/permalink/1925865110834868/
+- personal: ??
+
+...then some brew things
+- brew install tmux
