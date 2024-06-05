@@ -10,5 +10,5 @@ Download:
 - Chrome
 - iTerm2
 
-git clone this devenv repo
-- setup
+git clone this devenv repo. symlinkify. Notes:
+- .zshenv -> configs/shell/env
