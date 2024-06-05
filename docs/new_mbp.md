@@ -15,6 +15,10 @@ git clone this devenv repo. symlinkify. Notes:
 Add an ssh key in github
 - `~/.ssh$ ssh-keygen -t ed25519 -C "nicholas.ormrod+github@gmail.com"`
 - Github.com > Settings > New SSH Key
+Add the key to ssh-agent
+- `ssh-agent`
+- `ssh-add ~/.ssh/id_ed25519`
+Github (cont'd)
 - git push to verify
 
 System Settings
