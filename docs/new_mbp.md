@@ -32,3 +32,8 @@ Homebrew
 
 ...then some brew things
 - brew install tmux
+
+Connect to wifi
+- lighthouse
+- metaguest?
+- home wifi
