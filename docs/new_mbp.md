@@ -12,3 +12,5 @@ Download:
 
 git clone this devenv repo. symlinkify. Notes:
 - .zshenv -> configs/shell/env
+- create ~/.secrets, add `# export EXAMPLE_SECRET=12345`
+- create ~/.tmux.panes, containing 6 blank lines
