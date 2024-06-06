@@ -39,3 +39,9 @@ Connect to wifi
 - home wifi
 
 Order a new laptop decal, gelaskins.com
+
+Set up dropbox.
+- Install dropbox
+- Download the backup folder
+- Copy contents to Desktop, etc
+- Set up new backup for my desktop
