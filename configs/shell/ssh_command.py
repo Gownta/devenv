@@ -36,14 +36,11 @@ def make_devserver_dsts(short_hostname, with_tmux=False, with_tunnel=False):
     return ret
 
 
-Dsts = ([
-    Dst("localhost"),
-]
-+ make_devserver_dsts("devvm2087.rva0", with_tmux=True, with_tunnel=True)
-+ make_devserver_dsts("devvm1773.nao0", with_tmux=True, with_tunnel=True)
-+ [
-    Dst("localhost (tmux)", "Automatically starting up tmux", "tmux a"),
-])
+Dsts = (
+    [Dst("localhost")]
+    + make_devserver_dsts("devvm2087.rva0", with_tmux=True, with_tunnel=True)
+    + [Dst("localhost (tmux)", "Automatically starting up tmux", "tmux a")]
+)
 #host[3]="alpha-pi"
 #full[3]="192.168.0.21"
 
