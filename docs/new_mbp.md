@@ -37,3 +37,5 @@ Connect to wifi
 - lighthouse
 - metaguest?
 - home wifi
+
+Order a new laptop decal, gelaskins.com
