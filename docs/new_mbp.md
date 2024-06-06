@@ -5,6 +5,7 @@ To set up a new laptop:
 Download:
 - Chrome
 - iTerm2
+- Outlook
 
 git clone this devenv repo. symlinkify. Notes:
 - `git clone git@github.com:Gownta/devenv.git`
