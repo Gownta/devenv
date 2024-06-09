@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+"""
+tmux_go will attach to the running tmux server, creating one if
+it doesn't exist
+
+References:
+- tmux wiki:
+    https://github.com/tmux/tmux/wiki
+- tmux man page:
+    https://man7.org/linux/man-pages/man1/tmux.1.html
+"""
+
+"""
+Notes on new-window:
+> If -d is given, the session does not make the new window the current window.
+> -e takes the form ‘VARIABLE=value’ ... it may be specified multiple times.
+- -n window-name
+
+Notes on split-window:
+> -h does a horizontal split and -v a vertical split
+- -l 50%
+> All other options have the same meaning as for the new-window command
+- ...such as -t target-window
+"""
+
+
+import os
+
+
+def main():
+    # Socket set with tmux's -S flag
+    # Within tmux, run `tmux display -p '#{socket_path}'` to see the path
+    socket_dir = os.getenv("TMUX_SOCKET_PATH", "/tmp")
+
+
+    print("main")
+
+
+if __name__ == "__main__":
+    main()

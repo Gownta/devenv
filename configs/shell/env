@@ -25,6 +25,7 @@ export PATH="$HOME/dev/bin:$PATH" # last, so dev/bin goes first
 
 # General
 export EDITOR=/usr/bin/vim
+export TMUX_SOCKET_PATH="$NJORMROD_DEVENV/bin/tmux_server"
 
 # Common command controls
 # man ls to see color options
