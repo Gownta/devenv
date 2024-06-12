@@ -1,0 +1,2 @@
+source "$NJORMROD_DEVENV/configs/shell/profile"
+source "$NJORMROD_DEVENV/configs/shell/profile.zsh"
