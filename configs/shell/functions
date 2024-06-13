@@ -1,3 +1,13 @@
+function prompt_dir_sub() {
+  echo $PWD | \
+      sed 's,/home/njormrod,~,' | \
+      sed 's,/data/users/njormrod,local,' | \
+      sed 's,local/repos,r,' | \
+      sed 's,^r/\([0-9]\)*configerator/source,r/\1cfg/s,' | \
+      sed 's,^r/\([0-9]\)*configerator,r/\1cfg,' | \
+      sed 's,\([0-9]\)fbsource/fbcode,\1f,'
+}
+
 function mkcd {
     mkdir -p "$1" && cd "$1"
 }
