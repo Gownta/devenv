@@ -21,5 +21,5 @@ setopt HIST_IGNORE_DUPS
 
 # Prompt specification
 setopt PROMPT_SUBST
-PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)%F{cyan}$(prompt_dir_sub) $(qqq ${vcs_info_msg_0}) %F{red}\U2771%F{208}\U2771%F{green}\U2771%f '
+PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)%F{cyan}$(prompt_dir_sub) %F{red}\U2771%F{208}\U2771%F{green}\U2771%f '
 RPROMPT='%*'
