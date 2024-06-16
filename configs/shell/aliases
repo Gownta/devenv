@@ -8,7 +8,7 @@ alias cd='cd -P'
 # Shorthand
 alias c='clear'
 alias v='vim'
-alias qq="source ~/.bash_profile"
+alias qq="source ~/.zshrc"
 alias hgr="hg rebase -s 'draft()' -d master"
 alias codemod="/data/users/njormrod/repos/www/scripts/bin/codemod --extensions='*'"
 alias autodiff="buck2 run scripts/njormrod/autodiff:autodiff --"
