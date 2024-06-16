@@ -1,6 +1,7 @@
 function prompt_dir_sub() {
   echo $PWD | \
       sed 's,/home/njormrod,~,' | \
+      sed 's,/Users/njormrod,~,' | \
       sed 's,/data/users/njormrod,local,' | \
       sed 's,local/repos,r,' | \
       sed 's,^r/\([0-9]\)*configerator/source,r/\1cfg/s,' | \

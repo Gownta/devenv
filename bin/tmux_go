@@ -12,6 +12,15 @@ References:
 """
 
 """
+Notes on new-session:
+-d; do not attach session to shell
+-e, like new-window
+-c start_directory
+-n window-name
+-s session-name
+-t group-name; new windows are added to this group, which could be a session-name
+-A: behave like attach-session if session-name exists
+
 Notes on new-window:
 > If -d is given, the session does not make the new window the current window.
 > -e takes the form ‘VARIABLE=value’ ... it may be specified multiple times.
@@ -26,15 +35,42 @@ Notes on split-window:
 
 
 import os
+import subprocess
 
 
 def main():
     # Socket set with tmux's -S flag
     # Within tmux, run `tmux display -p '#{socket_path}'` to see the path
-    socket_dir = os.getenv("TMUX_SOCKET_PATH", "/tmp")
+    tmux_dir = os.path.join(os.getenv("NJORMROD_DEVENV"), "workspace", "tmux")
+    os.makedirs(tmux_dir, exist_ok=True)
+    socket_dir = os.path.join(tmux_dir, "tmux_socket")
 
+    # Load pane info from ~/.tmux.panes
+    panes_path = os.path.expanduser("~/.tmux.panes")
+    with open(panes_path, "r") as f:
+        panes_config = f.read()
 
-    print("main")
+    # Session name
+    session_name = "me"
+
+    def tmux(s):
+        cmd = ["tmux", "-S", socket_dir] + s.split()
+        #print(" ".join(cmd))
+        return subprocess.run(cmd)
+
+    tmux("start-server")
+    ret = tmux(f"has-session -t {session_name}")
+    if ret.returncode == 0:
+        tmux(f"attach-session -t {session_name}")
+    else:
+        for i, line in enumerate(panes_config.strip().splitlines()):
+            wname, wdir = line.split()
+            wdir = os.path.expanduser(wdir)
+            cmd = "session -d -s" if i == 0 else "window -t"
+            tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir}")
+            tmux(f"splitw -h -c {wdir}")
+        tmux("select-window -t 1")
+        tmux(f"attach-session -t {session_name}")
 
 
 if __name__ == "__main__":
