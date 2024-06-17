@@ -53,14 +53,18 @@ def main():
     # Session name
     session_name = "me"
 
-    def tmux(s):
+    def tmux(s, **kwargs):
         cmd = ["tmux", "-S", socket_dir] + s.split()
         #print(" ".join(cmd))
-        return subprocess.run(cmd)
+        return subprocess.run(cmd, **kwargs)
 
     tmux("start-server")
     ret = tmux(f"has-session -t {session_name}")
     if ret.returncode == 0:
+        windows = tmux("list-windows", text=True, capture_output=True).stdout
+        n_windows = len(windows.splitlines())
+        for i in range(n_windows):
+            tmux(f"select-layout -t {i+1}.1 even-horizontal")
         tmux(f"attach-session -t {session_name}")
     else:
         for i, line in enumerate(panes_config.strip().splitlines()):
