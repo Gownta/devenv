@@ -21,7 +21,10 @@ export PATH="$HOME/.local/bin:$PATH" # python's pip lives here?
 export PATH="$HOME/dev/bazel/bin:$PATH"
 export PATH="$HOME/dev/devenv/bin:$PATH"
 export PATH="$HOME/dev/homebrew/bin:$HOME/dev/homebrew/sbin:$PATH"
-export PATH="$HOME/dev/bin:$PATH" # last, so dev/bin goes first
+
+# These should be last
+export PATH="$HOME/dev/bin:$PATH"
+export PATH=".:$PATH"
 
 # General
 export EDITOR=/usr/bin/vim
