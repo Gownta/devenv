@@ -6,7 +6,8 @@ function prompt_dir_sub() {
       sed 's,local/repos,r,' | \
       sed 's,^r/\([0-9]\)*configerator/source,r/\1cfg/s,' | \
       sed 's,^r/\([0-9]\)*configerator,r/\1cfg,' | \
-      sed 's,\([0-9]\)fbsource/fbcode,\1f,'
+      sed 's,\([0-9]\)fbsource/fbcode,\1f,' | \
+      sed 's,dotfbsource/fbcode,.f,'
 }
 
 function mkcd {

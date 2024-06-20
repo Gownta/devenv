@@ -69,7 +69,7 @@ def main():
     else:
         for i, line in enumerate(panes_config.strip().splitlines()):
             wname, wdir = line.split()
-            wdir = os.path.expanduser(wdir)
+            wdir = os.path.realpath(os.path.expanduser(wdir))
             cmd = "session -d -s" if i == 0 else "window -t"
             tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir}")
             tmux(f"splitw -h -c {wdir}")
