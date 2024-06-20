@@ -1,9 +1,9 @@
-~/repos/1fbsource/fbcode
-~/repos/2fbsource/fbcode
-~/repos/3fbsource/fbcode
-~/repos/4fbsource/fbcode
-~/repos/5fbsource/fbcode
-
+f ~/repos/1fbsource/fbcode
+b ~/repos/2fbsource/fbcode
+c ~/repos/3fbsource/fbcode
+o ~/repos/4fbsource/fbcode
+d ~/repos/5fbsource/fbcode
+e ~/repos/dotfbsource/fbcode
 
 
 
