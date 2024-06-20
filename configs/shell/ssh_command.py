@@ -17,7 +17,7 @@ def make_devserver_dsts(short_hostname, with_tmux=False, with_tunnel=False):
         ret.append(Dst(
             f"{short_hostname} (tmux)",
             f"ssh'ing into {full_hostname}; automatically starting up tmux",
-            f"ssh -t {full_hostname} 'tmux attach -d'",
+            f"ssh -t {full_hostname} 'tmux_go'",
         ))
 
     ret.append(Dst(
