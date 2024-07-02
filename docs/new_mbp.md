@@ -46,3 +46,7 @@ Set up dropbox.
 - Download the backup folder
 - Copy contents to Desktop, etc
 - Set up new backup for my desktop
+
+Install some other apps:
+- TextMate
+- Discord
