@@ -153,6 +153,20 @@ class FixupUserExists(Fixup):
         return f"Unixname {args.unixname} does not exist"
 
 
+class FixupHomedir(Fixup):
+    def name(self):
+        return "homedir"
+
+    def is_good(self):
+        return os.path.exists(os.path.join("/home", args.unixname))
+
+    def explain(self):
+        return f"/home/{args.unixname} does not exist"
+
+    def get_fixes(self):
+        return [SubprocessCommand("")]
+
+
 ################################################################################
 ### Main
 ################################################################################
