@@ -16,6 +16,7 @@ TODOs
 
 import argparse
 import logging
+import getpass
 import os
 import shlex
 import shutil
@@ -43,16 +44,16 @@ def get_parser():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument(
-        "-u",
-        "--unixname",
-        default="njormrod",
-        help="The unixname of the user to fix",
-    )
-
-    parser.add_argument(
         "--no-color",
         action="store_true",
         help="Disable color in the output",
+    )
+
+    parser.add_argument(
+        "-i",
+        "--interactive",
+        action="store_true",
+        help="Prompt before running commands",
     )
 
     return parser
@@ -65,54 +66,45 @@ def init_args(argv):
 
 
 ################################################################################
-### Interfaces
+### Interaction
 ################################################################################
 
 
-class Fixup:
-    def name(self):
-        return ""
-
-    def is_good(self):
-        return True
-
-    def explain(self):
-        return ""
-
-    def get_fixes(self):
-        return []
+def query(msg, valid=None):
+    if valid is None:
+        valid = ["", "y", "n"]
+    while True:
+        ans = input(msg)[:1].lower()
+        if ans in valid:
+            return ans
 
 
-class Command:
-    def say(self):
-        return ""
-
-    def do(self):
-        pass
+def color(msg, clr):
+    if args.no_color:
+        return msg
+    return f"\033[38;5;{clr}m{msg}\033[0m"
 
 
-class SubprocessCommand(Command):
-    def __init__(self, cmd):
-        if isinstance(cmd, str):
-            cmd = cmd.split()
-        self.cmd = cmd
+def run(cmd, check=True, **kwargs):
+    if args.interactive:
+        pre = "Run command '"
+        post = "'? [Y/n] "
+    else:
+        pre = "Running command '"
+        post = "'"
+    pre = color(pre, 223)
+    post = color(post, 223)
+    mid = color(' '.join(shlex.quote(c) for c in cmd), 220)
+    whole = pre + mid + post
 
-    def say(self):
-        return color(' '.join(shlex.quote(c) for c in self.cmd), 220)
+    if args.interactive:
+        ans = query(whole)
+        if ans not in ["", "y"]:
+            return None
+    else:
+        print(whole, flush=True)
 
-    def do(self, check=True, **kwargs):
-        return subprocess.run(self.cmd, check=check, **kwargs)
-
-
-class InstructionCommand(Command):
-    def __init__(self, msg):
-        self.msg = msg
-
-    def say(self):
-        return color(f"Manual step: {self.msg}", 206)
-
-    def do(self):
-        pass
+    return subprocess.run(cmd, check=check, **kwargs)
 
 
 ################################################################################
@@ -120,166 +112,12 @@ class InstructionCommand(Command):
 ################################################################################
 
 
-def color(msg, color):
-    if args.no_color:
-        return msg
-    return f"\033[38;5;{color}m{msg}\033[0m"
-
-
-def go():
-    global q
-    while q:
-        fixup = q.pop(0)
-        print(color(f"Checking {fixup.name()}...", 32), flush=True)
-        is_good = fixup.is_good()
-        if not is_good:
-            print(f"{color(fixup.name() + ' failed:', 196)} {fixup.explain()}")
-
-            fixes = fixup.get_fixes()
-            for fix in fixes:
-                while True:
-                    ans = input(color(f"  Run fixup {fix.say()}? [Y/n/q] ", 223))[:1].lower()
-                    if ans in ["", "y", "n", "q"]:
-                        break
-                if ans == "q":
-                    break
-                elif ans == "n":
-                    continue
-                elif ans == "y" or ans == "":
-                    fix.do()
-                    continue
-
-
 ################################################################################
 ### Fixups
 ################################################################################
 
 
-@cache
-def dnf_packages():
-    lines = subprocess.check_output(["dnf", "list", "installed"], text=True)
-    pkgs = {os.path.splitext(line.split()[0])[0] for line in lines.splitlines()}
-    return pkgs
-
-
-class FixupDnfPackage(Fixup):
-    def __init__(self, pkg):
-        self.pkg = pkg
-
-    def name(self):
-        return f"dnf {self.pkg}"
-
-    def is_good(self):
-        return self.pkg in dnf_packages()
-        #return subprocess.run(["dnf", "list", "installed", self.pkg], capture_output=True).returncode == 0
-
-    def explain(self):
-        return f"dnf package {self.pkg} is not installed"
-
-    def get_fixes(self):
-        return [SubprocessCommand(f"sudo dnf install {self.pkg} -y")]
-
-
-class FixupUserExists(Fixup):
-    def name(self):
-        return f"{args.unixname}"
-
-    def is_good(self):
-        return subprocess.run(["id", args.unixname], capture_output=True).returncode == 0
-
-    def explain(self):
-        return f"Unixname {args.unixname} does not exist"
-
-    def get_fixes(self):
-        return [SubprocessCommand(f"sudo adduser {args.unixname}")]
-
-
-class FixupSudoerPermissions(Fixup):
-    def name(self):
-        return "sudo permission"
-
-    def is_good(self):
-        with open("/etc/sudoers") as f:
-            content = f.read().splitlines()
-        for line in content:
-            parts = line.split()
-            if not parts:
-                continue
-            if parts[0] == args.unixname:
-                return True
-        return False
-
-    def explain(self):
-        return f"There is no entry in /etc/sudoers for {args.unixname}"
-
-    def get_fixes(self):
-        add = f"{args.unixname}\tALL=(ALL)\tNOPASSWD: ALL"
-
-        class SudoerCommand(Command):
-            def __init__(self, line):
-                self.line = line
-                self.sudoers = "/etc/sudoers"
-
-            def say(self):
-                return f"append '{self.line}' to {self.sudoers}"
-
-            def do(self):
-                tmpfile = self.sudoers + ".tmp"
-                shutil.copy2(self.sudoers, tmpfile)
-                try:
-                    with open(tmpfile) as f:
-                        content = f.read()
-                    content += f"\n## Grant {args.unixname} full sudoer power\n{self.line}\n"
-                    with open(tmpfile, "w") as f:
-                        f.write(content)
-                    ret = subprocess.run(["visudo", "--check", "-f", tmpfile]).returncode
-                    if ret == 0:
-                        shutil.move(tmpfile, self.sudoers)
-                finally:
-                    try:
-                        os.remove(tmpfile)
-                    except Exception:
-                        pass
-
-        return [SudoerCommand(add)]
-
-
-class FixupUserShell(Fixup):
-    def name(self):
-        return f"shell"
-
-    def is_good(self):
-        passwd = subprocess.run(["getent", "passwd", args.unixname], capture_output=True, text=True, check=True).stdout.strip()
-        self.shell = passwd.split(":")[-1]
-        return os.path.basename(self.shell) == "zsh"
-
-    def explain(self):
-        self.zsh = subprocess.run(["which", "zsh"], capture_output=True, text=True, check=True).stdout.strip()
-        return f"shell is set to {self.shell} instead of zsh ({self.zsh})"
-
-    def get_fixes(self):
-        return [SubprocessCommand(f"sudo usermod --shell {self.zsh} {args.unixname}")]
-
-
-class FixupUserGroup(Fixup):
-    def __init__(self, group):
-        self.group = group
-
-    def name(self):
-        return "group wheel"
-
-    def is_good(self):
-        output = subprocess.check_output(["groups", args.unixname], text=True)
-        groups = output.split(":")[1].strip().split()
-        return self.group in groups
-
-    def explain(self):
-        return f"{args.unixname} is not in group {self.group}"
-
-    def get_fixes(self):
-        return [SubprocessCommand(f"sudo usermod -aG {self.group} {args.unixname}")]
-
-
+'''
 class FixupFile(Fixup):
     def __init__(self, style, f, name_v=None, owner=None, group=None, perms=None):
         self.style = style[:1]
@@ -364,6 +202,7 @@ class FixupSymlink(Fixup):
 
     def is_good(self):
         return 
+'''
 
 
 ################################################################################
@@ -371,33 +210,99 @@ class FixupSymlink(Fixup):
 ################################################################################
 
 
-class FixupDeletePeter(Fixup):
-    def name(self):
-        return "del peter"
-    def is_good(self):
-        return subprocess.run(["id", "peter"], capture_output=True).returncode == 1
-    def explain(self):
-        return f"unixname peter exists"
-    def get_fixes(self):
-        return [SubprocessCommand(f"sudo userdel -r peter")]
+def install_packages(packages):
+    print(color("Fetching packages...", 32))
+    run(["sudo", "dnf", "install", "-y"] + packages)
+    run(["sudo", "dnf", "upgrade"])
 
+
+def shell_to_zsh(user):
+    print(color("Using zsh...", 32))
+
+    passwd = subprocess.run(["getent", "passwd", user], capture_output=True, text=True, check=True).stdout.strip()
+    shell = passwd.split(":")[-1]
+
+    if os.path.basename(shell) != "zsh":
+        zsh = subprocess.check_output(["which", "zsh"], text=True).strip()
+        print(f"Shell is {shell}; switching to zsh ({zsh})")
+        run(["sudo", "usermod", "--shell", zsh, user])
+
+
+def setup_ssh():
+    print(color("Configuring ssh...", 32))
+
+    os.makedirs(".ssh", mode=0o700, exist_ok=True)
+
+    auth_keys = ".ssh/authorized_keys"
+    print(color(f"Checking {auth_keys}...", 32))
+    if not os.path.exists(auth_keys):
+        if subprocess.run(["id", "ec2-user"], capture_output=True).returncode == 0:
+            fn = "/home/ec2-user/.ssh/authorized_keys"
+            res = subprocess.run(["sudo", "cat", fn], capture_output=True, text=True)
+            if res.returncode != 0:
+                print(color("failed to open {fn}", 196))
+            else:
+                print("copying authorized_keys from ec2-user")
+                content = res.stdout
+                with open(auth_keys, "x") as f:
+                    f.write(content)
+                os.chmod(auth_keys, 0o600)
+
+    print(color("Checking id_ed25519...", 32))
+    pub = ".ssh/id_ed25519.pub"
+    if not os.path.exists(pub):
+        run(["ssh-keygen", "-t", "ed25519", "-C", "nicholas.ormrod@gmail.com"])
+        with open(pub) as f:
+            content = f.read()
+        print(f"Add the following key to github at https://github.com/settings/keys:\n\n  {content}\n")
+        input("press any key to continue")
+
+
+def ssh_agent():
+    agent = subprocess.check_output(["ssh-agent", "-s"])
+
+    run(["eval", "$(ssh-agent -s)"
+
+
+
+def my_github(my_repos):
+    os.makedirs("dev", exist_ok=True)
+
+    for repo in my_repos:
+        print(color(f"Cloning {repo}...", 32))
+        dst = f"dev/{repo}"
+        if not os.path.exists(dst):
+            run(["git", "clone", f"git@github.com:Gownta/{repo}.git", dst])
+
+
+    
 
 if __name__ == "__main__":
     init_args(sys.argv[1:])
+
+    # Ensure this is run as user, and not as root, from the homedir
+    cur_user = getpass.getuser()
+    assert cur_user != "root", "fixmydev should be run as a sudo-priviledged user"
+    os.chdir(os.path.expanduser("~"))
+
+    # Packages
+    #install_packages(["git", "zsh", "tmux", "htop"])
+
+    # ssh
+    #setup_ssh()
+    ssh_agent()
+
+    # Github repos
+    my_github(["devenv", "starlang", "values", "hanabi"])
+
+    # Shell to zsh
+    #shell_to_zsh(cur_user)
+
+    exit(0)
+
+
+
     q = [
-        # Packages
-        #FixupDnfPackage("git"),
-        #FixupDnfPackage("zsh"),
-        #FixupDnfPackage("tmux"),
-        #FixupDnfPackage("htop"),
-
-        # User
-        #FixupDeletePeter(),
-        #FixupUserExists(),
-        #FixupSudoerPermissions(),
-        #FixupUserShell(),
-        #FixupUserGroup("wheel"),
-
         # ssh
         #FixupFile("d", os.path.join("/home", args.unixname), perms=700),
         #FixupFile("d", os.path.join("/home", args.unixname, ".ssh"), perms=700),
