@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+
+"""
+setup_system_user LOGIN
+
+Create a system user named LOGIN.
+Optionally give them sudoer power.
+"""
+
+
+import argparse
+import os
+import shlex
+import shutil
+import subprocess
+import sys
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+        prog="setup_system_user",
+        description="Setup a system user",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument(
+        "unixname",
+        default="njormrod",
+        help="The unixname of the user to add",
+    )
+
+    return parser
+
+
+def get_args(argv):
+    parser = get_parser()
+    args = parser.parse_args(argv)
+    return args
+
+
+def cmd(cmd, check=True, **kwargs):
+    print(" ".join(shlex.quote(c) for c in cmd))
+    return subprocess.run(cmd, check=check, **kwargs)
+
+
+if __name__ == "__main__":
+    args = get_args(sys.argv[1:])
+    unixname = args.unixname
+
+    exists = subprocess.run(["id", unixname], capture_output=True).returncode == 0
+    assert not exists
+    cmd(["sudo", "adduser", unixname])
+
+    sudoers = "/etc/sudoers"
+    with open(sudoers) as f:
+        content = f.read()
+    content = content + f"""
+## Grant {unixname} full sudoer power
+{unixname}\tALL=(ALL)\tNOPASSWD: ALL
+"""
+    tmp = sudoers + ".tmp"
+    try:
+        with open(tmp, "w") as f:
+            f.write(content)
+        subprocess.check_call(["sudo", "visudo", "-c", "-f", tmp])
+        #shutil.move(tmpfile, self.sudoers)
+    finally:
+        try:
+            pass
+            #os.remove(tmp)
+        except:
+            pass
