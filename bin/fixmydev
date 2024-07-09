@@ -104,6 +104,17 @@ class SubprocessCommand(Command):
         return subprocess.run(self.cmd, check=check, **kwargs)
 
 
+class InstructionCommand(Command):
+    def __init__(self, msg):
+        self.msg = msg
+
+    def say(self):
+        return color(f"Manual step: {self.msg}", 206)
+
+    def do(self):
+        pass
+
+
 ################################################################################
 ### Interaction
 ################################################################################
@@ -285,7 +296,8 @@ class FixupFile(Fixup):
         return self.name_v
 
     def is_good(self):
-        return os.path.exists(self.f)
+        ret = subprocess.run(["sudo", "[", "-e", self.f, "]"]).returncode
+        return ret == 0
 
     def explain(self):
         return f"{self.descriptor} {self.f} does not exist"
@@ -295,19 +307,63 @@ class FixupFile(Fixup):
 
         # Create the file
         if self.style == "f":
-            ret.append(SubprocessCommand(f"sudo touch {self.f}"))
-            ret.append(SubprocessCommand(f"sudo vim {self.f}"))
+            ret.append(SubprocessCommand(f"sudo -u {args.unixname} touch {self.f}"))
+            ret.append(SubprocessCommand(f"sudo -u {args.unixname} vim {self.f}"))
         else:
-            ret.append(SubprocessCommand(f"sudo mkdir {self.f}"))
+            ret.append(SubprocessCommand(f"sudo -u {args.unixname} mkdir {self.f}"))
 
         # Set ownership
-        ret.append(SubprocessCommand(f"sudo chown {self.owner}:{self.group} {self.f}"))
+        #ret.append(SubprocessCommand(f"sudo chown {self.owner}:{self.group} {self.f}"))
 
         # Set permissions
         if self.perms is not None:
             ret.append(SubprocessCommand(f"sudo chmod {self.perms} {self.f}"))
 
         return ret
+
+
+class FixupKeys(Fixup):
+    def name(self):
+        return "ssh keys"
+
+    def is_good(self):
+        return os.path.exists(f"/home/{args.unixname}/.ssh/id_ed25519")
+
+    def explain(self):
+        return "No id_ed25519 key present"
+
+    def get_fixes(self):
+        return [
+            SubprocessCommand(["sudo", "-u", args.unixname, "ssh-keygen", "-t", "ed25519", "-C", "nicholas.ormrod@gmail.com"]),
+            SubprocessCommand(["sudo", "cat", f"/home/{args.unixname}/.ssh/id_ed25519.pub"]),
+            InstructionCommand("Add this key to github"),
+        ]
+
+class FixupGithub(Fixup):
+    def __init__(self, repo):
+        self.repo = repo
+        self.dst = f"/home/{args.unixname}/dev/{self.repo}"
+
+    def name(self):
+        return f"github repo {self.repo}"
+
+    def is_good(self):
+        return os.path.exists(self.dst)
+
+    def explain(self):
+        return f"{self.dst} not found"
+
+    def get_fixes(self):
+        return [SubprocessCommand(["sudo", "-u", args.unixname, "git", "clone", f"git@github.com:Gownta/{self.repo}.git", self.dst])]
+
+
+class FixupSymlink(Fixup):
+    def __init__(self, actual, start):
+        self.actual = f"/home/{args.unixname}/dev/devenv/{actual}"
+        self.start = f"/home/{args.unixname}/{start}"
+
+    def is_good(self):
+        return 
 
 
 ################################################################################
@@ -338,11 +394,22 @@ if __name__ == "__main__":
         # User
         #FixupDeletePeter(),
         #FixupUserExists(),
-        FixupSudoerPermissions(),
+        #FixupSudoerPermissions(),
         #FixupUserShell(),
         #FixupUserGroup("wheel"),
+
+        # ssh
         #FixupFile("d", os.path.join("/home", args.unixname), perms=700),
         #FixupFile("d", os.path.join("/home", args.unixname, ".ssh"), perms=700),
         #FixupFile("f", os.path.join("/home", args.unixname, ".ssh", "authorized_keys"), perms=600),
+        #FixupKeys(),
+
+        # repos
+        #FixupFile("d", os.path.join("/home", args.unixname, "dev")),
+        #FixupGithub("devenv"),
+
+        # dotfiles
+        #FixupSymlink("env/aws_linux/zshrc", ".zshrc"),
+
     ]
     go()
