@@ -1,0 +1,165 @@
+#!/usr/bin/python3
+
+"""
+fixmydev
+
+Run a series of health checks and remediations on the current server.
+
+Standalone file that can also be used to set up a new server.
+"""
+
+"""
+TODOs
+- 
+"""
+
+
+import argparse
+import logging
+import os
+import shlex
+import subprocess
+import sys
+
+from dataclasses import dataclass
+
+
+################################################################################
+### Configuration
+################################################################################
+
+
+################################################################################
+### Args
+################################################################################
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+        prog="fixmydev",
+        description="Fix my devserver",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument(
+        "-u",
+        "--unixname",
+        default="njormrod",
+        help="The unixname of the user to fix",
+    )
+
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="Disable color in the output",
+    )
+
+    return parser
+
+
+def init_args(argv):
+    parser = get_parser()
+    global args
+    args = parser.parse_args(argv)
+
+
+################################################################################
+### Interfaces
+################################################################################
+
+
+class Fixup:
+    def name(self):
+        return ""
+
+    def is_good(self):
+        return True
+
+    def explain(self):
+        return ""
+
+    def get_fixes(self):
+        return []
+
+
+class Command:
+    def say(self):
+        return ""
+
+    def do(self):
+        pass
+
+
+class SubprocessCommand(Command):
+    def __init__(self, cmd):
+        if isinstance(cmd, str):
+            cmd = cmd.split()
+        self.cmd = cmd
+
+    def say(self):
+        return color(' '.join(shlex.quote(c) for c in self.cmd), 220)
+
+    def do(self, check=True, **kwargs):
+        return subprocess.run(self.cmd, check=check, **kwargs)
+
+
+################################################################################
+### Interaction
+################################################################################
+
+
+def color(msg, color):
+    if args.no_color:
+        return msg
+    return f"\033[38;5;{color}m{msg}\033[0m"
+
+
+def go():
+    global q
+    while q:
+        fixup = q.pop()
+        print(color(f"Checking {fixup.name()}...", 32), flush=True)
+        is_good = fixup.is_good()
+        if not is_good:
+            print(f"{color(fixup.name().title() + ' failed:', 196)} {fixup.explain()}")
+
+            fixes = fixup.get_fixes()
+            for fix in fixes:
+                while True:
+                    ans = input(color(f"  Run fixup {fix.say()}? [Y/n/q] ", 223))[:1].lower()
+                    if ans in ["", "y", "n", "q"]:
+                        break
+                if ans == "q":
+                    break
+                elif ans == "n":
+                    continue
+                elif ans == "y" or ans == "":
+                    fix.do()
+                    continue
+
+
+################################################################################
+### Fixups
+################################################################################
+
+
+class FixupUserExists(Fixup):
+    def name(self):
+        return f"{args.unixname}"
+
+    def is_good(self):
+        return subprocess.run(["id", args.unixname], capture_output=True).returncode == 0
+
+    def explain(self):
+        return f"Unixname {args.unixname} does not exist"
+
+
+################################################################################
+### Main
+################################################################################
+
+if __name__ == "__main__":
+    init_args(sys.argv[1:])
+    q = [
+        FixupUserExists(),
+    ]
+    go()
