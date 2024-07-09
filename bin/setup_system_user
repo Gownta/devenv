@@ -1,12 +1,5 @@
 #!/usr/bin/python3
 
-"""
-setup_system_user LOGIN
-
-Create a system user named LOGIN.
-Optionally give them sudoer power.
-"""
-
 
 import argparse
 import os
@@ -16,24 +9,19 @@ import subprocess
 import sys
 
 
-def get_parser():
+def get_args(argv):
     parser = argparse.ArgumentParser(
         prog="setup_system_user",
-        description="Setup a system user",
+        description="Setup a system user, with sudoer power",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument(
         "unixname",
-        default="njormrod",
         help="The unixname of the user to add",
     )
 
-    return parser
-
-
-def get_args(argv):
-    parser = get_parser()
     args = parser.parse_args(argv)
+
     return args
 
 
@@ -43,13 +31,16 @@ def cmd(cmd, check=True, **kwargs):
 
 
 if __name__ == "__main__":
+    # Parse args
     args = get_args(sys.argv[1:])
     unixname = args.unixname
 
+    # Create the user
     exists = subprocess.run(["id", unixname], capture_output=True).returncode == 0
     assert not exists
     cmd(["sudo", "adduser", unixname])
 
+    # Grant sudoer power
     sudoers = "/etc/sudoers"
     with open(sudoers) as f:
         content = f.read()
@@ -62,10 +53,9 @@ if __name__ == "__main__":
         with open(tmp, "w") as f:
             f.write(content)
         subprocess.check_call(["sudo", "visudo", "-c", "-f", tmp])
-        #shutil.move(tmpfile, self.sudoers)
+        shutil.move(tmp, sudoers)
     finally:
         try:
-            pass
-            #os.remove(tmp)
+            os.remove(tmp)
         except:
             pass
