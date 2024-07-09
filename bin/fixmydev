@@ -18,10 +18,12 @@ import argparse
 import logging
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 
 from dataclasses import dataclass
+from functools import cache
 
 
 ################################################################################
@@ -116,11 +118,11 @@ def color(msg, color):
 def go():
     global q
     while q:
-        fixup = q.pop()
+        fixup = q.pop(0)
         print(color(f"Checking {fixup.name()}...", 32), flush=True)
         is_good = fixup.is_good()
         if not is_good:
-            print(f"{color(fixup.name().title() + ' failed:', 196)} {fixup.explain()}")
+            print(f"{color(fixup.name() + ' failed:', 196)} {fixup.explain()}")
 
             fixes = fixup.get_fixes()
             for fix in fixes:
@@ -142,6 +144,31 @@ def go():
 ################################################################################
 
 
+@cache
+def dnf_packages():
+    lines = subprocess.check_output(["dnf", "list", "installed"], text=True)
+    pkgs = {os.path.splitext(line.split()[0])[0] for line in lines.splitlines()}
+    return pkgs
+
+
+class FixupDnfPackage(Fixup):
+    def __init__(self, pkg):
+        self.pkg = pkg
+
+    def name(self):
+        return f"dnf {self.pkg}"
+
+    def is_good(self):
+        return self.pkg in dnf_packages()
+        #return subprocess.run(["dnf", "list", "installed", self.pkg], capture_output=True).returncode == 0
+
+    def explain(self):
+        return f"dnf package {self.pkg} is not installed"
+
+    def get_fixes(self):
+        return [SubprocessCommand(f"sudo dnf install {self.pkg} -y")]
+
+
 class FixupUserExists(Fixup):
     def name(self):
         return f"{args.unixname}"
@@ -152,28 +179,170 @@ class FixupUserExists(Fixup):
     def explain(self):
         return f"Unixname {args.unixname} does not exist"
 
+    def get_fixes(self):
+        return [SubprocessCommand(f"sudo adduser {args.unixname}")]
 
-class FixupHomedir(Fixup):
+
+class FixupSudoerPermissions(Fixup):
     def name(self):
-        return "homedir"
+        return "sudo permission"
 
     def is_good(self):
-        return os.path.exists(os.path.join("/home", args.unixname))
+        with open("/etc/sudoers") as f:
+            content = f.read().splitlines()
+        for line in content:
+            parts = line.split()
+            if not parts:
+                continue
+            if parts[0] == args.unixname:
+                return True
+        return False
 
     def explain(self):
-        return f"/home/{args.unixname} does not exist"
+        return f"There is no entry in /etc/sudoers for {args.unixname}"
 
     def get_fixes(self):
-        return [SubprocessCommand("")]
+        add = f"{args.unixname}\tALL=(ALL)\tNOPASSWD: ALL"
+
+        class SudoerCommand(Command):
+            def __init__(self, line):
+                self.line = line
+                self.sudoers = "/etc/sudoers"
+
+            def say(self):
+                return f"append '{self.line}' to {self.sudoers}"
+
+            def do(self):
+                tmpfile = self.sudoers + ".tmp"
+                shutil.copy2(self.sudoers, tmpfile)
+                try:
+                    with open(tmpfile) as f:
+                        content = f.read()
+                    content += f"\n## Grant {args.unixname} full sudoer power\n{self.line}\n"
+                    with open(tmpfile, "w") as f:
+                        f.write(content)
+                    ret = subprocess.run(["visudo", "--check", "-f", tmpfile]).returncode
+                    if ret == 0:
+                        shutil.move(tmpfile, self.sudoers)
+                finally:
+                    try:
+                        os.remove(tmpfile)
+                    except Exception:
+                        pass
+
+        return [SudoerCommand(add)]
+
+
+class FixupUserShell(Fixup):
+    def name(self):
+        return f"shell"
+
+    def is_good(self):
+        passwd = subprocess.run(["getent", "passwd", args.unixname], capture_output=True, text=True, check=True).stdout.strip()
+        self.shell = passwd.split(":")[-1]
+        return os.path.basename(self.shell) == "zsh"
+
+    def explain(self):
+        self.zsh = subprocess.run(["which", "zsh"], capture_output=True, text=True, check=True).stdout.strip()
+        return f"shell is set to {self.shell} instead of zsh ({self.zsh})"
+
+    def get_fixes(self):
+        return [SubprocessCommand(f"sudo usermod --shell {self.zsh} {args.unixname}")]
+
+
+class FixupUserGroup(Fixup):
+    def __init__(self, group):
+        self.group = group
+
+    def name(self):
+        return "group wheel"
+
+    def is_good(self):
+        output = subprocess.check_output(["groups", args.unixname], text=True)
+        groups = output.split(":")[1].strip().split()
+        return self.group in groups
+
+    def explain(self):
+        return f"{args.unixname} is not in group {self.group}"
+
+    def get_fixes(self):
+        return [SubprocessCommand(f"sudo usermod -aG {self.group} {args.unixname}")]
+
+
+class FixupFile(Fixup):
+    def __init__(self, style, f, name_v=None, owner=None, group=None, perms=None):
+        self.style = style[:1]
+        assert self.style in ["d", "f"]
+        self.descriptor = "directory" if self.style == "d" else "file"
+
+        self.f = f
+        self.name_v = name_v or f"{self.descriptor} {f}"
+        self.owner = owner or args.unixname
+        self.group = group or args.unixname
+        self.perms = perms
+
+    def name(self):
+        return self.name_v
+
+    def is_good(self):
+        return os.path.exists(self.f)
+
+    def explain(self):
+        return f"{self.descriptor} {self.f} does not exist"
+
+    def get_fixes(self):
+        ret = []
+
+        # Create the file
+        if self.style == "f":
+            ret.append(SubprocessCommand(f"sudo touch {self.f}"))
+            ret.append(SubprocessCommand(f"sudo vim {self.f}"))
+        else:
+            ret.append(SubprocessCommand(f"sudo mkdir {self.f}"))
+
+        # Set ownership
+        ret.append(SubprocessCommand(f"sudo chown {self.owner}:{self.group} {self.f}"))
+
+        # Set permissions
+        if self.perms is not None:
+            ret.append(SubprocessCommand(f"sudo chmod {self.perms} {self.f}"))
+
+        return ret
 
 
 ################################################################################
 ### Main
 ################################################################################
 
+
+class FixupDeletePeter(Fixup):
+    def name(self):
+        return "del peter"
+    def is_good(self):
+        return subprocess.run(["id", "peter"], capture_output=True).returncode == 1
+    def explain(self):
+        return f"unixname peter exists"
+    def get_fixes(self):
+        return [SubprocessCommand(f"sudo userdel -r peter")]
+
+
 if __name__ == "__main__":
     init_args(sys.argv[1:])
     q = [
-        FixupUserExists(),
+        # Packages
+        #FixupDnfPackage("git"),
+        #FixupDnfPackage("zsh"),
+        #FixupDnfPackage("tmux"),
+        #FixupDnfPackage("htop"),
+
+        # User
+        #FixupDeletePeter(),
+        #FixupUserExists(),
+        FixupSudoerPermissions(),
+        #FixupUserShell(),
+        #FixupUserGroup("wheel"),
+        #FixupFile("d", os.path.join("/home", args.unixname), perms=700),
+        #FixupFile("d", os.path.join("/home", args.unixname, ".ssh"), perms=700),
+        #FixupFile("f", os.path.join("/home", args.unixname, ".ssh", "authorized_keys"), perms=600),
     ]
     go()

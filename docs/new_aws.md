@@ -48,3 +48,7 @@ sudo yum install git -y
 git clone git@github.com:Gownta/devenv.git
 ```
 
+```
+sudo yum install tmux -y
+```
+
