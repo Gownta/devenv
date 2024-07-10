@@ -128,6 +128,9 @@ def dotfiles():
         ".secrets": "# Add lines to this file like export SECRET=ABC\n",
         ".tmux.panes": "# ~\n" * 9,
     }
+    cp = {
+        ".prompt_vars": "configs/shell/prompt_vars_example",
+    }
 
     assert os.path.exists("dev/devenv"), "need to clone devenv first"
     orig = "dev/devenv/originals"
@@ -157,6 +160,11 @@ def dotfiles():
             print(color(f"Making {name}...", 32))
             with open(name, "x") as f:
                 f.write(content)
+
+    for name, src in cp.items():
+        if not os.path.exists(name):
+            print(color(f"Making {name}...", 32))
+            shutil.copy(src, name)
 
     print(color("On my local mbp, symlink .zlogin for the ssh portal", 10))
 

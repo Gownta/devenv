@@ -6,3 +6,4 @@ source "$NJORMROD_DEVENV/configs/shell/aliases"
 source "$NJORMROD_DEVENV/configs/shell/functions"
 
 maybe_source ~/.secrets
+maybe_source ~/.prompt_vars
