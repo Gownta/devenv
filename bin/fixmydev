@@ -116,43 +116,6 @@ def shell_to_zsh(user):
         run(["sudo", "usermod", "--shell", zsh, user])
 
 
-def setup_ssh():
-    print(color("Configuring ssh...", 32))
-
-    os.makedirs(".ssh", mode=0o700, exist_ok=True)
-
-    auth_keys = ".ssh/authorized_keys"
-    print(color(f"Checking {auth_keys}...", 32))
-    if not os.path.exists(auth_keys):
-        if subprocess.run(["id", "ec2-user"], capture_output=True).returncode == 0:
-            fn = "/home/ec2-user/.ssh/authorized_keys"
-            res = subprocess.run(["sudo", "cat", fn], capture_output=True, text=True)
-            if res.returncode != 0:
-                print(color("failed to open {fn}", 196))
-            else:
-                print("copying authorized_keys from ec2-user")
-                content = res.stdout
-                with open(auth_keys, "x") as f:
-                    f.write(content)
-                os.chmod(auth_keys, 0o600)
-
-    print(color("Checking id_ed25519...", 32))
-    pub = ".ssh/id_ed25519.pub"
-    if not os.path.exists(pub):
-        run(["ssh-keygen", "-t", "ed25519", "-C", "nicholas.ormrod@gmail.com"])
-        with open(pub) as f:
-            content = f.read()
-        print(f"Add the following key to github at https://github.com/settings/keys:\n\n  {content}\n")
-        input("press any key to continue")
-
-
-def ssh_agent():
-    print("Running 'eval $(ssh-agent -s)'")
-    os.system("eval $(ssh-agent -s)")
-    
-    run(["ssh-add", ".ssh/id_ed25519"])
-
-
 def my_github(my_repos):
     os.makedirs("dev", exist_ok=True)
 
@@ -166,12 +129,12 @@ def my_github(my_repos):
 def dotfiles():
     rms = [".bashrc", ".bash_profile", ".bash_logout", ".zshrc", ".zprofile"]
     syms = {
-        "gitconfig": ".gitconfig",
-        "textmate_properties": ".tm_properties",
-        "tmux.conf": ".tmux.conf",
-        "vimrc": ".vimrc",
-        "shell/env": ".zshenv",
-        "shell/profile.zsh": ".zshrc",
+        "configs/gitconfig": ".gitconfig",
+        "configs/textmate_properties": ".tm_properties",
+        "configs/tmux.conf": ".tmux.conf",
+        "configs/vimrc": ".vimrc",
+        "configs/shell/env": ".zshenv",
+        "envs/aws_linux/zshrc": ".zshrc",
     }
     assert os.path.exists("dev/devenv"), "need to clone devenv first"
     orig = "dev/devenv/originals"
@@ -214,10 +177,6 @@ if __name__ == "__main__":
 
     # Packages
     install_packages(["git", "zsh", "tmux", "htop"])
-
-    # ssh
-    setup_ssh()
-    ssh_agent()
 
     # Github repos
     my_github(["devenv", "starlang", "values", "hanabi"])
