@@ -2,6 +2,7 @@
 
 
 import argparse
+import getpass
 import os
 import shlex
 import shutil
@@ -31,6 +32,11 @@ def cmd(cmd, check=True, **kwargs):
 
 
 if __name__ == "__main__":
+    cur_user = getpass.getuser()
+    if cur_user != "root":
+        print("Must run setup_system_user as root")
+        exit(1)
+
     # Parse args
     args = get_args(sys.argv[1:])
     unixname = args.unixname

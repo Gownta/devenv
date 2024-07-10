@@ -164,7 +164,7 @@ def my_github(my_repos):
 
 
 def dotfiles():
-    rms = [".bashrc", ".bash_profile", ".bash_logout", ".zprofile"]
+    rms = [".bashrc", ".bash_profile", ".bash_logout", ".zshrc", ".zprofile"]
     syms = {
         "gitconfig": ".gitconfig",
         "textmate_properties": ".tm_properties",
@@ -179,6 +179,8 @@ def dotfiles():
 
     for rm in rms:
         if os.path.exists(rm):
+            if rm in syms.values() and os.path.islink(rm):
+                continue
             dn = rm[1:] if rm.startswith(".") else rm
             dst = os.path.join(orig, dn)
             print(color(f"Saving {rm} to {dst}...", 32))
