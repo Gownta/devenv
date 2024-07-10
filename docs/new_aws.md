@@ -10,3 +10,11 @@
 4. Copy `devenv/bin/setup_system_user` to the server, sudo python3 it
 5. Copy `devenv/bin/fixmydev` to the server, python3 it (maybe with -i)
 6. Exit. I can now ssh into the host as njormrod
+
+
+Some things to install:
+PyTorch, with CUDA support. https://pytorch.org/
+```
+pip3 install torch torchvision torchaudio
+pip3 install jupyter
+```

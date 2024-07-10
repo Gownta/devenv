@@ -5,4 +5,4 @@ wget https://raw.githubusercontent.com/Gownta/devenv/master/bin/fixmydev -O /tmp
 chmod 777 /tmp/s2
 
 echo "sudo python3 /tmp/s1 njormrod"
-echo "once complete, python3 /tmp/s2"
+echo "once complete, exit, ssh back in as njormrod, then run python3 /tmp/s2"
