@@ -1,0 +1,8 @@
+#!/bin/bash
+
+wget https://raw.githubusercontent.com/Gownta/devenv/master/bin/setup_system_user -O /tmp/s1
+wget https://raw.githubusercontent.com/Gownta/devenv/master/bin/fixmydev -O /tmp/s2
+chmod 777 /tmp/s2
+
+echo "sudo python3 /tmp/s1 njormrod"
+echo "once complete, python3 /tmp/s2"
