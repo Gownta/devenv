@@ -164,7 +164,7 @@ def dotfiles():
     for name, src in cp.items():
         if not os.path.exists(name):
             print(color(f"Making {name}...", 32))
-            shutil.copy(src, name)
+            shutil.copy(os.path.join("dev/devenv", src), name)
 
     print(color("On my local mbp, symlink .zlogin for the ssh portal", 10))
 
