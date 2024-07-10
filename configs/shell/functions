@@ -35,3 +35,7 @@ function maybe_source {
         source $1
     fi
 }
+
+function issh {
+    ssh-add ~/.ssh/id_ed25519
+}
