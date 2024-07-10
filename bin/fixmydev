@@ -8,28 +8,14 @@ Run a series of health checks and remediations on the current server.
 Standalone file that can also be used to set up a new server.
 """
 
-"""
-TODOs
-- 
-"""
-
 
 import argparse
-import logging
 import getpass
 import os
 import shlex
 import shutil
 import subprocess
 import sys
-
-from dataclasses import dataclass
-from functools import cache
-
-
-################################################################################
-### Configuration
-################################################################################
 
 
 ################################################################################
@@ -108,105 +94,7 @@ def run(cmd, check=True, **kwargs):
 
 
 ################################################################################
-### Interaction
-################################################################################
-
-
-################################################################################
 ### Fixups
-################################################################################
-
-
-'''
-class FixupFile(Fixup):
-    def __init__(self, style, f, name_v=None, owner=None, group=None, perms=None):
-        self.style = style[:1]
-        assert self.style in ["d", "f"]
-        self.descriptor = "directory" if self.style == "d" else "file"
-
-        self.f = f
-        self.name_v = name_v or f"{self.descriptor} {f}"
-        self.owner = owner or args.unixname
-        self.group = group or args.unixname
-        self.perms = perms
-
-    def name(self):
-        return self.name_v
-
-    def is_good(self):
-        ret = subprocess.run(["sudo", "[", "-e", self.f, "]"]).returncode
-        return ret == 0
-
-    def explain(self):
-        return f"{self.descriptor} {self.f} does not exist"
-
-    def get_fixes(self):
-        ret = []
-
-        # Create the file
-        if self.style == "f":
-            ret.append(SubprocessCommand(f"sudo -u {args.unixname} touch {self.f}"))
-            ret.append(SubprocessCommand(f"sudo -u {args.unixname} vim {self.f}"))
-        else:
-            ret.append(SubprocessCommand(f"sudo -u {args.unixname} mkdir {self.f}"))
-
-        # Set ownership
-        #ret.append(SubprocessCommand(f"sudo chown {self.owner}:{self.group} {self.f}"))
-
-        # Set permissions
-        if self.perms is not None:
-            ret.append(SubprocessCommand(f"sudo chmod {self.perms} {self.f}"))
-
-        return ret
-
-
-class FixupKeys(Fixup):
-    def name(self):
-        return "ssh keys"
-
-    def is_good(self):
-        return os.path.exists(f"/home/{args.unixname}/.ssh/id_ed25519")
-
-    def explain(self):
-        return "No id_ed25519 key present"
-
-    def get_fixes(self):
-        return [
-            SubprocessCommand(["sudo", "-u", args.unixname, "ssh-keygen", "-t", "ed25519", "-C", "nicholas.ormrod@gmail.com"]),
-            SubprocessCommand(["sudo", "cat", f"/home/{args.unixname}/.ssh/id_ed25519.pub"]),
-            InstructionCommand("Add this key to github"),
-        ]
-
-class FixupGithub(Fixup):
-    def __init__(self, repo):
-        self.repo = repo
-        self.dst = f"/home/{args.unixname}/dev/{self.repo}"
-
-    def name(self):
-        return f"github repo {self.repo}"
-
-    def is_good(self):
-        return os.path.exists(self.dst)
-
-    def explain(self):
-        return f"{self.dst} not found"
-
-    def get_fixes(self):
-        return [SubprocessCommand(["sudo", "-u", args.unixname, "git", "clone", f"git@github.com:Gownta/{self.repo}.git", self.dst])]
-
-
-class FixupSymlink(Fixup):
-    def __init__(self, actual, start):
-        self.actual = f"/home/{args.unixname}/dev/devenv/{actual}"
-        self.start = f"/home/{args.unixname}/{start}"
-
-    def is_good(self):
-        return 
-'''
-
-
-################################################################################
-### Main
 ################################################################################
 
 
@@ -259,10 +147,10 @@ def setup_ssh():
 
 
 def ssh_agent():
-    agent = subprocess.check_output(["ssh-agent", "-s"])
-
-    run(["eval", "$(ssh-agent -s)"
-
+    print("Running 'eval $(ssh-agent -s)'")
+    os.system("eval $(ssh-agent -s)")
+    
+    run(["ssh-add", ".ssh/id_ed25519"])
 
 
 def my_github(my_repos):
@@ -275,7 +163,40 @@ def my_github(my_repos):
             run(["git", "clone", f"git@github.com:Gownta/{repo}.git", dst])
 
 
-    
+def dotfiles():
+    rms = [".bashrc", ".bash_profile", ".bash_logout", ".zshrc", ".zprofile"]
+    syms = {
+        "gitconfig": ".gitconfig",
+        "textmate_properties": ".tm_properties",
+        "tmux.conf": ".tmux.conf",
+        "vimrc": ".vimrc",
+        "shell/env": ".zshenv",
+        "shell/profile.zsh": ".zshrc",
+    }
+    assert os.path.exists("dev/devenv"), "need to clone devenv first"
+    orig = "dev/devenv/originals"
+    os.makedirs(orig, exist_ok=True)
+
+    for rm in rms + list(syms.values()):
+        if os.path.exists(rm):
+            dn = rm[1:] if rm.startswith(".") else rm
+            dst = os.path.join(orig, dn)
+            print(color(f"Saving {rm} to {dst}...", 32))
+            shutil.move(rm, dst)
+
+    for real, sym in syms.items():
+        if not os.path.exists(sym):
+            real = os.path.join("dev/devenv/configs", real)
+            print(color(f"Symlinking {sym} -> {real}...", 32))
+            os.symlink(real, sym)
+
+    print(color("On my local mbp, symlink .zlogin for the ssh portal", 10))
+
+
+################################################################################
+### Main
+################################################################################
+
 
 if __name__ == "__main__":
     init_args(sys.argv[1:])
@@ -286,35 +207,17 @@ if __name__ == "__main__":
     os.chdir(os.path.expanduser("~"))
 
     # Packages
-    #install_packages(["git", "zsh", "tmux", "htop"])
+    install_packages(["git", "zsh", "tmux", "htop"])
 
     # ssh
-    #setup_ssh()
+    setup_ssh()
     ssh_agent()
 
     # Github repos
     my_github(["devenv", "starlang", "values", "hanabi"])
 
+    # Dotfiles
+    dotfiles()
+
     # Shell to zsh
-    #shell_to_zsh(cur_user)
-
-    exit(0)
-
-
-
-    q = [
-        # ssh
-        #FixupFile("d", os.path.join("/home", args.unixname), perms=700),
-        #FixupFile("d", os.path.join("/home", args.unixname, ".ssh"), perms=700),
-        #FixupFile("f", os.path.join("/home", args.unixname, ".ssh", "authorized_keys"), perms=600),
-        #FixupKeys(),
-
-        # repos
-        #FixupFile("d", os.path.join("/home", args.unixname, "dev")),
-        #FixupGithub("devenv"),
-
-        # dotfiles
-        #FixupSymlink("env/aws_linux/zshrc", ".zshrc"),
-
-    ]
-    go()
+    shell_to_zsh(cur_user)
