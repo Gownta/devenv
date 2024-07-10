@@ -60,13 +60,7 @@ def main():
 
     tmux("start-server")
     ret = tmux(f"has-session -t {session_name}")
-    if ret.returncode == 0:
-        windows = tmux("list-windows", text=True, capture_output=True).stdout
-        n_windows = len(windows.splitlines())
-        for i in range(n_windows):
-            tmux(f"select-layout -t {i+1}.1 even-horizontal")
-        tmux(f"attach-session -t {session_name}")
-    else:
+    if ret.returncode == 1:
         for i, line in enumerate(panes_config.strip().splitlines()):
             wname, wdir = line.split()
             wdir = os.path.realpath(os.path.expanduser(wdir))
@@ -74,7 +68,14 @@ def main():
             tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir}")
             tmux(f"splitw -h -c {wdir}")
         tmux("select-window -t 1")
-        tmux(f"attach-session -t {session_name}")
+
+    # Do this even for just-create tmux; wonkiness has been observed
+    windows = tmux("list-windows", text=True, capture_output=True).stdout
+    n_windows = len(windows.splitlines())
+    for i in range(n_windows):
+        tmux(f"select-layout -t {i+1}.1 even-horizontal")
+
+    tmux(f"attach-session -t {session_name}")
 
 
 if __name__ == "__main__":
