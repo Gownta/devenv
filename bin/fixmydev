@@ -164,7 +164,7 @@ def my_github(my_repos):
 
 
 def dotfiles():
-    rms = [".bashrc", ".bash_profile", ".bash_logout", ".zshrc", ".zprofile"]
+    rms = [".bashrc", ".bash_profile", ".bash_logout", ".zprofile"]
     syms = {
         "gitconfig": ".gitconfig",
         "textmate_properties": ".tm_properties",
@@ -177,7 +177,7 @@ def dotfiles():
     orig = "dev/devenv/originals"
     os.makedirs(orig, exist_ok=True)
 
-    for rm in rms + list(syms.values()):
+    for rm in rms:
         if os.path.exists(rm):
             dn = rm[1:] if rm.startswith(".") else rm
             dst = os.path.join(orig, dn)
@@ -185,10 +185,14 @@ def dotfiles():
             shutil.move(rm, dst)
 
     for real, sym in syms.items():
+        real = os.path.join("dev/devenv/configs", real)
         if not os.path.exists(sym):
-            real = os.path.join("dev/devenv/configs", real)
             print(color(f"Symlinking {sym} -> {real}...", 32))
             os.symlink(real, sym)
+        elif os.path.islink(sym) and os.readlink(sym) == real:
+            pass
+        else:
+            print(color(f"Dotfile {sym} already exists", 160))
 
     print(color("On my local mbp, symlink .zlogin for the ssh portal", 10))
 
