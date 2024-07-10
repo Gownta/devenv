@@ -125,4 +125,4 @@ if __name__ == "__main__":
     change_user_to(unixname)
     setup_ssh(unixname, auth_keys)
 
-    print(f"\nRun the following command as {unixname}:\n  eval $(ssh-agent -s) ; ssh-add .ssh/id_ed25519")
+    print(f"\nRun the following command:\n  sudo su - {unixname} ; eval $(ssh-agent -s) ; ssh-add .ssh/id_ed25519")

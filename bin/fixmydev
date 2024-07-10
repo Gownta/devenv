@@ -189,7 +189,7 @@ if __name__ == "__main__":
     os.chdir(os.path.expanduser("~"))
 
     # Packages
-    install_packages(["git", "zsh", "tmux", "htop"])
+    install_packages(["git", "zsh", "tmux", "htop", "pip"])
 
     # Github repos
     my_github(["devenv", "starlang", "values", "hanabi"])
