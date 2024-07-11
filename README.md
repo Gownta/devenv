@@ -29,6 +29,8 @@ configs/
   Contains configuration files for various applications
 envs/
   Contains specifications for specific environments
+originals/
+  Dotfiles that were on the system beforehand; gitignored
 
 
 Notes
