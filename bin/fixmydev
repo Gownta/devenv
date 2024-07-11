@@ -98,6 +98,11 @@ def run(cmd, check=True, **kwargs):
 ################################################################################
 
 
+def set_timezone():
+    print(color("Setting timezone to PST...", 32))
+    run(["sudo", "timedatectl", "set-timezone", "America/Los_Angeles"])
+
+
 def install_packages(packages):
     print(color("Fetching packages...", 32))
     run(["sudo", "dnf", "install", "-y"] + packages)
@@ -195,6 +200,9 @@ if __name__ == "__main__":
     cur_user = getpass.getuser()
     assert cur_user != "root", "fixmydev should be run as a sudo-priviledged user"
     os.chdir(os.path.expanduser("~"))
+
+    # Timezone
+    set_timezone()
 
     # Packages
     install_packages(["git", "zsh", "tmux", "htop", "pip"])
