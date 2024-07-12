@@ -4,6 +4,6 @@ c ~/repos/3fbsource/fbcode
 o ~/repos/4fbsource/fbcode
 d ~/repos/5fbsource/fbcode
 e ~/repos/dotfbsource/fbcode
-⊥ ~
-⊥ ~
+⊥ ~/local/ad
+⊥ ~/local/autodiff
 ⊥ ~
