@@ -1,13 +1,9 @@
-# Put this file in ~/.config/systemd/user/
-# Enable like `systemctl --user enable <this-filename>
-
 [Unit]
 Description=Periodically check if we should shutdown this server
 
 [Timer]
-#OnCalendar=*-*-* 00,04,22:00:00
-OnCalendar=*-*-* *:*:00
-# Unit defaults to test.service, which is correct
+OnCalendar=*-*-* 00,04,22:00:00
+OnCalendar=Mon..Fri *-*-* 12:00:00
 
 [Install]
 WantedBy=default.target

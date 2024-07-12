@@ -1,55 +1,43 @@
 # Systemd
 
-Add my own systemd files to ~/.config/systemd/user/
+Add my own systemd files to ~/.config/systemd/user/ (rather, symlink that dir to my systemd dir)
 Use `njormrod$ systemctl --user ...` instead of `root$ systemctl ...`
 
 
-
-
-My systemd files should live in /etc/systemd/system
-Rather, there should be symlinks from there to devenv/systemd
-
-## Starting and observing
+# Observing
 
 ```
-systemctl start FILE
-systemctl status FILE
-journalctl -S today -u FILE
+systemctl --user {status,enable} idle_shutdown.{timer,service}
+journalctl --user -S today -u idle_shutdown.service
 ```
 
-`systemctl enable` enables a service to be started on boot
+If I make changes to a systemd file, then `systemctl --user daemon-reload`
 
-If I make changes to a systemd file, then `systemctl daemon-reload`
 
-## All files
+# Format
 
-https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#
+https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
+https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html
 
+.*
 ```
 [Unit]
-Description=...
-Wants=FILE1 FILE2 ...
-Requires=FILE1 FILE2 ...
+Description=mandatory description of this file
+Wants=
+Requires=
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target  # this is automatically executed for user systemd
 ```
 
-Install is required to enable the service. In the case of multi-user.target, when that stage is reached then this unit will be enabled.
-
-## .service files
-
-https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
-
+.service
 ```
 [Service]
 ExecStart=the-command-to-execute
 ```
 
-## .timer files
-
-https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#
-
+.timer
 ```
 [Timer]
 OnBootSec=<time after boot to start>
@@ -57,7 +45,8 @@ OnCalendar=<time spec>
 Unit=what to run  # defaults to <timer-filename>.service
 ```
 
-Time triggers intentionally jitter by +[0,1) minutes
+Note: Time triggers intentionally jitter by +[0,1) minutes
+
 
 ## Time specification
 
