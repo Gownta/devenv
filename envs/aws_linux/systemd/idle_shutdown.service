@@ -1,0 +1,5 @@
+[Unit]
+Description=Shutdown this server if inactive
+
+[Service]
+ExecStart=/usr/sbin/shutdown +1 "Shutdown initiated by idle_shutdown.service; shutdown -c to stop"
