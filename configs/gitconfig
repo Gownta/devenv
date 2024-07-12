@@ -1,3 +1,9 @@
 [user]
   name = Nicholas Ormrod
   email = nicholas.ormrod+github@gmail.com
+
+[color]
+  ui = true
+
+[alias]
+  st = status
