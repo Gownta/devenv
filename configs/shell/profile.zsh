@@ -21,5 +21,5 @@ setopt HIST_IGNORE_DUPS
 
 # Prompt specification
 setopt PROMPT_SUBST
-PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)${PROMPT_VAR_HOST}%F{cyan}$(prompt_dir_sub)%f $PROMPT_VAR_ART '
-RPROMPT='%*'
+PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)${PROMPT_VAR_HOST} %* %F{cyan}$(prompt_dir_sub)%f $PROMPT_VAR_ART '
+#RPROMPT='%*'
