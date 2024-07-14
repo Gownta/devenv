@@ -208,7 +208,7 @@ if __name__ == "__main__":
     install_packages(["git", "zsh", "tmux", "htop", "pip"])
 
     # Github repos
-    my_github(["devenv", "starlang", "values", "hanabi"])
+    my_github(["devenv", "starlang", "values", "hanabi", "farmwars"])
 
     # Dotfiles
     dotfiles()
