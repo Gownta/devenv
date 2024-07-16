@@ -109,14 +109,14 @@ def install_packages(packages):
     run(["sudo", "dnf", "upgrade"])
 
 
-def my_github(my_repos):
-    os.makedirs("dev", exist_ok=True)
+def github(my_repos, root="dev", who="Gownta"):
+    os.makedirs(root, exist_ok=True)
 
     for repo in my_repos:
         print(color(f"Cloning {repo}...", 32))
-        dst = f"dev/{repo}"
+        dst = os.path.join(root, repo)
         if not os.path.exists(dst):
-            run(["git", "clone", f"git@github.com:Gownta/{repo}.git", dst])
+            run(["git", "clone", f"git@github.com:{who}/{repo}.git", dst])
 
 
 def dotfiles():
@@ -206,10 +206,11 @@ if __name__ == "__main__":
 
     # Packages
     install_packages(["git", "zsh", "tmux", "htop", "pip"])
-    install_packages(["grpcio"])
+    install_packages(["grpcio", "grpcio-tools"])
 
     # Github repos
-    my_github(["devenv", "starlang", "values", "hanabi", "farmwars"])
+    github(["devenv", "starlang", "values", "hanabi", "farmwars"])
+    github(["vim-code-dark"], root="repos", who="tomasiser")
 
     # Dotfiles
     dotfiles()
