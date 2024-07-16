@@ -6,6 +6,9 @@ bindkey -v
 # History
 setopt HIST_IGNORE_DUPS
 
+# In iTerm, bind cmd-R to send key 0x12 (ctrl-r)
+bindkey '^R' history-incremental-search-backward
+
 # Misc
 
 # Prompt source control support

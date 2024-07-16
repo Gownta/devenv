@@ -12,7 +12,7 @@ amend = amend --rebase
 dl = sl -r "draft() - obsolete() - present(bookmark('re:ad_.*'))" -T '{sl}'
 
 [committemplate]
-reviewers=yfeldblum, skrueger
+reviewers=yfeldblum, skrueger, dyaroshev
 title="(autodiff.v3) "
 testplan="\n  buck2 test scripts/njormrod/cli/... scripts/njormrod/filebacked/... scripts/njormrod/ad/..."
 # fbtags=accept2ship
