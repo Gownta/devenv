@@ -1,0 +1,16 @@
+- name: My first play
+  hosts: myhosts
+  become: yes
+
+  tasks:
+  - name: Ping my hosts
+    ansible.builtin.ping:
+
+  - name: Print message
+    ansible.builtin.debug:
+      msg: Hello world
+
+  - name: Install packages
+    dnf:
+      name: htop
+      state: present
