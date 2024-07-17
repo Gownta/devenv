@@ -11,4 +11,8 @@ The list of nodes to manage is the "Inventory", defined in inventory.ini.
 
 # Usage
 
-`ansible` (from current directory, to pick up ansible.cfg)
+From current directory, to pick up ansible.cfg:
+
+`ansible`
+or
+`python3 -m ansible`

@@ -1,6 +1,11 @@
+# Playbook docs: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html
+# Existing collections: https://docs.ansible.com/ansible/latest/collections/index.html
+# Esp ansible.builtin: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html
+# Complex control flow: https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.htm
+
 - name: My first play
   hosts: myhosts
-  become: yes
+#  become: yes
 
   tasks:
   - name: Ping my hosts
@@ -8,9 +13,12 @@
 
   - name: Print message
     ansible.builtin.debug:
-      msg: Hello world
+      msg: "{{ item }}"
+    loop:
+      - hello
+      - world
 
-  - name: Install packages
-    dnf:
-      name: htop
-      state: present
+#  - name: Install packages
+#    dnf:
+#      name: htop
+#      state: present
