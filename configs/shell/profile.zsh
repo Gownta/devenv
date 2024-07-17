@@ -11,7 +11,7 @@ setopt HIST_IGNORE_DUPS
 bindkey '^R' history-incremental-search-backward
 
 # Cursor: use a bar instead of a box
-echo -ne '\e[5 q'
+# echo -ne '\e[5 q'
 
 # Misc
 
