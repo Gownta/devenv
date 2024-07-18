@@ -71,6 +71,7 @@ def start():
             tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir}")
             tmux(f"splitw -h -c {wdir}")
         tmux("select-window -t 1")
+    rebalance()
 
     tmux(f"attach-session -t {session_name}")
 
