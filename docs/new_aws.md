@@ -20,3 +20,6 @@ PyTorch, with CUDA support. https://pytorch.org/
 pip3 install torch torchvision torchaudio
 pip3 install jupyter
 ```
+
+sudo systemctl enable atop
+sudo systemctl start atop
