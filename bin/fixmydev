@@ -205,7 +205,7 @@ if __name__ == "__main__":
     set_timezone()
 
     # Packages
-    install_packages(["git", "zsh", "tmux", "htop", "pip"])
+    install_packages(["git", "zsh", "tmux", "htop", "pip", "atop"])
     install_packages(["grpcio", "grpcio-tools"])
 
     # Github repos

@@ -83,10 +83,21 @@ def rebalance():
         tmux(f"select-layout -t {i+1}.1 even-horizontal")
 
 
+def clear():
+    windows = tmux("list-windows", text=True, capture_output=True).stdout
+    n_windows = len(windows.splitlines())
+    for i in range(n_windows):
+        tmux(f"send-keys -t {i+1}.1 clear Enter")
+        tmux(f"send-keys -t {i+1}.2 clear Enter")
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        if sys.argv[1][:1].lower() == "rebalance"[0]:
+        cmd = sys.argv[1][:1].lower()
+        if cmd == "rebalance"[0]:
             rebalance()
+        elif cmd == "clear"[0]:
+            clear()
         else:
             print(f"unrecognized subcommand {sys.argv[1]}")
     else:
