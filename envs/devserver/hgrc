@@ -9,7 +9,7 @@ l = log
 d = diff
 blame = blame -blnpu
 amend = amend --rebase
-dl = sl -r "draft() - obsolete() - present(bookmark('re:ad_.*'))" -T '{sl}'
+dl = sl -r "draft() - obsolete() - present(bookmark('re:ad.+'))" -T '{sl}'
 
 [committemplate]
 reviewers=yfeldblum, skrueger, dyaroshev
