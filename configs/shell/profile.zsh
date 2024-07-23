@@ -28,5 +28,5 @@ bindkey '^R' history-incremental-search-backward
 
 # Prompt specification
 setopt PROMPT_SUBST
-PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)${PROMPT_VAR_HOST} %* %F{cyan}$(prompt_dir_sub)%f $PROMPT_VAR_ART '
+PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)${PROMPT_VAR_HOST} %D{%H:%M:%S} %F{cyan}$(prompt_dir_sub)%f $PROMPT_VAR_ART '
 #RPROMPT='%*'
