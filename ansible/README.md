@@ -16,3 +16,5 @@ From current directory, to pick up ansible.cfg:
 `ansible`
 or
 `python3 -m ansible`
+
+`ansible-playbook -i inventory.ini playbook.yaml`
