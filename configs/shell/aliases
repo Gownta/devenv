@@ -11,6 +11,7 @@ alias v='vim'
 alias p='python3'
 alias tg='tmux_go'
 alias iatop='atop -r /var/log/atop/atop_$(date +%Y%m%d)'
+alias ssn="sudo shutdown now"
 alias qq="source ~/.zshrc"
 alias hgr="hg rebase -s 'draft()' -d master"
 alias codemod="/data/users/njormrod/repos/www/scripts/bin/codemod --extensions='*'"

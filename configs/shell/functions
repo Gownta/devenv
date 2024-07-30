@@ -37,5 +37,5 @@ function maybe_source {
 }
 
 function issh {
-    ssh-add ~/.ssh/id_ed25519
+    ssh-add ~/.ssh/github_ed25519
 }
