@@ -16,8 +16,8 @@ alias qq="source ~/.zshrc"
 alias hgr="hg rebase -s 'draft()' -d master"
 alias codemod="/data/users/njormrod/repos/www/scripts/bin/codemod --extensions='*'"
 alias autodiff="buck2 run scripts/njormrod/autodiff:autodiff --"
-alias ad="buck2 run scripts/njormrod/ad:autodiff --"
-#alias ad="autodiff"
+alias ad="buck2 run scripts/njormrod/ad2:autodiff --"
+alias alf="arc f && arc lint"
 
 # New commands
 alias clear='for qwedc in {1..100} ; do echo " " ; done ; clear'
