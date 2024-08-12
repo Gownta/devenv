@@ -1,0 +1,8 @@
+[Unit]
+Description=Periodically check who is logged in; shutdown if no one
+
+[Timer]
+OnCalendar=*-*-* *:0/10
+
+[Install]
+WantedBy=default.target
