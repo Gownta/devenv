@@ -3,22 +3,14 @@
 # Esp ansible.builtin: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html
 # Complex control flow: https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.htm
 
-- name: My first play
-  hosts: myhosts
-#  become: yes
+- name: Install packages
+  hosts: all
+  become: yes
 
   tasks:
-  - name: Ping my hosts
-    ansible.builtin.ping:
-
-  - name: Print message
-    ansible.builtin.debug:
-      msg: "{{ item }}"
-    loop:
-      - hello
-      - world
-
-#  - name: Install packages
-#    dnf:
-#      name: htop
-#      state: present
+  - name: gogogo
+    dnf:
+      name:
+        - jq
+        - httpd
+      state: present
