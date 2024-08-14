@@ -10,6 +10,10 @@ setopt HIST_IGNORE_DUPS
 # In iTerm, bind cmd-R to send key 0x12 (ctrl-r)
 bindkey '^R' history-incremental-search-backward
 
+# Completions
+autoload -U compinit
+compinit
+
 # Cursor: use a bar instead of a box
 # echo -ne '\e[5 q'
 
