@@ -3,14 +3,32 @@
 # Esp ansible.builtin: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html
 # Complex control flow: https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.htm
 
-- name: Install packages
+- name: Configure server
   hosts: all
   become: yes
 
   tasks:
-  - name: gogogo
+  - name: Install packages
     dnf:
       name:
-        - jq
+        - atop
+        - clang
+        - clang-tools-extra
+        - git
+        # - grpcio
+        # - grpcio-tools
+        - htop
         - httpd
+        - jq
+        - pip
+        - tmux
+        - zsh
       state: present
+
+  - name: Ensure njormrod exists
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html
+    user:
+      name: njormrod
+      state: present
+      shell: /bin/zsh
+
