@@ -45,10 +45,12 @@
     file:
       path: "~/{{ item }}"
       state: directory
+      recurse: yes
     with_items:
       - dev
       - jupyter
       - repos
+      - .config/systemd
 
   - name: Clone github repos
     # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html
@@ -59,10 +61,10 @@
       key_file: "~/.ssh/github_ed25519"
     with_items:
       - { root: "dev", maker: "Gownta", name: "devenv" }
-      #- { root: "dev", maker: "Gownta", name: "starlang" }
-      #- { root: "dev", maker: "Gownta", name: "values" }
-      #- { root: "dev", maker: "Gownta", name: "hanabi" }
-      #- { root: "dev", maker: "Gownta", name: "farmwars" }
+      - { root: "dev", maker: "Gownta", name: "starlang" }
+      - { root: "dev", maker: "Gownta", name: "values" }
+      - { root: "dev", maker: "Gownta", name: "hanabi" }
+      - { root: "dev", maker: "Gownta", name: "farmwars" }
 
   - name: Check if the files are actually original
     stat:
@@ -111,6 +113,7 @@
       - { path: ".vimrc", src: "configs/vimrc" }
       - { path: ".zshenv", src: "configs/shell/env" }
       - { path: ".zshrc", src: "configs/shell/zshrc" }
+      - { path: ".config/systemd/user", src: "envs/aws_linux/systemd" }
 
   - name: Create template dotfiles
     copy:
