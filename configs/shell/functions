@@ -39,3 +39,11 @@ function maybe_source {
 function issh {
     ssh-add ~/.ssh/github_ed25519
 }
+
+function catn {
+	if [[ "$#" -eq "2" ]] ; then
+		head -n "$2" "$1" | tail -n 1
+	elif [[ "$#" -eq "3" ]] ; then
+		head -n "$3" "$1" | tail -n $(($(($3 - $2)) + 1))
+	fi
+}
