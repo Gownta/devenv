@@ -1,0 +1,51 @@
+- name: Configure server
+  hosts: all
+  become: yes
+  vars:
+    username: "njormrod"
+    supername: "njormrod"
+
+  tasks:
+  - name: Ensure user exists
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html
+    user:
+      name: "{{ username }}"
+      state: present
+      shell: /bin/zsh
+
+  - name: Grant user sudo power
+    # https://docs.ansible.com/ansible/latest/collections/community/general/sudoers_module.html
+    community.general.sudoers:
+      user: "{{ username }}"
+      name: "{{ username }}"
+      commands: ALL
+      runas: ALL
+
+  - name: Set up .ssh dir
+    file:
+      path: "~{{ username }}/.ssh"
+      state: directory
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: '0700'
+
+  - name: Copy ec2-user authorized_keys
+    ignore_errors: yes
+    copy:
+      src: ~ec2-user/.ssh/authorized_keys
+      remote_src: true
+      dest: "~{{ username }}/.ssh/authorized_keys"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: '0600'
+
+  - name: Copy github_ed25519
+    copy:
+      src: "~{{ supername }}/.ssh/{{ item.name }}"
+      dest: "~{{ username }}/.ssh/{{ item.name }}"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: "{{ item.perm }}"
+    with_items:
+      - { name: "github_ed25519", perm: "0600" }
+      - { name: "github_ed25519.pub", perm: "0644" }

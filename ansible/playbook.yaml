@@ -1,14 +1,8 @@
-# Playbook docs: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html
-# Existing collections: https://docs.ansible.com/ansible/latest/collections/index.html
-# Esp ansible.builtin: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html
-# Complex control flow: https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.htm
+- import_playbook: setup_user.yaml
 
-- name: Configure server
+- name: Install packages
   hosts: all
   become: yes
-  vars:
-    username: "njormrod"
-    supername: "njormrod"
 
   tasks:
   - name: Install packages
@@ -36,51 +30,8 @@
         - flask
         #- jupyter
 
-  - name: Ensure user exists
-    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html
-    user:
-      name: "{{ username }}"
-      state: present
-      shell: /bin/zsh
 
-  - name: Grant user sudo power
-    # https://docs.ansible.com/ansible/latest/collections/community/general/sudoers_module.html
-    community.general.sudoers:
-      user: "{{ username }}"
-      name: "{{ username }}"
-      commands: ALL
-      runas: ALL
-
-  - name: Set up .ssh dir
-    file:
-      path: "~{{ username }}/.ssh"
-      state: directory
-      owner: "{{ username }}"
-      group: "{{ username }}"
-      mode: '0700'
-
-  - name: Copy ec2-user authorized_keys
-    ignore_errors: yes
-    copy:
-      src: ~ec2-user/.ssh/authorized_keys
-      remote_src: true
-      dest: "~{{ username }}/.ssh/authorized_keys"
-      owner: "{{ username }}"
-      group: "{{ username }}"
-      mode: '0600'
-
-  - name: Copy github_ed25519
-    copy:
-      src: "~{{ supername }}/.ssh/{{ item.name }}"
-      dest: "~{{ username }}/.ssh/{{ item.name }}"
-      owner: "{{ username }}"
-      group: "{{ username }}"
-      mode: "{{ item.perm }}"
-    with_items:
-      - { name: "github_ed25519", perm: "0600" }
-      - { name: "github_ed25519.pub", perm: "0644" }
-
-- name: Configure server
+- name: Configure user
   hosts: all
   vars:
     username: "njormrod"
@@ -106,10 +57,15 @@
       key_file: "~/.ssh/github_ed25519"
     with_items:
       - { root: "dev", maker: "Gownta", name: "devenv" }
-      - { root: "dev", maker: "Gownta", name: "starlang" }
-      - { root: "dev", maker: "Gownta", name: "values" }
-      - { root: "dev", maker: "Gownta", name: "hanabi" }
-      - { root: "dev", maker: "Gownta", name: "farmwars" }
+      #- { root: "dev", maker: "Gownta", name: "starlang" }
+      #- { root: "dev", maker: "Gownta", name: "values" }
+      #- { root: "dev", maker: "Gownta", name: "hanabi" }
+      #- { root: "dev", maker: "Gownta", name: "farmwars" }
+
+  - name: Check if the files are actually original
+    stat:
+      path: "~/dev/devenv/originals"
+    register: originals_check
 
   - block:
     - name: Create dotfile save dir
@@ -139,6 +95,7 @@
         - .bash_profile
         - .zshrc
         - .zprofile
+    when: not originals_check.stat.exists
 
   - name: Symlink dotfiles
     file:
@@ -151,7 +108,7 @@
       - { path: ".tmux.conf", src: "configs/tmux.conf" }
       - { path: ".vimrc", src: "configs/vimrc" }
       - { path: ".zshenv", src: "configs/shell/env" }
-      - { path: ".zshrc", src: "envs/aws_linux/zshrc" }
+      - { path: ".zshrc", src: "configs/shell/zshrc" }
 
   - name: Create template dotfiles
     copy:
