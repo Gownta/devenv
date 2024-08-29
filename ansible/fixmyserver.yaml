@@ -146,3 +146,6 @@
       force: false
     with_items:
       - { src: "configs/shell/prompt_vars_example", dest: ".prompt_vars" }
+
+  - name: Setup vim vundle
+    command: "vim +PluginInstall +qall"

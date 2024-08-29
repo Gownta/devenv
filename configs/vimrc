@@ -112,8 +112,13 @@ autocmd ColorScheme * call s:override_backgrounds()
 " Syntax highlighting
 syntax on
 set background=dark
-colorscheme apprentice
-" built-in favorite colorscheme: darkblue
+let s:preferred_colorscheme = 'apprentice'
+if !empty(findfile('colors/' . s:preferred_colorscheme . '.vim', &rtp))
+  execute 'colorscheme ' . s:preferred_colorscheme
+else
+  " Built-in colorscheme
+  colorscheme darkblue
+endif
 
 " Highlight trailing space
 :highlight ExtraWhitespace ctermbg=red guibg=red
