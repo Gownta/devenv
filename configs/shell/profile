@@ -8,7 +8,8 @@ source "$NJORMROD_DEVENV/configs/shell/functions"
 maybe_source ~/.secrets
 maybe_source ~/.prompt_vars
 
-# Start ssh-agent, so that I can ssh-add ~/.ssh/id_ed25519
+# Start ssh-agent and add id_ed25519
 if [ -z "$SSH_AGENT_PID" ] ; then
   eval $(ssh-agent -s) >/dev/null
+  ssh-add ~/.ssh/id_ed25519
 fi
