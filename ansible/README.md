@@ -1,7 +1,9 @@
 # Ansible
 
 pip3 install ansible
+
 `go -e username=njormrod`
+`ansible-playbook -i <hostname>, -e ansible_user=ec2-user playbook.yaml`
 
 
 # Core concepts
