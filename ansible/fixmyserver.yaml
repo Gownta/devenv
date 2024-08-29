@@ -30,7 +30,17 @@
       # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/pip_module.html
       name:
         - flask
-        - jupyter
+        # don't install jupyter; it needs a venv
+
+  - name: systemd enable
+    ansible.builtin.systemd_service:
+      name: atop
+      enabled: true
+
+  - name: systemd start
+    ansible.builtin.systemd_service:
+      name: atop
+      state: started
 
 
 - name: Configure user
