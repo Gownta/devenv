@@ -10,8 +10,20 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
   " Plugin list
+  " When changing this list, either:
+  " 1. Within vim, :PluginInstall
+  " 2. From the terminal, vim +PluginInstall +qall
+
   Plugin 'VundleVim/Vundle.vim'
   Plugin 'vim-autoformat/vim-autoformat'
+
+  " Colorschemes
+	" :colo <prefix>[tab]
+  Plugin 'romainl/Apprentice'
+  Plugin 'raphamorim/lucario'
+  Plugin 'liuchengxu/space-vim-dark'
+  Plugin 'joshdick/onedark.vim'
+  Plugin 'fenetikm/falcon'
 
 call vundle#end()
 filetype plugin indent on
@@ -83,26 +95,22 @@ autocmd FileType yaml setlocal indentexpr=
 """ Coloring
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" https://www.baeldung.com/linux/vim-background-colors
-" https://linuxhint.com/best_vim_color_schemes/
-"
-" Get a nice color scheme
-" As found at https://vimcolorschemes.com/
-" https://github.com/EdenEast/nightfox.nvim
-"Plug 'EdenEast/nightfox.nvim' " Vim-Plug
-" https://github.com/fenetikm/falcon
-"Plug '~/dev/from_github/falcon'
-"colorscheme desert
-"colorscheme torte
+" Get nice color schemes at https://vimcolorschemes.com/
+
+" Transparent background
+" Run after a colorscheme is applied
+function! s:override_backgrounds()
+	:highlight Normal guibg=NONE ctermbg=NONE
+	:highlight NonText guibg=NONE ctermbg=NONE
+	:highlight LineNr guibg=NONE ctermbg=NONE
+endfunction
+autocmd ColorScheme * call s:override_backgrounds()
 
 " Syntax highlighting
 syntax on
 set background=dark
-colorscheme darkblue
-
-" Transparent background
-:highlight Normal guibg=NONE ctermbg=NONE
-:highlight NonText guibg=NONE ctermbg=NONE
+colorscheme apprentice
+" built-in favorite colorscheme: darkblue
 
 " Highlight trailing space
 :highlight ExtraWhitespace ctermbg=red guibg=red
