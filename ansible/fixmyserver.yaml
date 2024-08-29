@@ -68,6 +68,7 @@
       repo: "git@github.com:{{ item.maker }}/{{ item.name }}.git"
       dest: "~/{{ item.root }}/{{ item.name }}"
       force: false
+      update: false
       #accept_hostkey: yes
       #key_file: "~/.ssh/github_ed25519"
     with_items:
