@@ -1,3 +1,3 @@
-#tmux_go
-echo "source it!"
-touch ~/fubar.txt
+if [[ -z "$TMUX" ]] ; then
+  tmux_go
+fi

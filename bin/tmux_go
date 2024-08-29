@@ -62,7 +62,7 @@ def start():
     session_name = "me"
 
     tmux("start-server")
-    ret = tmux(f"has-session -t {session_name}")
+    ret = tmux(f"has-session -t {session_name}", capture_output=True)
     if ret.returncode == 1:
         for i, line in enumerate(panes_config.rstrip().splitlines()):
             wname, wdir = line.split(' ', maxsplit=1)
