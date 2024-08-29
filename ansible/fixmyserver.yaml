@@ -61,6 +61,7 @@
       - dev
       - jupyter
       - repos
+      - .aws
       - .config/systemd
 
   - name: Clone github repos
@@ -129,6 +130,7 @@
       - { path: ".zshrc", src: "configs/shell/zshrc" }
       - { path: ".config/systemd/user", src: "systemd" }
       - { path: ".env_profile", src: "envs/{{ devenv }}/env_profile" }
+      - { path: ".aws/config", src: "configs/aws_config" }
 
   - name: Create template dotfiles
     copy:
