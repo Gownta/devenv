@@ -1,3 +1,0 @@
-export NJORMROD_DEVENV="$HOME/dev/devenv"
-source "$NJORMROD_DEVENV/configs/shell/profile"
-source "$NJORMROD_DEVENV/configs/shell/profile.bash"

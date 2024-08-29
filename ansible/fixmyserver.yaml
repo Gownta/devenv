@@ -126,7 +126,7 @@
       - { path: ".vimrc", src: "configs/vimrc" }
       - { path: ".zshenv", src: "configs/shell/env" }
       - { path: ".zshrc", src: "configs/shell/zshrc" }
-      - { path: ".config/systemd/user", src: "envs/aws_linux/systemd" }
+      - { path: ".config/systemd/user", src: "systemd" }
 
   - name: Create template dotfiles
     copy:
