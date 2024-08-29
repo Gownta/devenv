@@ -2,4 +2,4 @@
 Description=Shutdown this server if no one is logged in
 
 [Service]
-ExecStart=/home/njormrod/dev/devenv/envs/aws_linux/systemd/maybe_shutdown.py
+ExecStart=/home/njormrod/dev/devenv/bin/shutdown_if_no_login.py
