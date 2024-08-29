@@ -47,6 +47,7 @@
   hosts: all
   vars:
     username: "njormrod"
+    devenv: "cloud_linux"
   become: yes
   become_user: "{{ username }}"
 
@@ -127,6 +128,7 @@
       - { path: ".zshenv", src: "configs/shell/env" }
       - { path: ".zshrc", src: "configs/shell/zshrc" }
       - { path: ".config/systemd/user", src: "systemd" }
+      - { path: ".env_profile", src: "envs/{{ devenv }}/env_profile" }
 
   - name: Create template dotfiles
     copy:
