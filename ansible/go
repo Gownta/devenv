@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ansible-playbook -v -i inventory.ini playbook.yaml "$@"

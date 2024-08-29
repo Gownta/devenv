@@ -19,3 +19,4 @@ The list of nodes to manage is the "Inventory", defined in inventory.ini.
 [Esp ansible.builtin](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html)
 [Complex control flow](https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.htm)
 [Playbook reuse](https://docs.ansible.com/ansible-core/2.15/playbook_guide/playbooks_reuse.html#playbooks-reuse)
+[Inventory](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html)
