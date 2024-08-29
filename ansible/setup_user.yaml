@@ -39,7 +39,7 @@
       group: "{{ username }}"
       mode: '0600'
 
-  - name: Copy github_ed25519
+  - name: Copy id_ed25519
     copy:
       src: "~{{ supername }}/.ssh/{{ item.name }}"
       dest: "~{{ username }}/.ssh/{{ item.name }}"
@@ -47,5 +47,5 @@
       group: "{{ username }}"
       mode: "{{ item.perm }}"
     with_items:
-      - { name: "github_ed25519", perm: "0600" }
-      - { name: "github_ed25519.pub", perm: "0644" }
+      - { name: "id_ed25519", perm: "0600" }
+      - { name: "id_ed25519.pub", perm: "0644" }
