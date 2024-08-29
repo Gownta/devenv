@@ -62,6 +62,7 @@
       - jupyter
       - repos
       - .aws
+      - .config/pyopensky
       - .config/systemd
 
   - name: Clone github repos
