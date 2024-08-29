@@ -1,5 +1,7 @@
 # AWS hosts
 
+Importing key-pair: EC2 > Key Pairs > Import
+
 1. Create a new AWS instance
   - Use Amazon Linux
   - m7a.xlarge: 4 cores, enough memory
