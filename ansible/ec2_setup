@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+if [ "$#" -ne 1 ]; then
+  echo "Error: Exactly one argument is required."
+  exit 1
+fi
+
+ansible-playbook -v -i $1, -e ansible_user=ec2-user setup_user.yaml fixmyserver.yaml

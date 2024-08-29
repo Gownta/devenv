@@ -1,4 +1,1 @@
-#!/bin/zsh
-
-cd ~/dev/devenv/ansible
-ansible-playbook -v -i localhost, -e ansible_connection=local fixmyserver.yaml
+../ansible/devdoctor
