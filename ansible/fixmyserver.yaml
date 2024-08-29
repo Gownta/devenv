@@ -10,6 +10,7 @@
   - name: Install packages
     dnf:
       name:
+        - ansible
         - atop
         - clang
         - clang-tools-extra
@@ -28,9 +29,8 @@
     ansible.builtin.pip:
       # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/pip_module.html
       name:
-        #- ansible
         - flask
-        #- jupyter
+        - jupyter
 
 
 - name: Configure user
