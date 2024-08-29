@@ -25,12 +25,8 @@
         - zsh
       state: present
 
-  - name: Install pips
-    ansible.builtin.pip:
-      # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/pip_module.html
-      name:
-        - flask
-        # don't install jupyter; it needs a venv
+  # Don't install pips; they should be in venvs.
+  # I'm looking at you jupyter, and awscli, and pyopensky...
 
   - name: systemd enable
     ansible.builtin.systemd_service:
