@@ -76,6 +76,7 @@
       - { root: "dev", maker: "Gownta", name: "values" }
       - { root: "dev", maker: "Gownta", name: "hanabi" }
       - { root: "dev", maker: "Gownta", name: "farmwars" }
+      - { root: "dev", maker: "Gownta", name: "opensky" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
 
   - name: Check if the files are actually original
