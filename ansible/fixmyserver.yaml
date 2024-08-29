@@ -67,14 +67,16 @@
     ansible.builtin.git:
       repo: "git@github.com:{{ item.maker }}/{{ item.name }}.git"
       dest: "~/{{ item.root }}/{{ item.name }}"
-      accept_hostkey: yes
-      key_file: "~/.ssh/github_ed25519"
+      force: false
+      #accept_hostkey: yes
+      #key_file: "~/.ssh/github_ed25519"
     with_items:
       - { root: "dev", maker: "Gownta", name: "devenv" }
       - { root: "dev", maker: "Gownta", name: "starlang" }
       - { root: "dev", maker: "Gownta", name: "values" }
       - { root: "dev", maker: "Gownta", name: "hanabi" }
       - { root: "dev", maker: "Gownta", name: "farmwars" }
+      - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
 
   - name: Check if the files are actually original
     stat:
