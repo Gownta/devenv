@@ -4,16 +4,19 @@
 """ Set up Vundle plugins
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Prerequisite for Vundle:
+" git clone git@github.com:VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+"
+" When changing the plugins, either:
+" 1. Within vim, :PluginInstall
+" 2. From the terminal, vim +PluginInstall +qall
+
 set nocompatible
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
   " Plugin list
-  " When changing this list, either:
-  " 1. Within vim, :PluginInstall
-  " 2. From the terminal, vim +PluginInstall +qall
-
   Plugin 'VundleVim/Vundle.vim'
   Plugin 'vim-autoformat/vim-autoformat'
 
