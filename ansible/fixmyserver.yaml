@@ -70,8 +70,8 @@
       dest: "~/{{ item.root }}/{{ item.name }}"
       force: false
       update: false
-      #accept_hostkey: yes
-      #key_file: "~/.ssh/github_ed25519"
+      accept_hostkey: yes
+      key_file: "~/.ssh/id_ed25519"
     with_items:
       - { root: "dev", maker: "Gownta", name: "devenv" }
       - { root: "dev", maker: "Gownta", name: "starlang" }

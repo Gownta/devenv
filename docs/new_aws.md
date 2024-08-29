@@ -11,15 +11,8 @@
 5. Copy `devenv/bin/fixmydev` to the server, python3 it (maybe with -i)
 6. Exit. I can now ssh into the host as njormrod
 
-1. symlink `~/.config/systemd/user -> ~/dev/devenv/envs/aws_linux/systemd`
-
-
 Some things to install:
 PyTorch, with CUDA support. https://pytorch.org/
 ```
 pip3 install torch torchvision torchaudio
-pip3 install jupyter
 ```
-
-sudo systemctl enable atop
-sudo systemctl start atop
