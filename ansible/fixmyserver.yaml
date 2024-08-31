@@ -27,6 +27,12 @@
 
   # Don't install pips; they should be in venvs.
   # I'm looking at you jupyter, and awscli, and pyopensky...
+  # ...except I don't like venvs
+  - name: Install pips
+    pip:
+      name:
+        - openai
+      state: present
 
   - name: systemd enable
     ansible.builtin.systemd_service:
@@ -77,6 +83,7 @@
       - { root: "dev", maker: "Gownta", name: "hanabi" }
       - { root: "dev", maker: "Gownta", name: "farmwars" }
       - { root: "dev", maker: "Gownta", name: "opensky" }
+      - { root: "dev", maker: "Gownta", name: "libai" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
 
   - name: Check if the files are actually original
