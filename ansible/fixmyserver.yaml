@@ -85,6 +85,7 @@
       - { root: "dev", maker: "Gownta", name: "opensky" }
       - { root: "dev", maker: "Gownta", name: "libai" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
+      - { root: "repos", maker: "sharkdp", name: "bat" }
 
   - name: Check if the files are actually original
     stat:
@@ -175,6 +176,17 @@
     shell: /tmp/sh.rustup.rs --no-modify-path -y
     tags:
       - rust
+
+  - name: Check if bat is installed
+    shell: command -v bat
+    register: bat_exists
+    ignore_errors: yes
+
+  - name: Install bat
+    when: bat_exists is failed
+    shell: cargo install --locked bat
+    args:
+      chdir: ~/repos/bat
 
   - name: Setup vim vundle
     command: "vim +PluginInstall +qall"
