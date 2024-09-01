@@ -1,5 +1,10 @@
 # Unicode symbols: https://symbl.cc/en/unicode-table/#mathematical-operators
 # ctrl-v uNNNN to insert unicode in vim
 # ansi color codes: https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
+#
+# Apple logo: 
+# Cloud emoji: ☁️
+# Home: ⌂
+# Misc: 🛠
 export PROMPT_VAR_HOST="%F{162}⌘%f"
 export PROMPT_VAR_ART="%F{red}❱%F{208}❱%F{green}❱%f"
