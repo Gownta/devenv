@@ -2,6 +2,7 @@
 
 ...sigh, some things are hard to install
 
+- Fonts must be installed on localhost, not remotehost. See `docs/new_mbp`
 - eza
   - cargo does a good job, except man page
   - generate the man page by:
