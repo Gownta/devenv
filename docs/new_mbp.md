@@ -6,6 +6,8 @@ Download:
 - Chrome
 - iTerm2
 - Outlook
+- Nerd Font https://www.nerdfonts.com/
+  - Once downloaded, copy unzipped directory to ~/Library/Fonts
 
 git clone this devenv repo. symlinkify. Notes:
 - `git clone git@github.com:Gownta/devenv.git`
