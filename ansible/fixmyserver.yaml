@@ -86,6 +86,7 @@
       - { root: "dev", maker: "Gownta", name: "libai" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
+      - { root: "repos", maker: "eza-community", name: "eza" }
 
   - name: Check if the files are actually original
     stat:
@@ -187,6 +188,17 @@
     shell: cargo install --locked bat
     args:
       chdir: ~/repos/bat
+
+  - name: Check if exa is installed
+    shell: command -v eza
+    register: eza_exists
+    ignore_errors: yes
+
+  - name: Install eza
+    when: eza_exists is failed
+    shell: cargo install --locked eza
+    args:
+      chdir: ~/repos/eza
 
   - name: Setup vim vundle
     command: "vim +PluginInstall +qall"
