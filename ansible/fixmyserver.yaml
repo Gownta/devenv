@@ -189,7 +189,7 @@
     args:
       chdir: ~/repos/bat
 
-  - name: Check if exa is installed
+  - name: Check if eza is installed
     shell: command -v eza
     register: eza_exists
     ignore_errors: yes
