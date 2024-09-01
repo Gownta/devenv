@@ -87,6 +87,8 @@
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
       - { root: "repos", maker: "eza-community", name: "eza" }
+      - { root: "repos", maker: "romkatv", name: "powerlevel10k" }
+      - { root: "repos", maker: "wfxr", name: "tmux-power" }
 
   - name: Check if the files are actually original
     stat:
