@@ -8,6 +8,8 @@ Download:
 - Outlook
 - Nerd Font https://www.nerdfonts.com/
   - Once downloaded, copy unzipped directory to ~/Library/Fonts
+  - Cousine is similar to Courier New
+  - Meslo is similar to Menlo
 
 git clone this devenv repo. symlinkify. Notes:
 - `git clone git@github.com:Gownta/devenv.git`
