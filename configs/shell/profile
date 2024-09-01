@@ -7,6 +7,7 @@ source "$NJORMROD_DEVENV/configs/shell/functions"
 
 maybe_source ~/.secrets
 maybe_source ~/.prompt_vars
+maybe_source ~/.envrc
 
 # Start ssh-agent and add id_ed25519
 if [ -z "$SSH_AGENT_PID" ] ; then

@@ -157,7 +157,7 @@
       dest: "~/{{ item.dest }}"
       force: false
     with_items:
-      - { src: "configs/shell/prompt_vars_example", dest: ".prompt_vars" }
+      - { src: "configs/shell/envrc", dest: ".envrc" }
 
   - name: Check if cargo is installed
     shell: command -v cargo

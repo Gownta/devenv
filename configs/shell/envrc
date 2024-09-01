@@ -1,10 +1,16 @@
 # Unicode symbols: https://symbl.cc/en/unicode-table/#mathematical-operators
+# NerdFont icons: https://github.com/ryanoasis/nerd-fonts/blob/master/bin/scripts/test-fonts.sh
 # ctrl-v uNNNN to insert unicode in vim
 # ansi color codes: https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
 #
-# Apple logo: 
-# Cloud emoji: ☁️
-# Home: ⌂
-# Misc: 🛠
+# 
+# 
+# ☁️
+# 
+# ⌂
+# 🛠
+# ⌘
+#
+export HOST_ICON=☁️
 export PROMPT_VAR_HOST="%F{162}⌘%f"
 export PROMPT_VAR_ART="%F{red}❱%F{208}❱%F{green}❱%f"
