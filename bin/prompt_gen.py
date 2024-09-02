@@ -2,7 +2,6 @@
 
 
 import datetime
-import getpass
 import os
 import sys
 
@@ -18,6 +17,7 @@ N_EXTENDERS = 1
 
 
 def rprompt(ncols):
+    return ""
     return f"\033[38;5;238m{border_extender * N_EXTENDERS + border_right_bot}\033[0m"
 
 
@@ -97,11 +97,6 @@ class Drawer:
             self.n += len(self.ender)
 
 
-
-def mk_fill(filler, nfill, fg):
-    return ["\033[0m\033[38;5;", str(fg), "m", filler * nfill]
-
-
 def get_time(now):
     fmt = " %H:%M:%S"
     return now.strftime(fmt)
@@ -112,26 +107,24 @@ def get_date(now):
     return now.strftime(fmt)
 
 
-def get_elapsed(start_ns, now):
-    if not start_ns:
+def get_elapsed(start_ts, now):
+    if not start_ts:
         return None
-
-    start_ts = (start_ns // 1000) / 1000000
     then = datetime.datetime.fromtimestamp(start_ts)
 
-    if then <= now:
-        return None
-    d = (now - then).total_seconds
+    if then > now:
+        return "time error"
+    d = (now - then).total_seconds()
 
     if d < 1:
         return f" {int(d * 1000)}ms"
     if d < 60:
         return f" {int(d * 10) / 10}s"
     if d < 3600:
-        return f" {d // 60}m{d % 60}s"
+        return f" {int(d / 60)}m{int(d % 60)}s"
     if d < 86400:
-        return f" {d // 3600}h{(d % 3600) // 60}m"
-    return f"{d // 86400}d{(d % 84600) // 3600}h{(d % 3600) // 60}m"
+        return f" {int(d / 3600)}h{int((d % 3600) / 60)}m"
+    return f" {int(d / 86400)}d {int((d % 84600) / 3600)}h{int((d % 3600) / 60)}m"
 
 
 def get_pwd():
@@ -164,133 +157,169 @@ def get_pwd():
 
 
 def lprompt(lentries, rentries, ncols):
+    ############################################################
+    ### Function-globals
+    ############################################################
+
+    # The ultimate return, in parts
+    parts = []
+
+    # Drawer factories
     ldf = lambda: Drawer("█", "", "")
     rdf = lambda: Drawer("", "", "█", inv=True)
 
-    left_top = border_left_top + border_extender * N_EXTENDERS
-    left_mid = border_left_mid + border_extender * N_EXTENDERS
-    left_bot = border_left_bot + border_extender * N_EXTENDERS
-    right_top = border_extender * N_EXTENDERS + border_right_top
-    right_mid = border_extender * N_EXTENDERS + border_right_mid
+
+    ############################################################
+    ### Borders
+    ############################################################
+
+    bc = 238  # border_color
+    filler = "‧"
+
+    def mk_border(content):
+        return ["\033[0m\033[38;5;", str(bc), "m", content]
+
+    left_top = mk_border(border_left_top + border_extender * N_EXTENDERS)
+    left_mid = mk_border(border_left_mid + border_extender * N_EXTENDERS)
+    left_bot = mk_border(border_left_bot + border_extender * N_EXTENDERS)
+    right_top = mk_border(border_extender * N_EXTENDERS + border_right_top)
+    right_mid = mk_border(border_extender * N_EXTENDERS + border_right_mid)
+    right_bot = mk_border(border_extender * N_EXTENDERS + border_right_bot)
+
+    # Number of free columns, excluding borders
     nc = ncols - 2 * (N_EXTENDERS + 1)
 
-    parts = [left_top]
-    ld = ldf()
+    def mk_fill(nfill):
+        return ["\033[0m\033[38;5;", str(bc), "m", filler * nfill]
+
+
+    ############################################################
+    ### Multi-line handling
+    ############################################################
+
+    used_left_top = False
+    used_right_top = False
+
+    ld = None
+
+    def open_ld():
+        nonlocal ld
+        nonlocal used_left_top
+        left = left_mid if used_left_top else left_top
+        used_left_top = True
+
+        parts.extend(left)
+        ld = ldf()
+
+    def close_ld():
+        nonlocal ld
+        nonlocal used_right_top
+        right = right_mid if used_right_top else right_top
+        used_right_top = True
+
+        ld.end()
+        parts.extend(ld.contents)
+        parts.extend(mk_fill(nc - ld.n))
+        parts.extend(right)
+        parts.append("\n")
+
+    open_ld()
     for le in lentries:
-        if ld.contents
+        # Normal case: the next entry fits
+        # -1 for the ender
+        if ld.n + le.len() <= nc - 1:
+            ld.add(le)
+            continue
+
+        # ok, it doesn't fit
+        # maybe close the existing ld
+        if ld.contents:
+            close_ld()
+            open_ld()
+
+        # does this entry fit?
+        if le.len() <= nc - 1:
+            ld.add(le)
+            continue
+
+        # ok, this entry alone is too big
+        ld.add(le)
+        parts.extend(ld.contents)
+        parts.append("\n")
+        used_right_top = True
+        open_ld()
+
+    # Make the rd, which doesn't include dynamic sizes, so fits
+    rd = rdf()
+    for re in rentries:
+        rd.add(re)
+    rd.end()
+
+    # Combine the ld and rd, if possible
+    if not ld.contents:
+        parts.extend(mk_fill(nc - rd.n))
+        parts.extend(rd.contents)
+
+        right = right_mid if used_right_top else right_top
+        used_right_top = True
+        parts.extend(right)
+    elif ld.n + rd.n <= nc - 1:
+        ld.end()
+        parts.extend(ld.contents)
+        parts.extend(mk_fill(nc - ld.n - rd.n))
+        parts.extend(rd.contents)
+
+        right = right_mid if used_right_top else right_top
+        used_right_top = True
+        parts.extend(right)
+    else:
+        close_ld()
+        open_ld()
+        parts.extend(mk_fill(nc - rd.n))
+        parts.extend(rd.contents)
+        parts.extend(right_mid)
 
 
+    ############################################################
+    ### Finishing touches
+    ############################################################
+
+    # Do not add a newline, and have regular PROMPT and RPROMPT vars for the line-of
+
+    return "".join(parts)
 
 
-
-def prompt(time, ncols, env):
+def prompt(time, ncols, env, ec):
+    # text color
+    tc = 252
     now = datetime.datetime.now()
 
-    # text color, border color
-    tc = 252
-    bc = 238
-
-    # fill characters
-    filler = "‧"
-    nfill = ncols
-
-    ########################################
-    # Left border
-    left_top = border_left_top + border_extender * N_EXTENDERS
-    lbp = [
-        "\033[0m\033[38;5;", str(bc), "m", left_top,
+    lentries = [
+        Entry([" ", env.get("HOST_ICON", ""), "  "], tc, 236),
+        Entry([" ", get_pwd(), " "], tc, 21),
     ]
-    nfill -= len(left_top)
-
-    ########################################
-    # Left components
-    ld = Drawer("█", "", "")
-
-    host_icon = env.get("HOST_ICON", None)
-    if host_icon is not None:
-        ld.add([" ", host_icon, "  "], tc, 236)
-
-    pwd = get_pwd()
-    ld.add(["  ", get_pwd(), "  "], tc, 21)
-    ld.add(["  ", get_pwd(), "  "], tc, 21)
-    ld.add(["  ", get_pwd(), "  "], tc, 21)
-    ld.add(["  ", get_pwd(), "  "], tc, 21)
-
-    ld.end()
-    nfill -= ld.n
-
-    ########################################
-    # Right components
-    rd = Drawer("", "", "█", inv=True)
+    rentries = [
+        Entry([" ", get_time(now), " "], tc, 28),
+        Entry([" ", get_date(now), " "], tc, 22),
+        #Entry([" ", getpass.getuser(), " "], tc, 24),
+    ]
 
     delta = get_elapsed(time, now)
     if delta:
-        rd.add([" ", delta, " "], tc, 214)
+        rentries.insert(0, Entry([" ", delta, " "], tc, 166))
+    if ec:
+        rentries.insert(0, Entry([" Exit ", str(ec), " "], tc, 1))
 
-    rd.add([" ", get_time(now), " "], tc, 28)
-    rd.add([" ", get_date(now), " "], tc, 22)
-    rd.add([" ", getpass.getuser(), " "], tc, 24)
-
-    rd.end()
-    nfill -= rd.n
-
-    ########################################
-    # Right border
-    right_top = border_extender * N_EXTENDERS + border_right_top
-    rbp = [
-        "\033[0m\033[38;5;", str(bc), "m", right_top,
-    ]
-    nfill -= len(right_top)
-
-    ########################################
-    # Combine
-
-    if nfill < 0:
-        # we need even more lines
-        left_mid = border_left_mid + border_extender * N_EXTENDERS
-        right_mid = border_extender * N_EXTENDERS + border_right_mid
-        parts = lbp + ld.contents 
-
-    left_bot = border_left_bot + border_extender * N_EXTENDERS
-    parts = lbp + ld.contents + ["\033[0m", "\033[38;5;", str(bc), "m", FILL * nfill] + rd.contents + rbp + ["\n", left_bot, "\033[0m"]
-
-    if host_icon:
-        parts.extend([host_icon, "\033[0m"])
-
-    return "".join(parts)
-
-
-
-    n_fill = ncols
-    l_parts = []
-
-    l_parts.extend([
-        "\033[0m", border_color, left_top,
-    ])
-    n_fill -= len(left_top)
-
-
-
-    n_fill = ncols - 2 * (N_EXTENDERS + 1) - 33
-    fill = FILL * n_fill
-
-    parts = [
-        "\033[0m", border_color, left_top,
-        "\033[0m", border_color, fill,
-        "\033[0m", border_color, right_top,
-        "\n",
-        "\033[0m", border_color, left_bot,
-        "\033[0m", mkLBox(252, 124, 127, sep_left, " howdy ")[1],
-        "\033[0m",
-        #"\033[0m", env.get("HOST_ICON", ""),
-    ]
-    return "".join(parts)
+    return lprompt(lentries, rentries, ncols)
 
 
 if __name__ == "__main__":
-    assert len(sys.argv) == 3
+    assert len(sys.argv) == 4
     cols = int(sys.argv[2])
-    if sys.argv[1] == "rprompt":
-        print(rprompt(cols))
+    if sys.argv[1] == "0":
+        start = 0
     else:
-        print(prompt(int(sys.argv[1]), cols, os.environ))
+        s = int(sys.argv[1][:-9])
+        us = int(sys.argv[1][-9:-3])
+        start = s + us / 1000000
+    print(prompt(start, cols, os.environ, int(sys.argv[3])))

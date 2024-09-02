@@ -32,5 +32,15 @@ compinit
 
 # Prompt specification
 setopt PROMPT_SUBST
-PROMPT=$'%(?..%F{red}%B[Exit %?]\n%b%f)${PROMPT_VAR_HOST} %D{%H:%M:%S} %F{cyan}$(prompt_dir_sub)%f $PROMPT_VAR_ART '
-#RPROMPT='%*'
+timer_start=0
+njo_time_start() {
+  timer_start="$(date +%s%N)"
+}
+njo_pre_prompt() {
+  ~/dev/devenv/bin/prompt_gen.py $timer_start $COLUMNS $?
+  timer_start=0
+}
+preexec_functions+=(njo_time_start)
+precmd_functions+=(njo_pre_prompt)
+PROMPT=$'%F{238}╰─%f$PROMPT_VAR_ART'
+RPROMPT=$'%F{238}%{ %}─╯%f'
