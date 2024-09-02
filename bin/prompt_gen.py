@@ -107,7 +107,7 @@ def get_date(now):
     return now.strftime(fmt)
 
 
-def get_elapsed(start_ts, now):
+def get_elapsed(start_ts, now, has_us):
     if not start_ts:
         return None
     then = datetime.datetime.fromtimestamp(start_ts)
@@ -116,10 +116,15 @@ def get_elapsed(start_ts, now):
         return "time error"
     d = (now - then).total_seconds()
 
+    if not has_us and d < 2:
+        return None
+
     if d < 1:
         return f" {int(d * 1000)}ms"
     if d < 60:
-        return f" {int(d * 10) / 10}s"
+        if has_us:
+            return f" {int(d * 10) / 10}s"
+        return f" {int(d)}s"
     if d < 3600:
         return f" {int(d / 60)}m{int(d % 60)}s"
     if d < 86400:
@@ -289,7 +294,7 @@ def lprompt(lentries, rentries, ncols):
     return "".join(parts)
 
 
-def prompt(time, ncols, env, ec):
+def prompt(time, ncols, env, ec, has_us):
     # text color
     tc = 252
     now = datetime.datetime.now()
@@ -304,7 +309,7 @@ def prompt(time, ncols, env, ec):
         #Entry([" ", getpass.getuser(), " "], tc, 24),
     ]
 
-    delta = get_elapsed(time, now)
+    delta = get_elapsed(time, now, has_us)
     if delta:
         rentries.insert(0, Entry([" ", delta, " "], tc, 166))
     if ec:
@@ -316,10 +321,19 @@ def prompt(time, ncols, env, ec):
 if __name__ == "__main__":
     assert len(sys.argv) == 4
     cols = int(sys.argv[2])
-    if sys.argv[1] == "0":
+
+    t = sys.argv[1]
+    if t == "0":
         start = 0
+        has_us = False
     else:
-        s = int(sys.argv[1][:-9])
-        us = int(sys.argv[1][-9:-3])
-        start = s + us / 1000000
-    print(prompt(start, cols, os.environ, int(sys.argv[3])))
+        if t.endswith("N"):
+            # mac only has second-granularity
+            start = int(t[:-1])
+            has_us = False
+        else:
+            s = int(t[:-9])
+            us = int(t[-9:-3])
+            start = s + us / 1000000
+            has_us = True
+    print(prompt(start, cols, os.environ, int(sys.argv[3]), has_us))
