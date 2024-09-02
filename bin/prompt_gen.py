@@ -148,14 +148,16 @@ def get_pwd():
     d = prefix_find_replace(d, "local/repos", "r")
 
     d = prefix_find_replace(d, "r/dotfbsource/fbcode", ".f")
+    d = prefix_find_replace(d, "r/configerator", "r/cfg")
+    d = prefix_find_replace(d, "r/cfg/source", "r/cfg/s")
     if d.startswith("r/") and len(d) >= 3:
         o = ord(d[2])
         if ord("0") <= o <= ord("9"):
             n = o - ord("0")
             rest = d[3:]
-            rest = prefix_find_replace("fbsource/fbcode", "f")
-            rest = prefix_find_replace("configerator", "cfg")
-            rest = prefix_find_replace("cfg/source", "cfg/s")
+            rest = prefix_find_replace(rest, "fbsource/fbcode", "f")
+            rest = prefix_find_replace(rest, "configerator", "cfg")
+            rest = prefix_find_replace(rest, "cfg/source", "cfg/s")
             d = f"r/{n}{rest}"
 
     return " " + d
@@ -331,21 +333,24 @@ def prompt(time, ncols, env, ec, has_us):
 
 
 if __name__ == "__main__":
-    assert len(sys.argv) == 4
-    cols = int(sys.argv[2])
+    try:
+        assert len(sys.argv) == 4
+        cols = int(sys.argv[2])
 
-    t = sys.argv[1]
-    if t == "0":
-        start = 0
-        has_us = False
-    else:
-        if t.endswith("N"):
-            # mac only has second-granularity
-            start = int(t[:-1])
+        t = sys.argv[1]
+        if t == "0":
+            start = 0
             has_us = False
         else:
-            s = int(t[:-9])
-            us = int(t[-9:-3])
-            start = s + us / 1000000
-            has_us = True
-    print(prompt(start, cols, os.environ, int(sys.argv[3]), has_us))
+            if t.endswith("N"):
+                # mac only has second-granularity
+                start = int(t[:-1])
+                has_us = False
+            else:
+                s = int(t[:-9])
+                us = int(t[-9:-3])
+                start = s + us / 1000000
+                has_us = True
+        print(prompt(start, cols, os.environ, int(sys.argv[3]), has_us))
+    except:
+        print("prompt_gen failed\n")
