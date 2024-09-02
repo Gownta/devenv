@@ -161,7 +161,7 @@ def get_pwd():
     return " " + d
 
 
-def lprompt(lentries, rentries, ncols):
+def lprompt(lentries, rentries, trentries, ncols):
     ############################################################
     ### Function-globals
     ############################################################
@@ -226,6 +226,17 @@ def lprompt(lentries, rentries, ncols):
         parts.extend(ld.contents)
         parts.extend(mk_fill(nc - ld.n))
         parts.extend(right)
+        parts.append("\n")
+
+    if trentries:
+        trd = rdf()
+        for tre in trentries:
+            trd.add(tre)
+        lead = ncols - trd.n - N_EXTENDERS - 1
+        parts.append(" " * lead)
+        parts.extend(trd.contents)
+        parts.extend(right_top)
+        used_right_top = True
         parts.append("\n")
 
     open_ld()
@@ -309,13 +320,14 @@ def prompt(time, ncols, env, ec, has_us):
         #Entry([" ", getpass.getuser(), " "], tc, 24),
     ]
 
+    trentries = []
+    if ec:
+        trentries.append(Entry([" Exit ", str(ec), " "], tc, 1))
     delta = get_elapsed(time, now, has_us)
     if delta:
-        rentries.insert(0, Entry([" ", delta, " "], tc, 166))
-    if ec:
-        rentries.insert(0, Entry([" Exit ", str(ec), " "], tc, 1))
+        trentries.append(Entry([" ", delta, " "], tc, 166))
 
-    return lprompt(lentries, rentries, ncols)
+    return lprompt(lentries, rentries, trentries, ncols)
 
 
 if __name__ == "__main__":
