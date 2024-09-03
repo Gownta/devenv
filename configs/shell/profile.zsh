@@ -35,10 +35,12 @@ setopt PROMPT_SUBST
 timer_start=0
 njo_time_start() {
   timer_start="$(date +%s%N)"
+  timed_cmd="$1"
 }
 njo_pre_prompt() {
-  ~/dev/devenv/bin/prompt_gen.py $timer_start $COLUMNS $?
+  ~/dev/devenv/bin/prompt_gen.py $timer_start $COLUMNS $? "$timed_cmd"
   timer_start=0
+  timed_cmd=""
 }
 preexec_functions+=(njo_time_start)
 precmd_functions+=(njo_pre_prompt)

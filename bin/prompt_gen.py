@@ -308,7 +308,7 @@ def lprompt(lentries, rentries, trentries, ncols):
     return "".join(parts)
 
 
-def prompt(time, ncols, env, ec, has_us):
+def prompt(time, ncols, env, ec, whole_cmd, has_us):
     # text color
     tc = 252
     now = datetime.datetime.now()
@@ -329,13 +329,17 @@ def prompt(time, ncols, env, ec, has_us):
     delta = get_elapsed(time, now, has_us)
     if delta:
         trentries.append(Entry([" ", delta, " "], tc, 166))
+    if whole_cmd:
+        cmd = whole_cmd.split()[0].rstrip("/").split("/")[-1]
+        if cmd:
+            trentries.append(Entry([" ", cmd, " "], tc, 89))
 
     return lprompt(lentries, rentries, trentries, ncols)
 
 
 if __name__ == "__main__":
     try:
-        assert len(sys.argv) == 4
+        assert len(sys.argv) == 5
         cols = int(sys.argv[2]) - 1 # -1 because RPROMPT doesn't go to the end
 
         t = sys.argv[1]
@@ -352,6 +356,9 @@ if __name__ == "__main__":
                 us = int(t[-9:-3])
                 start = s + us / 1000000
                 has_us = True
-        print(prompt(start, cols, os.environ, int(sys.argv[3]), has_us))
+
+        exit_code = int(sys.argv[3])
+        whole_cmd = sys.argv[4]
+        print(prompt(start, cols, os.environ, exit_code, whole_cmd, has_us))
     except:
         print("prompt_gen failed\n")
