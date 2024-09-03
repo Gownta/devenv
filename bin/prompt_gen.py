@@ -302,7 +302,8 @@ def lprompt(lentries, rentries, trentries, ncols):
     ### Finishing touches
     ############################################################
 
-    # Do not add a newline, and have regular PROMPT and RPROMPT vars for the line-of
+    # No trailing newline.
+    # Have regular PROMPT and RPROMPT vars for the line-of
 
     return "".join(parts)
 
@@ -335,7 +336,7 @@ def prompt(time, ncols, env, ec, has_us):
 if __name__ == "__main__":
     try:
         assert len(sys.argv) == 4
-        cols = int(sys.argv[2])
+        cols = int(sys.argv[2]) - 1 # -1 because RPROMPT doesn't go to the end
 
         t = sys.argv[1]
         if t == "0":
