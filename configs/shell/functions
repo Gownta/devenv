@@ -30,6 +30,10 @@ function cad {
     cd `hg root`/fbcode/scripts/njormrod/ad
 }
 
+function cdd {
+    cd "$HOME/dev"
+}
+
 function maybe_source {
     if [ -f $1 ] ; then
         source $1
