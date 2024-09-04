@@ -361,4 +361,5 @@ if __name__ == "__main__":
         whole_cmd = sys.argv[4]
         print(prompt(start, cols, os.environ, exit_code, whole_cmd, has_us))
     except:
-        print("prompt_gen failed\n")
+        print("prompt_gen failed")
+        print(" ".join(sys.argv))
