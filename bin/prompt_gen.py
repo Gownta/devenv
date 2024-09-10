@@ -319,7 +319,7 @@ def prompt(time, ncols, env, ec, whole_cmd, has_us):
     ]
     rentries = [
         Entry([" ", get_time(now), " "], tc, 28),
-        Entry([" ", get_date(now), " "], tc, 22),
+        Entry([" ", get_date(now)], tc, 22),
         #Entry([" ", getpass.getuser(), " "], tc, 24),
     ]
 
