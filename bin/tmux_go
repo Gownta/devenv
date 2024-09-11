@@ -70,9 +70,6 @@ def start():
             cmd = "session -d -s" if i == 0 else "window -t"
             tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir} ")
             tmux(f"splitw -h -c {wdir}")
-
-            tmux(f"send-keys -t {i+1}.1 matrix.py Enter")
-            tmux(f"send-keys -t {i+1}.2 matrix.py Enter")
         tmux("select-window -t 1")
     rebalance()
 
