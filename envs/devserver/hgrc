@@ -15,8 +15,8 @@ dl = sl -r "draft() - obsolete() - present(bookmark('re:ad.+'))" -T '{sl}'
 reviewers = yfeldblum, skrueger, dyaroshev
 title = "(autodiff.v4) "
 testplan = "\n  buck2 test scripts/njormrod/ad2/..."
-summary = "\n\nPrivacy Context Container: L1266238"
-#privacycontextcontainer="L1266238"
+#summary = "\n\nPrivacy Context Container: L1266238"
+privacycontextcontainer="L1266238"
 #testplan="\n  buck2 test scripts/njormrod/cli/... scripts/njormrod/filebacked/... scripts/njormrod/ad/..."
 # fbtags=accept2ship
 
