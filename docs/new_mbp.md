@@ -29,6 +29,9 @@ System Settings
 - Set Appearance to Dark Mode
 - Undo inverse mouse
 - Set default browser to chrome
+- Keyboard > Keyboard Shortcuts > Modifier Keys
+    1. Select Keyboard
+    2. Caps Lock -> Esc
 
 Homebrew
 - work mbp: https://fb.workplace.com/groups/hack.of.the.day/permalink/1925865110834868/
