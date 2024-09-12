@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+
+
+print("""
+Notes:
+- Precision on a string is a maximum size
+- {65:c} -> chr(65) -> A
+- {0.3:%} -> 30%
+- = before : prints identifier=formatted
+- Can have dynamic values using {}
+
+      ascii_agent=55, w=3
+      f"{ascii_agent=:0>{w}c}" -> ascii_agent=007
+
+"{"VALUE[modifier][":"format_spec]"}"
+
+modifier        ::=  "!a" | "!s" | "!r" | "="
+format_spec     ::=  [[fill]align][sign]["z"]["#"]["0"][width][grouping_option]["." precision][type]
+fill            ::=  <any character>
+align           ::=  "<" | ">" | "=" | "^"
+sign            ::=  "+" | "-" | " "
+width           ::=  digit+
+grouping_option ::=  "_" | ","
+precision       ::=  digit+
+type            ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+modifier: !a ascii(), !s str(), !r repr(), = "x={x}"
+align: < left, > right, ^ center, = padding between sign and number, a la -001
+sign: only valid for numbers; + always have sign, - only negative sign (default), " " have leading space for positives
+z: -0.0 => +0.0 (python 3.11)
+#: alternate form for numbers. hexes are prefixed with 0x, floats always have ., leave trailing zeroes in g mode
+0: sign-aware zero-padding for ints, like fill=0 and align="="
+width: number of characters to pad up to
+grouping_option: separator for thousands (or every 4 digits in hex). Use 'n' for locale-aware
+precision: f|F digits after ., g|G digits before and after ., string: max size
+type: varies by the type of the thing being formatted
+      str: s
+      int: b binary, o octal, xX hex, d base-10 (default), n locale-grouping, c character-of
+      int|float: eE scientific notation, fF fixed-point (nan,inf|NAN,INF), gG general (default) (significant digits), n ^, % == *100,f,%
+
+https://docs.python.org/3/library/string.html#formatspec
+https://docs.python.org/3/tutorial/inputoutput.html
+""".strip())
