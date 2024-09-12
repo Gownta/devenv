@@ -22,4 +22,9 @@ navigating around iterm:
   cmd-z     0x02 0x7a       pane fullscreen
 
   cmd-r     0x12            ctrl-r, for zsh history search
+
+  cmd-hjkl  0x02 hjkl       forward to my tmux pane navigation commands
+
+  cmd-shift-Left|Right
+            Next|Prev Tab
 ```

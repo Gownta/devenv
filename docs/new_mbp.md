@@ -5,6 +5,7 @@ To set up a new laptop:
 Download:
 - Chrome
 - iTerm2
+  - I have iTerm config in devenv
 - Outlook
 - Nerd Font https://www.nerdfonts.com/
   - Once downloaded, copy unzipped directory to ~/Library/Fonts

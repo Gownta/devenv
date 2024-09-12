@@ -42,6 +42,8 @@ I want to send hex codes to tmux using iterm keyboard shortcuts.
 In profile>keys, override command-[number] to Send Hex Code 0x02 0x3[number].
 Also need to remove command-number override in general>keys>navigation shortcuts
 Also add command-` to 0x02 0x3b, which is 'ctrl-b ;', which changes panes
+Also add cmd-hjkl to be tmux commands for hjkl
+Also add cmd-shift-right|left to navigate iterm tabs (prev and next tab)
 
 
 2. devservers
