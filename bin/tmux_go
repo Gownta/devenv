@@ -35,6 +35,7 @@ Notes on split-window:
 
 
 import os
+import shutil
 import subprocess
 import sys
 
@@ -53,6 +54,9 @@ def tmux(s, **kwargs):
 
 
 def start():
+    # Get the terminal size
+    cols, rows = shutil.get_terminal_size()
+
     # Load pane info from ~/.tmux.panes
     panes_path = os.path.expanduser("~/.tmux.panes")
     with open(panes_path, "r") as f:
@@ -69,6 +73,7 @@ def start():
             wdir = os.path.realpath(os.path.expanduser(wdir))
             cmd = "session -d -s" if i == 0 else "window -t"
             tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir} ")
+            tmux(f"resize-window -t {i+1} -x {cols} -y {rows - 1}")
             tmux(f"splitw -h -c {wdir}")
         tmux("select-window -t 1")
     rebalance()
