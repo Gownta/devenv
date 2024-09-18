@@ -57,3 +57,5 @@ Set up dropbox.
 Install some other apps:
 - TextMate
 - Discord
+- Unity
+- Android Studio
