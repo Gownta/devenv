@@ -32,6 +32,7 @@
     pip:
       name:
         - openai
+        - lupa # lua from python
       state: present
 
   - name: systemd enable
@@ -92,6 +93,7 @@
       - { root: "repos", maker: "eza-community", name: "eza" }
       - { root: "repos", maker: "romkatv", name: "powerlevel10k" }
       - { root: "repos", maker: "wube", name: "factorio-data" }
+      - { root: "repos", maker: "atanunq", name: "viu" }
 
   - name: Check if the files are actually original
     stat:
