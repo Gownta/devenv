@@ -88,6 +88,7 @@
       - { root: "dev", maker: "Gownta", name: "tmux-power" }
       - { root: "dev", maker: "Gownta", name: "lexemes" }
       - { root: "dev", maker: "Gownta", name: "factorio" }
+      - { root: "dev", maker: "Gownta", name: "quacks_of_quedlinburg" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
       - { root: "repos", maker: "eza-community", name: "eza" }
