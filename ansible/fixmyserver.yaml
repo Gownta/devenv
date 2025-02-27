@@ -80,6 +80,7 @@
     with_items:
       - { root: "dev", maker: "Gownta", name: "devenv" }
       - { root: "dev", maker: "Gownta", name: "starlang" }
+      - { root: "dev", maker: "Gownta", name: "factorio" }
       - { root: "dev", maker: "Gownta", name: "values" }
       - { root: "dev", maker: "Gownta", name: "hanabi" }
       - { root: "dev", maker: "Gownta", name: "farmwars" }
