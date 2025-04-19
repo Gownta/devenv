@@ -33,6 +33,7 @@
       name:
         - openai
         - lupa # lua from python
+        - Flask
       state: present
 
   - name: systemd enable
@@ -90,6 +91,7 @@
       - { root: "dev", maker: "Gownta", name: "lexemes" }
       - { root: "dev", maker: "Gownta", name: "factorio" }
       - { root: "dev", maker: "Gownta", name: "quacks_of_quedlinburg" }
+      - { root: "dev", maker: "Gownta", name: "ai_gullibility_test" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
       - { root: "repos", maker: "eza-community", name: "eza" }
