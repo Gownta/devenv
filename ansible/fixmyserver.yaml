@@ -20,6 +20,8 @@
         - htop
         - httpd
         - jq
+        - nodejs
+        - npm
         - pip
         - tmux
         - zsh
@@ -34,6 +36,8 @@
         - openai
         - lupa # lua from python
         - Flask
+        - pytest
+        - coverage
       state: present
 
   - name: systemd enable
