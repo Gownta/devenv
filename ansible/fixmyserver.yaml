@@ -36,6 +36,7 @@
         - openai
         - lupa # lua from python
         - Flask
+        - meson
         - pytest
         - coverage
       state: present
