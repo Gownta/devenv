@@ -1,5 +1,8 @@
 """
 Make my VSCode keybindings
+
+Paste the output of this script into my keybindings.json override:
+  VSCode > cmd + shift + p
 """
 
 import json
