@@ -33,6 +33,8 @@
   - name: Install pips
     pip:
       name:
+        - black
+        - ipdb
         - openai
         - lupa # lua from python
         - Flask
@@ -98,6 +100,7 @@
       - { root: "dev", maker: "Gownta", name: "quacks_of_quedlinburg" }
       - { root: "dev", maker: "Gownta", name: "ai_gullibility_test" }
       - { root: "dev", maker: "Gownta", name: "planet_miner" }
+      - { root: "dev", maker: "Gownta", name: "cain" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
       - { root: "repos", maker: "eza-community", name: "eza" }
