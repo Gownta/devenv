@@ -19,6 +19,7 @@ alias autodiff="buck2 run scripts/njormrod/autodiff:autodiff --"
 alias ad="buck2 run scripts/njormrod/ad:autodiff --"
 alias ad2="buck2 run scripts/njormrod/ad2:autodiff --"
 alias alf="arc f && arc lint"
+alias sshl="ssh -L 3000:localhost:3000"
 
 # New commands
 alias clear='for qwedc in {1..100} ; do echo " " ; done ; clear'
