@@ -101,6 +101,9 @@
       - { root: "dev", maker: "Gownta", name: "ai_gullibility_test" }
       - { root: "dev", maker: "Gownta", name: "planet_miner" }
       - { root: "dev", maker: "Gownta", name: "cain" }
+      - { root: "dev", maker: "Gownta", name: "idle_civ" }
+      - { root: "dev", maker: "Gownta", name: "template" }
+      - { root: "dev", maker: "Gownta", name: "flip7" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
       - { root: "repos", maker: "eza-community", name: "eza" }
