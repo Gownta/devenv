@@ -9,6 +9,7 @@ alias cd='cd -P'
 alias c='clear'
 alias v='vim'
 alias p='python3'
+alias p3.12='/usr/local/fbcode/platform010/bin/python3.12'
 alias tg='tmux_go'
 alias iatop='atop -r /var/log/atop/atop_$(date +%Y%m%d)'
 alias ssn="sudo shutdown now"
@@ -20,6 +21,8 @@ alias ad="buck2 run scripts/njormrod/ad:autodiff --"
 alias ad2="buck2 run scripts/njormrod/ad2:autodiff --"
 alias alf="arc f && arc lint"
 alias sshl="ssh -L 3000:localhost:3000"
+alias marshal="buck2 run fbcode//scripts/njormrod/marshal:marshal --"
+alias m=marshal
 
 # New commands
 alias clear='for qwedc in {1..100} ; do echo " " ; done ; clear'

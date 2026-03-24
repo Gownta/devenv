@@ -20,3 +20,13 @@
     context = 5
 [http "https://git.internal.tfbnw.net/"]
 	sslCert = /var/facebook/credentials/njormrod/x509/njormrod.pem
+[http "https://manifold.c2p.facebook.net/"]
+	sslCert = /var/facebook/credentials/njormrod/x509/njormrod.pem
+[http "https://git.internal.tfbnw.net"]
+	sslCert = /var/facebook/credentials/njormrod/x509/njormrod.pem
+	sslKey = /var/facebook/credentials/njormrod/x509/njormrod.pem
+[http "https://manifold.c2p.facebook.net"]
+	sslCert = /var/facebook/credentials/njormrod/x509/njormrod.pem
+[http "https://mononoke-git-lfs.internal.tfbnw.net"]
+	sslCert = /var/facebook/credentials/njormrod/x509/njormrod.pem
+	sslKey = /var/facebook/credentials/njormrod/x509/njormrod.pem

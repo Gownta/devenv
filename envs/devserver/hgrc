@@ -11,13 +11,18 @@ blame = blame -blnpu
 amend = amend --rebase
 dl = sl -r "draft() - obsolete() - present(bookmark('re:ad.+'))" -T '{sl}'
 
+# See commit template with `hg debugcommitmessage`
 [committemplate]
-reviewers = yfeldblum, skrueger, dyaroshev
-title = "(autodiff.v4) "
-testplan = "\n  buck2 test scripts/njormrod/ad2/..."
-#summary = "\n\nPrivacy Context Container: L1266238"
-privacycontextcontainer="L1266238"
-#testplan="\n  buck2 test scripts/njormrod/cli/... scripts/njormrod/filebacked/... scripts/njormrod/ad/..."
+title="[marhsal] "
+testplan=UT
+#reviewers = "yfeldblum, skrueger, dyaroshev, orvid, #sentinel_oncall"
+#testplan = sandcastle
+
+#title = "(autodiff.v4) "
+#testplan = "\n  buck2 test scripts/njormrod/ad2/... scripts/njormrod/cli/..."
+#privacycontextcontainer="L1266238"
+#reviewers = yfeldblum, skrueger, dyaroshev
+
 # fbtags=accept2ship
 
 [merge-patterns]

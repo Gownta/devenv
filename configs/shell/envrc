@@ -14,3 +14,6 @@
 export HOST_ICON=☁️
 export PROMPT_VAR_HOST="%F{162}⌘%f"
 export PROMPT_VAR_ART="%F{red}❱%F{208}❱%F{green}❱%f"
+
+# /usr/facebook/ops/rc/master.bashrc sources master.shellrc, which contains:
+export CURL_CA_BUNDLE=/etc/pki/tls/certs/fb_certs.pem
