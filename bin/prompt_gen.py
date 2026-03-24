@@ -147,7 +147,9 @@ def get_pwd():
     d = prefix_find_replace(d, "~/repos", "r")
     d = prefix_find_replace(d, "local/repos", "r")
 
+    d = prefix_find_replace(d, "local/marshal", "m")
     d = prefix_find_replace(d, "r/dotfbsource/fbcode", ".f")
+    d = prefix_find_replace(d, "r/wwwfbsource/www", "www")
     d = prefix_find_replace(d, "r/configerator", "r/cfg")
     d = prefix_find_replace(d, "r/cfg/source", "r/cfg/s")
     if d.startswith("r/") and len(d) >= 3:
@@ -156,6 +158,7 @@ def get_pwd():
             n = o - ord("0")
             rest = d[3:]
             rest = prefix_find_replace(rest, "fbsource/fbcode", "f")
+            rest = prefix_find_replace(rest, "fbsource/www", "w")
             rest = prefix_find_replace(rest, "configerator", "cfg")
             rest = prefix_find_replace(rest, "cfg/source", "cfg/s")
             d = f"r/{n}{rest}"
