@@ -45,6 +45,7 @@ alias f7="awk '{print \$7}'"
 alias f8="awk '{print \$8}'"
 alias f9="awk '{print \$9}'"
 
+alias cw="cd ~/repos/wwwfbsource/www"
 alias c1="cd ~/repos/1fbsource/fbcode"
 alias c2="cd ~/repos/2fbsource/fbcode"
 alias c3="cd ~/repos/3fbsource/fbcode"
