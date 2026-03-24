@@ -3,6 +3,7 @@ function prompt_dir_sub() {
       sed 's,/home/njormrod,~,' | \
       sed 's,/Users/njormrod,~,' | \
       sed 's,/data/users/njormrod,local,' | \
+      sed 's,local/marshal,m' | \
       sed 's,local/repos,r,' | \
       sed 's,^r/\([0-9]\)*configerator/source,r/\1cfg/s,' | \
       sed 's,^r/\([0-9]\)*configerator,r/\1cfg,' | \

@@ -9,15 +9,15 @@ class Dst:
     cmd: str = ""
 
 
-def make_devserver_dsts(short_hostname, with_tmux=False, with_tunnel=False):
+def make_devserver_dsts(short_hostname, with_eternal_tmux=False, with_tunnel=False):
     full_hostname = short_hostname + ".facebook.com"
 
     ret = []
-    if with_tmux:
+    if with_eternal_tmux:
         ret.append(Dst(
-            f"{short_hostname} (tmux)",
-            f"ssh'ing into {full_hostname}; automatically starting up tmux",
-            f"ssh -t {full_hostname} 'tmux_go'",
+            f"{short_hostname} (eternal tmux)",
+            f"eternally connecting to {full_hostname}; automatically starting up tmux",
+            f"dev connect -e -n {full_hostname} 'tmux_go'",
         ))
 
     ret.append(Dst(
@@ -38,7 +38,7 @@ def make_devserver_dsts(short_hostname, with_tmux=False, with_tunnel=False):
 
 Dsts = (
     [Dst("localhost (tmux)", "Automatically starting up tmux", "tmux_go")]
-    + make_devserver_dsts("devvm2087.rva0", with_tmux=True, with_tunnel=True)
+    + make_devserver_dsts("devvm2087.rva0", with_eternal_tmux=True)
     + [Dst("localhost")]
 )
 #host[3]="alpha-pi"
