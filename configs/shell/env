@@ -37,5 +37,3 @@ export LSCOLORS=cxgxcxdxfxegedabagacad
 
 # Cosmos
 export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin
-
-export META_CLAUDE_ENABLE_SPINNER_VERBS=1
