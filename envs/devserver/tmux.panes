@@ -1,9 +1,9 @@
-f ~/repos/1fbsource/fbcode
-b ~/repos/2fbsource/fbcode
-c ~/repos/3fbsource/fbcode
-o ~/repos/4fbsource/fbcode
-d ~/repos/5fbsource/fbcode
-e ~/repos/dotfbsource/fbcode
+m ~/local/marshal
+w ~/repos/wwwfbsource/www
+f ~/repos/3fbsource/fbcode
+b ~/repos/4fbsource/fbcode
+c ~/repos/5fbsource/fbcode
 ⊥ ~
 ⊥ ~
 ⊥ ~
+. ~/repos/dotfbsource/fbcode
