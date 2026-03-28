@@ -78,7 +78,7 @@ def start():
         tmux("select-window -t 1")
     rebalance()
 
-    tmux(f"attach-session -t {session_name}")
+    tmux(f"attach-session -d -t {session_name}")
 
 
 def rebalance():
