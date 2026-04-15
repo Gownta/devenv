@@ -45,6 +45,8 @@ Also add command-` to 0x02 0x3b, which is 'ctrl-b ;', which changes panes
 Also add cmd-hjkl to be tmux commands for hjkl
 Also add cmd-shift-right|left to navigate iterm tabs (prev and next tab)
 
+I want italic text. Look at docs/italics.md for details.
+
 
 2. devservers
 
