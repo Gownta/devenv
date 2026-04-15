@@ -2,7 +2,15 @@
 
 I want iterm and tmux to support italics text.
 
-The internet suggests [this guide](https://johnmathews.is/blog/adding-italic-text-to-iterm2).
-Claude says I'll need to run the tic command on my devserver as well.
+The TERM variable states what font formats the terminal supports.
+When ssh'ing, the server knows the client's TERM, and only sends markup that the client understands.
 
-...but maybe it's as easy as changing TERM to be tmux-256color in my tmux.conf...
+Initially, my devserver tmux was set to screen-256color.
+screen-256color is the lowest common denominator. It doesn't support italics.
+My mac had xterm-256color, which *does* support italics.
+When I changed my devserver to xterm-256color, it still didn't support italics...
+...because my devserver's xterm-256color is outdated. They agreed to use xterm-256color, but were mismatched.
+I determined that my devserver's tmux-256color DOES support italics.
+...however, my mac was telling tmux "I use xterm-256color", which my devserver thought did not support italics, and so the devserver was dropping all the italics markup.
+So I changed my ssh script to set TERM=tmux-256color (which my mac also supports)
+And now, finally, I have italics on my devserver.
