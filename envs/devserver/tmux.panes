@@ -1,8 +1,8 @@
 m ~/local/marshal
+s ~/local/marshal/src
 w ~/repos/wwwfbsource/www
-f ~/repos/3fbsource/fbcode
-b ~/repos/4fbsource/fbcode
-c ~/repos/5fbsource/fbcode
+f ~/repos/4fbsource/fbcode
+n ~/repos/5fbsource/fbcode/scripts/njormrod
 ⊥ ~
 ⊥ ~
 ⊥ ~
