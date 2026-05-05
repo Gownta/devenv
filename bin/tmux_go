@@ -73,7 +73,7 @@ def start():
             wdir = os.path.realpath(os.path.expanduser(wdir))
             cmd = "session -d -s" if i == 0 else "window -t"
             tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir} ")
-            tmux(f"resize-window -t {i+1} -x {cols} -y {rows - 1}")
+            #tmux(f"resize-window -t {i+1} -x {cols} -y {rows - 1}")
             tmux(f"splitw -h -c {wdir}")
         tmux("select-window -t 1")
     rebalance()

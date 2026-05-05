@@ -37,3 +37,14 @@ names = master
 
 [hint]
 ack = update-prev sl-short-headers amend-autorebase commitcloud-old-commits revnum-deprecate undo graph-renderer buck-shelve smartlog-default-command
+
+# sudo feature install difftastic --- gets me difft
+[extensions]
+extdiff =
+
+#[extdiff]
+#cmd.dft = difft
+#opts.dft = --missing-as-empty
+#
+#[alias]
+#dp = dft -r .^ -r .

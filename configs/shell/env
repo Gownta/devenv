@@ -32,6 +32,7 @@ export EDITOR=/usr/bin/vim
 
 # Common command controls
 # man ls to see color options
+export COLORTERM=truecolor
 export CLICOLOR=1
 export LSCOLORS=cxgxcxdxfxegedabagacad
 
