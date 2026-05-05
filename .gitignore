@@ -2,3 +2,4 @@ originals
 workspace
 **/*.DS_Store
 **/*.swp
+default.profraw
