@@ -157,8 +157,9 @@ def get_pwd():
         if ord("0") <= o <= ord("9"):
             n = o - ord("0")
             rest = d[3:]
-            rest = prefix_find_replace(rest, "fbsource/fbcode", "f")
-            rest = prefix_find_replace(rest, "fbsource/www", "w")
+            rest = prefix_find_replace(rest, "fbsource", "")
+            rest = prefix_find_replace(rest, "/fbcode", "f")
+            rest = prefix_find_replace(rest, "/www", "w")
             rest = prefix_find_replace(rest, "configerator", "cfg")
             rest = prefix_find_replace(rest, "cfg/source", "cfg/s")
             d = f"r/{n}{rest}"
