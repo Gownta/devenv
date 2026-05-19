@@ -150,6 +150,9 @@ def get_pwd():
     d = prefix_find_replace(d, "local/marshal", "m")
     d = prefix_find_replace(d, "r/dotfbsource/fbcode", ".f")
     d = prefix_find_replace(d, "r/wwwfbsource/www", "www")
+    d = prefix_find_replace(d, "r/1wt_wwwfbsource/www", "www")
+    d = prefix_find_replace(d, "r/2wt_usersfbsource/users/nj/njormrod", "u")
+    d = prefix_find_replace(d, "r/3wt_fbcodefbsource/fbcode", "f")
     d = prefix_find_replace(d, "r/configerator", "r/cfg")
     d = prefix_find_replace(d, "r/cfg/source", "r/cfg/s")
     if d.startswith("r/") and len(d) >= 3:
