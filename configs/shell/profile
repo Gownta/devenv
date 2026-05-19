@@ -5,6 +5,9 @@ source "$NJORMROD_DEVENV/configs/shell/env"
 source "$NJORMROD_DEVENV/configs/shell/aliases"
 source "$NJORMROD_DEVENV/configs/shell/functions"
 
+# Have a solid bar cursor instead of a box
+printf '\e[6 q'
+
 maybe_source ~/.secrets
 maybe_source ~/.prompt_vars
 maybe_source ~/.envrc
