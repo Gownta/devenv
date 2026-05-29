@@ -136,30 +136,16 @@ def get_elapsed(start_ts, now, has_us):
 def get_pwd():
     d = os.getcwd()
 
-    def prefix_find_replace(s, pre, repl):
-        return re.sub("^" + pre, repl, s, count=1)
+    try:
+        with open(os.path.expanduser("~/.prompt_shorthand")) as f:
+            lines = f.readlines()
+    except OSError:
+        lines = []
 
-    d = prefix_find_replace(d, "/home/njormrod", "~")
-    d = prefix_find_replace(d, "/Users/njormrod", "~")
-    d = prefix_find_replace(d, "/data/users/njormrod", "local")
-
-    d = prefix_find_replace(d, "~/repos", "r")
-    d = prefix_find_replace(d, "local/repos", "r")
-
-    d = prefix_find_replace(d, "local/marshal", "m")
-    d = prefix_find_replace(d, "r/dotfbsource/fbcode", ".f")
-    d = prefix_find_replace(d, "r/wwwfbsource/www", "www")
-    d = prefix_find_replace(d, "r/1wt_wwwfbsource/www", "www")
-    d = prefix_find_replace(d, "r/2wt_usersfbsource/users/nj/njormrod", "u")
-    d = prefix_find_replace(d, "r/3wt_fbcodefbsource/fbcode", "f")
-    d = prefix_find_replace(d, "r/configerator", "r/cfg")
-    d = prefix_find_replace(d, "r/cfg/source", "r/cfg/s")
-    d = prefix_find_replace(d, r"r/(\d)fbsource/fbcode", r"r/\1f")
-    d = prefix_find_replace(d, r"r/(\d)fbsource/www", r"r/\1w")
-    d = prefix_find_replace(d, r"r/(\d)fbsource/users/nj/njormrod", r"r/\1u")
-    d = prefix_find_replace(d, r"r/(\d)fbsource", r"r/\1fbs")
-    d = prefix_find_replace(d, r"r/(\d)configerator", r"r/\1cfg")
-    d = prefix_find_replace(d, r"r/(\d)cfg/source", r"r/\1cfg/s")
+    for line in lines:
+        parts = line.split()
+        if len(parts) == 2:
+            d = re.sub("^" + parts[0], parts[1], d, count=1)
 
     return " " + d
 
