@@ -3,6 +3,7 @@
 
 import datetime
 import os
+import re
 import sys
 
 
@@ -136,9 +137,7 @@ def get_pwd():
     d = os.getcwd()
 
     def prefix_find_replace(s, pre, repl):
-        if s.startswith(pre):
-            s = repl + s[len(pre):]
-        return s
+        return re.sub("^" + pre, repl, s, count=1)
 
     d = prefix_find_replace(d, "/home/njormrod", "~")
     d = prefix_find_replace(d, "/Users/njormrod", "~")
@@ -155,18 +154,12 @@ def get_pwd():
     d = prefix_find_replace(d, "r/3wt_fbcodefbsource/fbcode", "f")
     d = prefix_find_replace(d, "r/configerator", "r/cfg")
     d = prefix_find_replace(d, "r/cfg/source", "r/cfg/s")
-    if d.startswith("r/") and len(d) >= 3:
-        o = ord(d[2])
-        if ord("0") <= o <= ord("9"):
-            n = o - ord("0")
-            rest = d[3:]
-            rest = prefix_find_replace(rest, "fbsource/fbcode", "f")
-            rest = prefix_find_replace(rest, "fbsource/www", "w")
-            rest = prefix_find_replace(rest, "fbsource/users/nj/njormrod", "u")
-            rest = prefix_find_replace(rest, "fbsource", "fbs")
-            rest = prefix_find_replace(rest, "configerator", "cfg")
-            rest = prefix_find_replace(rest, "cfg/source", "cfg/s")
-            d = f"r/{n}{rest}"
+    d = prefix_find_replace(d, r"r/(\d)fbsource/fbcode", r"r/\1f")
+    d = prefix_find_replace(d, r"r/(\d)fbsource/www", r"r/\1w")
+    d = prefix_find_replace(d, r"r/(\d)fbsource/users/nj/njormrod", r"r/\1u")
+    d = prefix_find_replace(d, r"r/(\d)fbsource", r"r/\1fbs")
+    d = prefix_find_replace(d, r"r/(\d)configerator", r"r/\1cfg")
+    d = prefix_find_replace(d, r"r/(\d)cfg/source", r"r/\1cfg/s")
 
     return " " + d
 
