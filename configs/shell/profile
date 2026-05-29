@@ -23,7 +23,7 @@ fi
 ### ENVRCDIR
 ######################################################################
 
-if [ ! -v "$ENVRCDIR" ] ; then
+if [ ! -v ENVRCDIR ] ; then
   # If ENVRCDIR is not yet set, look for it in the default place,
   # based on the hostname, possibly suffix-stripped of .facebook.com
   envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
@@ -37,6 +37,6 @@ if [ ! -v "$ENVRCDIR" ] ; then
   unset envs_dir host candidate
 fi
 
-if [ -v "$ENVRCDIR" ] ; then
+if [ -v ENVRCDIR ] ; then
   maybe_source "$ENVRCDIR/envrc"
 fi
