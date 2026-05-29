@@ -1,6 +1,7 @@
 # Generic profile
 
 export NJORMROD_DEVENV="$HOME/dev/devenv"
+
 source "$NJORMROD_DEVENV/configs/shell/env"
 source "$NJORMROD_DEVENV/configs/shell/aliases"
 source "$NJORMROD_DEVENV/configs/shell/functions"
@@ -16,4 +17,26 @@ maybe_source ~/.envrc
 if [ -z "$SSH_AGENT_PID" ] ; then
   eval $(ssh-agent -s) >/dev/null
   ssh-add ~/.ssh/id_ed25519
+fi
+
+######################################################################
+### ENVRCDIR
+######################################################################
+
+if [ ! -v "$ENVRCDIR" ] ; then
+  # If ENVRCDIR is not yet set, look for it in the default place,
+  # based on the hostname, possibly suffix-stripped of .facebook.com
+  envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
+  host="$(hostname)"
+  for candidate in "$host" "${host%.facebook.com}"; do
+    if [ -d "$envs_dir/$candidate" ]; then
+      export ENVRCDIR="$envs_dir/$candidate"
+      break
+    fi
+  done
+  unset envs_dir host candidate
+fi
+
+if [ -v "$ENVRCDIR" ] ; then
+  maybe_source "$ENVRCDIR/envrc"
 fi
