@@ -53,14 +53,27 @@ def tmux(s, **kwargs):
     return subprocess.run(cmd, **kwargs)
 
 
+def get_panes_config():
+    # Search for a panes file, taking the first that exists
+    candidate_paths = [os.path.expanduser("~/.tmux.panes")]
+    envrcdir = os.getenv("ENVRCDIR")
+    if envrcdir:
+        candidate_paths.append(os.path.join(envrcdir, "tmux.panes"))
+    for path in candidate_paths:
+        if os.path.isfile(path):
+            with open(path, "r") as f:
+                return f.read()
+    raise FileNotFoundError(
+        f"No tmux.panes file found in: {', '.join(candidate_paths)}"
+    )
+
+
 def start():
     # Get the terminal size
     cols, rows = shutil.get_terminal_size()
 
-    # Load pane info from ~/.tmux.panes
-    panes_path = os.path.expanduser("~/.tmux.panes")
-    with open(panes_path, "r") as f:
-        panes_config = f.read()
+    # Load pane info
+    panes_config = get_panes_config()
 
     # Session name
     session_name = "me"
