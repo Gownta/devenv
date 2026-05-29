@@ -37,7 +37,14 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False, e
 
 
 Dsts = (
-    [Dst("localhost (tmux)", "Automatically starting up tmux", "tmux_go")]
+    [
+        Dst("localhost (tmux)", "Automatically starting up tmux", "tmux_go"),
+        Dst(
+            "OnDemand (eternal tmux)",
+            "Connecting to WWW+FBSource+Configerator OnDemand",
+            "TERM=tmux-256color dev connect -t www_fbsource_configerator -e --release-without-prompt",
+        ),
+    ]
     + make_devserver_dsts("devvm7569.cco0", with_eternal=True, envstr="TERM=tmux-256color ")
     + make_devserver_dsts("devvm50895.cco0", with_eternal=True, envstr="TERM=tmux-256color ")
     + [Dst("localhost")]
@@ -80,6 +87,6 @@ def get_dst_cmd(dsts, default=None):
 
 
 if __name__ == "__main__":
-    cmd = get_dst_cmd(Dsts, 1)
+    cmd = get_dst_cmd(Dsts, 2)
     if cmd:
         os.system(cmd)
