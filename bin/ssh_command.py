@@ -1,4 +1,8 @@
 import os
+import select
+import sys
+import termios
+import time
 from dataclasses import dataclass
 
 
@@ -7,6 +11,60 @@ class Dst:
     short: str
     message: str = ""
     cmd: str = ""
+    get_yubi: bool = False
+
+
+# A YubiKey OTP arrives as a fixed-length burst of 32 characters
+YUBIKEY_LENGTH = 32
+
+
+def get_yubikey(length=YUBIKEY_LENGTH):
+    """
+    Capture a YubiKey OTP from the terminal.
+
+    A YubiKey "types" its one-time password as a rapid burst of characters.
+    We read raw, un-echoed input until at least `length` characters have
+    arrived and at least 1/length seconds have elapsed, then return the last
+    `length` characters -- dropping any stray leading input (such as the
+    newline left over from the menu selection).
+    """
+    print("Touch your YubiKey...")
+    min_elapsed = 1.0 / length
+
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    new = termios.tcgetattr(fd)
+    new[3] &= ~(termios.ICANON | termios.ECHO)  # lflags: no canonical, no echo
+    new[6][termios.VMIN] = 1
+    new[6][termios.VTIME] = 0
+    termios.tcsetattr(fd, termios.TCSANOW, new)
+
+    buf = []
+    last = None
+    try:
+        while True:
+            # Finalize once we have enough characters and input has gone idle
+            # for the settle window -- the burst is over. Reading past `length`
+            # this way lets the trailing last-`length` slice drop stray leading
+            # input (e.g. the newline left from the menu selection).
+            if len(buf) >= length and last is not None:
+                idle = time.monotonic() - last
+                if idle >= min_elapsed:
+                    break
+                timeout = min_elapsed - idle
+            else:
+                timeout = None  # wait (indefinitely) for more of the burst
+            ready, _, _ = select.select([fd], [], [], timeout)
+            if ready:
+                ch = os.read(fd, 1)
+                if not ch:  # EOF
+                    break
+                buf.append(ch.decode("ascii", "replace"))
+                last = time.monotonic()
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+
+    return "".join(buf[-length:])
 
 
 def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False, envstr=""):
@@ -18,12 +76,14 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False, e
             f"{short_hostname} (eternal)",
             f"eternally connecting to {full_hostname}",
             f"{envstr}dev connect -e -n {full_hostname}",
+            get_yubi=True,
         ))
 
     ret.append(Dst(
         f"{short_hostname} (ssh)",
         f"ssh'ing into {full_hostname}",
         f"{envstr}ssh {full_hostname}",
+        get_yubi=True,
     ))
 
     if with_tunnel:
@@ -31,6 +91,7 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False, e
             f"{short_hostname} (-L)",
             f"ssh'ing into {full_hostname}; tunneling in on port 3000",
             f"ssh {full_hostname} -L 3000:localhost:3000",
+            get_yubi=True,
         ))
 
     return ret
@@ -42,7 +103,8 @@ Dsts = (
         Dst(
             "OnDemand (eternal tmux)",
             "Connecting to WWW+FBSource+Configerator OnDemand",
-            "TERM=tmux-256color dev connect -t www_fbsource_configerator -e --release-without-prompt",
+            "TERM=tmux-256color dev connect -t www_fbsource_configerator --connection eternalterniaml --release-without-prompt --yubi",
+            get_yubi=True,
         ),
     ]
     + make_devserver_dsts("devvm7569.cco0", with_eternal=True, envstr="TERM=tmux-256color ")
@@ -79,11 +141,14 @@ def get_dst_cmd(dsts, default=None):
 
     dst_idx = in_dst(len(dsts))
     dst = dsts[dst_idx]
+    cmd = dst.cmd
     if dst.message:
         print(dst.message)
-    if dst.cmd:
-        print(f"$ {dst.cmd}")
-    return dst.cmd
+    if cmd:
+        print(f"$ {cmd}")
+    if dst.get_yubi:
+        cmd += get_yubikey()
+    return cmd
 
 
 if __name__ == "__main__":
