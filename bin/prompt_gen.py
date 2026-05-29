@@ -143,6 +143,8 @@ def get_pwd():
         lines = []
 
     for line in lines:
+        if line.lstrip().startswith("#"):
+            continue
         parts = line.split()
         if len(parts) == 2:
             d = re.sub("^" + parts[0], parts[1], d, count=1)
