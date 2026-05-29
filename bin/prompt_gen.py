@@ -136,11 +136,26 @@ def get_elapsed(start_ts, now, has_us):
 def get_pwd():
     d = os.getcwd()
 
-    try:
-        with open(os.path.expanduser("~/.prompt_shorthand")) as f:
-            lines = f.readlines()
-    except OSError:
-        lines = []
+    # Search for a prompt_shorthand file, using the first that opens
+    candidate_paths = []
+    envrcdir = os.getenv("ENVRCDIR")
+    if envrcdir:
+        candidate_paths.append(os.path.join(envrcdir, "prompt_shorthand"))
+    candidate_paths.append(os.path.expanduser("~/.prompt_shorthand"))
+    devenv = os.getenv("NJORMROD_DEVENV")
+    if devenv:
+        candidate_paths.append(
+            os.path.join(devenv, "configs", "shell", "prompt_shorthand")
+        )
+
+    lines = []
+    for path in candidate_paths:
+        try:
+            with open(path) as f:
+                lines = f.readlines()
+            break
+        except OSError:
+            continue
 
     for line in lines:
         if line.lstrip().startswith("#"):
