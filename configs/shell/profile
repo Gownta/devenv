@@ -28,7 +28,7 @@ if [ ! -v ENVRCDIR ] ; then
   # based on the hostname, possibly suffix-stripped of .facebook.com
   envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
   host="$(hostname)"
-  for candidate in "$host" "${host%.facebook.com}"; do
+  for candidate in "$host" "${host%.facebook.com}" "default"; do
     if [ -d "$envs_dir/$candidate" ]; then
       export ENVRCDIR="$envs_dir/$candidate"
       break
