@@ -103,7 +103,7 @@ Dsts = (
         Dst(
             "OnDemand (eternal tmux)",
             "Connecting to WWW+FBSource+Configerator OnDemand",
-            "TERM=tmux-256color dev connect -t www_fbsource_configerator --connection eternalterniaml --release-without-prompt --yubi",
+            "TERM=tmux-256color dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt",
             get_yubi=True,
         ),
     ]
@@ -147,7 +147,7 @@ def get_dst_cmd(dsts, default=None):
     if cmd:
         print(f"$ {cmd}")
     if dst.get_yubi:
-        cmd += get_yubikey()
+        cmd += " --yubi " + get_yubikey()
     return cmd
 
 
