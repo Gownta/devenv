@@ -32,7 +32,7 @@ def get_yubikey(length=YUBIKEY_LENGTH):
     four characters verbatim (so you can see your key fired) and every
     character after that as a '*'.
     """
-    print("Touch your YubiKey...")
+    print("Activate YubiKey to ssh in: ", end="", flush=True)
     min_elapsed = 1.0 / length
 
     fd = sys.stdin.fileno()
