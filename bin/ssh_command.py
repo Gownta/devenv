@@ -27,6 +27,10 @@ def get_yubikey(length=YUBIKEY_LENGTH):
     arrived and at least 1/length seconds have elapsed, then return the last
     `length` characters -- dropping any stray leading input (such as the
     newline left over from the menu selection).
+
+    As the burst streams in we echo a masked progress indicator: the first
+    four characters verbatim (so you can see your key fired) and every
+    character after that as a '*'.
     """
     print("Touch your YubiKey...")
     min_elapsed = 1.0 / length
@@ -56,13 +60,23 @@ def get_yubikey(length=YUBIKEY_LENGTH):
                 timeout = None  # wait (indefinitely) for more of the burst
             ready, _, _ = select.select([fd], [], [], timeout)
             if ready:
-                ch = os.read(fd, 1)
-                if not ch:  # EOF
+                raw = os.read(fd, 1)
+                if not raw:  # EOF
                     break
-                buf.append(ch.decode("ascii", "replace"))
+                ch = raw.decode("ascii", "replace")
+                buf.append(ch)
+                # Echo masked progress: the first four characters verbatim,
+                # the rest as '*'. Non-printable stray input is masked too,
+                # so a leading newline can't corrupt the line.
+                shown = ch if (len(buf) <= 4 and ch.isprintable()) else "*"
+                sys.stdout.write(shown)
+                sys.stdout.flush()
                 last = time.monotonic()
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        # Terminate the masked echo line before returning.
+        sys.stdout.write("\n")
+        sys.stdout.flush()
 
     return "".join(buf[-length:])
 
