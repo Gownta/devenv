@@ -5,6 +5,16 @@ import datetime
 import os
 import re
 import sys
+import unicodedata
+
+
+def disp_width(s):
+    # Width of `s` in terminal cells. Wide / fullwidth code points (notably
+    # emoji such as the U+1F331 seedling) take two cells; plain len() counts
+    # them as one, which throws off the border fill math downstream of `nc`.
+    return sum(
+        2 if unicodedata.east_asian_width(ch) in ("W", "F") else 1 for ch in s
+    )
 
 
 border_left_top = "╭"
@@ -30,7 +40,7 @@ class Entry:
         self.bg = bg
 
     def len(self):
-        return sum(len(t) for t in self.texts)
+        return sum(disp_width(t) for t in self.texts)
 
 
 class Drawer:
@@ -73,7 +83,7 @@ class Drawer:
             if self.starter:
                 self.set_fg(bg)
                 self.contents.append(self.starter)
-                self.n += len(self.starter)
+                self.n += disp_width(self.starter)
         elif self.sep:
             old_bg = self.bg
             new_fg, new_bg = old_bg, bg
@@ -82,12 +92,12 @@ class Drawer:
             self.set_fg(new_fg)
             self.set_bg(new_bg)
             self.contents.append(self.sep)
-            self.n += len(self.sep)
+            self.n += disp_width(self.sep)
         self.set_fg(fg)
         self.set_bg(bg)
         for text in texts:
             self.contents.append(text)
-            self.n += len(text)
+            self.n += disp_width(text)
 
     def end(self):
         if self.contents and self.ender:
@@ -95,7 +105,7 @@ class Drawer:
             self.reset()
             self.set_fg(bg)
             self.contents.append(self.ender)
-            self.n += len(self.ender)
+            self.n += disp_width(self.ender)
 
 
 def get_time(now):
