@@ -133,8 +133,28 @@ def get_elapsed(start_ts, now, has_us):
     return f" {int(d / 86400)}d {int((d % 84600) / 3600)}h{int((d % 3600) / 60)}m"
 
 
+def get_pwd_icon(path):
+    # Pick an icon describing the repo that `path` lives in, walking up to root:
+    #   - hg/sl repo: U+1F331 seedling
+    #   - git repo:   U+E709 git icon
+    #   - otherwise:  U+F07C folder
+    d = path
+    while True:
+        if os.path.exists(os.path.join(d, ".hg")) or os.path.exists(
+            os.path.join(d, ".sl")
+        ):
+            return "🌱"
+        if os.path.exists(os.path.join(d, ".git")):
+            return " "
+        parent = os.path.dirname(d)
+        if parent == d:
+            return " "
+        d = parent
+
+
 def get_pwd():
     d = os.getcwd()
+    icon = get_pwd_icon(d)
 
     # Search for a prompt_shorthand file, using the first that opens
     candidate_paths = []
@@ -164,7 +184,7 @@ def get_pwd():
         if len(parts) == 2:
             d = re.sub("^" + parts[0], parts[1], d, count=1)
 
-    return " " + d
+    return icon + d
 
 
 def lprompt(lentries, rentries, trentries, ncols):
