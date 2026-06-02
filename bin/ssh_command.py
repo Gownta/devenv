@@ -117,7 +117,7 @@ Dsts = (
         Dst(
             "OnDemand (eternal tmux)",
             "Connecting to WWW+FBSource+Configerator OnDemand",
-            "TERM=tmux-256color dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt",
+            "TERM=tmux-256color dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt tmux_go",
             get_yubi=True,
         ),
     ]
