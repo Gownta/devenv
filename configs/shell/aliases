@@ -16,9 +16,6 @@ alias ssn="sudo shutdown now"
 alias zz="source ~/.zshrc"
 alias hgr="hg rebase -s 'draft()' -d master"
 alias codemod="/data/users/njormrod/repos/www/scripts/bin/codemod --extensions='*'"
-alias autodiff="buck2 run scripts/njormrod/autodiff:autodiff --"
-alias ad="buck2 run scripts/njormrod/ad:autodiff --"
-alias ad2="buck2 run scripts/njormrod/ad2:autodiff --"
 alias alf="arc f && arc lint"
 alias sshl="ssh -L 3000:localhost:3000"
 
@@ -26,11 +23,6 @@ alias sshl="ssh -L 3000:localhost:3000"
 alias clear='for qwedc in {1..100} ; do echo " " ; done ; clear'
 alias freq='sort | uniq -c | sort -nr'
 alias vimr='vim -R'
-
-alias njor='b r scripts/njormrod/tmp:main'
-alias t='c;b t'
-alias b="c;b"
-alias tad='b t scripts/njormrod/ad/... scripts/njormrod/cli/...'
 
 # Indexing shorthand
 alias f1="awk '{print \$1}'"
