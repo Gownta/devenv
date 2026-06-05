@@ -1,0 +1,286 @@
+{
+  "Ansi 0 Color" : {
+    "Green Component" : 0,
+    "Red Component" : 0,
+    "Blue Component" : 0
+  },
+  "Tags" : [
+
+  ],
+  "Ansi 12 Color" : {
+    "Green Component" : 0.3333333432674408,
+    "Red Component" : 0.3333333432674408,
+    "Blue Component" : 1
+  },
+  "Normal Font" : "NotoMonoNF 16",
+  "Ansi 1 Color" : {
+    "Green Component" : 0,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0
+  },
+  "Bold Color" : {
+    "Green Component" : 1,
+    "Red Component" : 1,
+    "Blue Component" : 1
+  },
+  "Horizontal Spacing" : 1,
+  "Ansi 6 Color" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0,
+    "Blue Component" : 0.73333334922790527
+  },
+  "Rows" : 25,
+  "Default Bookmark" : "No",
+  "Blend" : 0.84060485200732171,
+  "Non-ASCII Anti Aliased" : true,
+  "Use Bright Bold" : true,
+  "Ansi 10 Color" : {
+    "Green Component" : 1,
+    "Red Component" : 0.3333333432674408,
+    "Blue Component" : 0.3333333432674408
+  },
+  "Ambiguous Double Width" : false,
+  "Jobs to Ignore" : [
+    "rlogin",
+    "ssh",
+    "slogin",
+    "telnet"
+  ],
+  "Ansi 15 Color" : {
+    "Green Component" : 1,
+    "Red Component" : 1,
+    "Blue Component" : 1
+  },
+  "Foreground Color" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0.73333334922790527
+  },
+  "Working Directory" : "\/Users\/njormrod",
+  "Blinking Cursor" : false,
+  "Disable Window Resizing" : true,
+  "Sync Title" : false,
+  "Prompt Before Closing 2" : false,
+  "BM Growl" : false,
+  "Command" : "",
+  "Description" : "Default",
+  "Space" : 0,
+  "Mouse Reporting" : true,
+  "Screen" : -1,
+  "Selection Color" : {
+    "Green Component" : 0.8353000283241272,
+    "Red Component" : 0.70980000495910645,
+    "Blue Component" : 1
+  },
+  "Columns" : 80,
+  "Idle Code" : 0,
+  "Ansi 13 Color" : {
+    "Green Component" : 0.3333333432674408,
+    "Red Component" : 1,
+    "Blue Component" : 1
+  },
+  "Custom Command" : "No",
+  "ASCII Anti Aliased" : true,
+  "Non Ascii Font" : "Monaco 12",
+  "Vertical Spacing" : 1,
+  "Use Bold Font" : true,
+  "Option Key Sends" : 0,
+  "Selected Text Color" : {
+    "Green Component" : 0,
+    "Red Component" : 0,
+    "Blue Component" : 0
+  },
+  "Background Color" : {
+    "Green Component" : 0,
+    "Red Component" : 0,
+    "Blue Component" : 0
+  },
+  "Character Encoding" : 4,
+  "Ansi 11 Color" : {
+    "Green Component" : 1,
+    "Red Component" : 1,
+    "Blue Component" : 0.3333333432674408
+  },
+  "Use Italic Font" : true,
+  "Unlimited Scrollback" : true,
+  "Keyboard Map" : {
+    "0x6c-0x100000-0x25" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 11,
+      "Text" : "0x02 0x6c",
+      "Escaping" : 2
+    },
+    "0x37-0x100000-0x1a" : {
+      "Label" : "",
+      "Text" : "0x02 0x37",
+      "Action" : 11
+    },
+    "0x6a-0x100000-0x26" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 11,
+      "Text" : "0x02 0x6a",
+      "Escaping" : 2
+    },
+    "0x60-0x100000-0x32" : {
+      "Label" : "",
+      "Text" : "0x02 0x3b",
+      "Action" : 11
+    },
+    "0x39-0x100000-0x19" : {
+      "Label" : "",
+      "Text" : "0x02 0x39",
+      "Action" : 11
+    },
+    "0x34-0x100000-0x15" : {
+      "Label" : "",
+      "Text" : "0x02 0x34",
+      "Action" : 11
+    },
+    "0x6b-0x100000-0x28" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 11,
+      "Text" : "0x02 0x6b",
+      "Escaping" : 2
+    },
+    "0x36-0x100000-0x16" : {
+      "Label" : "",
+      "Text" : "0x02 0x36",
+      "Action" : 11
+    },
+    "0x33-0x100000-0x14" : {
+      "Label" : "",
+      "Text" : "0x02 0x33",
+      "Action" : 11
+    },
+    "0x32-0x100000-0x13" : {
+      "Label" : "",
+      "Text" : "0x02 0x32",
+      "Action" : 11
+    },
+    "0x7a-0x100000-0x6" : {
+      "Label" : "",
+      "Text" : "0x02 0x7a",
+      "Action" : 11
+    },
+    "0x72-0x100000-0xf" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 11,
+      "Text" : "0x12",
+      "Escaping" : 2
+    },
+    "0x66-0x100000-0x3" : {
+      "Label" : "",
+      "Text" : "0x02 0x5b",
+      "Action" : 11
+    },
+    "0x38-0x100000-0x1c" : {
+      "Label" : "",
+      "Text" : "0x02 0x38",
+      "Action" : 11
+    },
+    "0x31-0x100000-0x12" : {
+      "Label" : "",
+      "Text" : "0x02 0x31",
+      "Action" : 11
+    },
+    "0x35-0x100000-0x17" : {
+      "Label" : "",
+      "Text" : "0x02 0x35",
+      "Action" : 11
+    },
+    "0xf703-0x380000-0x7c" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 0,
+      "Text" : "",
+      "Escaping" : 2
+    },
+    "0xf702-0x380000-0x7b" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 2,
+      "Text" : "",
+      "Escaping" : 2
+    },
+    "0x68-0x100000-0x4" : {
+      "Version" : 2,
+      "Apply Mode" : 0,
+      "Action" : 11,
+      "Text" : "0x02 0x68",
+      "Escaping" : 2
+    }
+  },
+  "Window Type" : 1,
+  "Cursor Type" : 1,
+  "Initial Text" : "",
+  "Background Image Location" : "\/Users\/njormrod\/dev\/devenv\/art\/blur.jpg",
+  "Blur" : false,
+  "Scrollback Lines" : 0,
+  "Send Code When Idle" : false,
+  "Close Sessions On End" : true,
+  "Terminal Type" : "xterm-256color",
+  "Visual Bell" : false,
+  "Flashing Bell" : false,
+  "Silence Bell" : true,
+  "Ansi 14 Color" : {
+    "Green Component" : 1,
+    "Red Component" : 0.3333333432674408,
+    "Blue Component" : 1
+  },
+  "Name" : "njormrod",
+  "Cursor Text Color" : {
+    "Green Component" : 1,
+    "Red Component" : 1,
+    "Blue Component" : 1
+  },
+  "Shortcut" : "",
+  "Cursor Color" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0.73333334922790527
+  },
+  "Transparency" : 0,
+  "Guid" : "9FDF1036-55B8-472E-B021-A6211383A7DD",
+  "Ansi 2 Color" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0,
+    "Blue Component" : 0
+  },
+  "Ansi 3 Color" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0
+  },
+  "Ansi 4 Color" : {
+    "Green Component" : 0,
+    "Red Component" : 0,
+    "Blue Component" : 0.73333334922790527
+  },
+  "Ansi 5 Color" : {
+    "Green Component" : 0,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0.73333334922790527
+  },
+  "Use Non-ASCII Font" : false,
+  "Ansi 7 Color" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0.73333334922790527
+  },
+  "Ansi 8 Color" : {
+    "Green Component" : 0.3333333432674408,
+    "Red Component" : 0.3333333432674408,
+    "Blue Component" : 0.3333333432674408
+  },
+  "Ansi 9 Color" : {
+    "Green Component" : 0.3333333432674408,
+    "Red Component" : 1,
+    "Blue Component" : 0.3333333432674408
+  },
+  "Right Option Key Sends" : 0,
+  "Custom Directory" : "No"
+}

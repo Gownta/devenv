@@ -5,6 +5,8 @@ iTerm > Settings > General > Settings > Export|Import
 I need to set the background image manually. It is in devenv/art.
 iTerm > Settings > Profiles > njormrod > Window > Background Image
 
+UPDATE: the profile can now be saved as JSON
+
 
 ## Remake
 
@@ -25,6 +27,6 @@ navigating around iterm:
 
   cmd-hjkl  0x02 hjkl       forward to my tmux pane navigation commands
 
-  cmd-shift-Left|Right
-            Next|Prev Tab
+  cmd-option-Left|Right
+             Next|Prev Tab
 ```
