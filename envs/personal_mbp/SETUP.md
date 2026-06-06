@@ -17,8 +17,12 @@ hot corners
 
 ln -s gitconfig, tmux.conf, vimrc, zshrc, zshenv
 
+Install Nerd Font "Noto", unzipped into ~/Library/Fonts
+https://www.nerdfonts.com/
+
 Load my iterm config
-Change font size. It's too small
+Change font size in iterm to 14. 11 is too small
+Change font to Nerd Noto Mono
 
 
 # Homebrew
