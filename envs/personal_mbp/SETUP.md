@@ -24,9 +24,11 @@ Install Nerd Font "Noto", unzipped into ~/Library/Fonts
 https://www.nerdfonts.com/
 
 Load my iterm config
+Needed to go to settings > keys > navigation shortcuts, and therein, disable the shortcut to change tabs, since that was interfering with my cmd-N tmux switch overrides
 Change font size in iterm to 14. 11 is too small
 Change font to Nerd Noto Mono
 
+Used homebrew to install tmux
 
 # Homebrew
 
