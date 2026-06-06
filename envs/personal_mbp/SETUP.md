@@ -10,10 +10,13 @@ in .ssh/: ssh-keygen -t ed25519 -C "nicholas.ormrod@gmail.com"
 PASSWORD TO PMBP. lastpass > github
 in github, add the new key
 git clone git@github.com:Gownta/devenv.git
+also lexemes, tmux-power, and phoenix
 
 In settings,
 invert scrolling
 hot corners
+dark mode was done during computer setup
+keyboard > rebind caps lock to escape
 
 ln -s gitconfig, tmux.conf, vimrc, zshrc, zshenv
 
@@ -29,6 +32,8 @@ Change font to Nerd Noto Mono
 
 Sigh... I installed homebrew:
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+/opt/homebrew/bin/brew install tmux
 
 But I didn't do the next steps...
 
