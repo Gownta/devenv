@@ -1,2 +1,2 @@
-#!/usr/bin/bash
+#!bash
 tmux kill-session
