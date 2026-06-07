@@ -1,1 +1,5 @@
 export NJO_VIM_DISABLE_PLUGINS=1
+
+export HOST_ICON=💻
+export PROMPT_VAR_HOST="%F{162}⌘%f"
+export PROMPT_VAR_ART="%F{red}❱%F{208}❱%F{green}❱%f"
