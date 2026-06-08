@@ -1,5 +1,5 @@
 # Default options on common commands
-alias grep='grep --color=auto -s'
+alias grep='grep --color=auto -s --no-group-separator'
 alias fgrep='grep -F'
 alias egrep='grep -E'
 alias ls='ls --color=auto'
