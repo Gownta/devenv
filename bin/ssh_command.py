@@ -81,7 +81,7 @@ def get_yubikey(length=YUBIKEY_LENGTH):
     return "".join(buf[-length:])
 
 
-def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False, envstr=""):
+def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False):
     full_hostname = short_hostname + ".facebook.com"
 
     ret = []
@@ -89,14 +89,14 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False, e
         ret.append(Dst(
             f"{short_hostname} (eternal)",
             f"eternally connecting to {full_hostname}",
-            f"{envstr}dev connect -e -n {full_hostname}",
+            f"dev connect -e -n {full_hostname}",
             get_yubi=True,
         ))
 
     ret.append(Dst(
         f"{short_hostname} (ssh)",
         f"ssh'ing into {full_hostname}",
-        f"{envstr}ssh {full_hostname}",
+        f"ssh {full_hostname}",
         get_yubi=True,
     ))
 
@@ -117,12 +117,12 @@ Dsts = (
         Dst(
             "OnDemand (eternal tmux)",
             "Connecting to WWW+FBSource+Configerator OnDemand",
-            "TERM=tmux-256color dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt tmux_go",
+            "dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt tmux_go",
             get_yubi=True,
         ),
     ]
-    + make_devserver_dsts("devvm7569.cco0", with_eternal=True, envstr="TERM=tmux-256color ")
-    + make_devserver_dsts("devvm50895.cco0", with_eternal=True, envstr="TERM=tmux-256color ")
+    + make_devserver_dsts("devvm7569.cco0", with_eternal=True)
+    + make_devserver_dsts("devvm50895.cco0", with_eternal=True)
     + [Dst("localhost")]
 )
 #host[3]="alpha-pi"
