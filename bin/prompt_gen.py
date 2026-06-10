@@ -307,29 +307,25 @@ def lprompt(lentries, rentries, trentries, ncols):
         rd.add(re)
     rd.end()
 
-    # Combine the ld and rd, if possible
+    # Combine the ld and rd, if possible. This is the final line of the prompt
+    # block. There is no RPROMPT below it, so the right border closes the box
+    # (╯) rather than teeing down (┤ / ╮) into the input line.
     if not ld.contents:
         parts.extend(mk_fill(nc - rd.n))
         parts.extend(rd.contents)
-
-        right = right_mid if used_right_top else right_top
-        used_right_top = True
-        parts.extend(right)
+        parts.extend(right_bot)
     elif ld.n + rd.n <= nc - 1:
         ld.end()
         parts.extend(ld.contents)
         parts.extend(mk_fill(nc - ld.n - rd.n))
         parts.extend(rd.contents)
-
-        right = right_mid if used_right_top else right_top
-        used_right_top = True
-        parts.extend(right)
+        parts.extend(right_bot)
     else:
         close_ld()
         open_ld()
         parts.extend(mk_fill(nc - rd.n))
         parts.extend(rd.contents)
-        parts.extend(right_mid)
+        parts.extend(right_bot)
 
 
     ############################################################

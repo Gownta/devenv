@@ -45,4 +45,3 @@ njo_pre_prompt() {
 preexec_functions+=(njo_time_start)
 precmd_functions+=(njo_pre_prompt)
 PROMPT=$'%F{238}╰─%f$PROMPT_VAR_ART '
-RPROMPT=$'%F{238}─╯%f'
