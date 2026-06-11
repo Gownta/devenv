@@ -9,7 +9,8 @@ l = log
 d = diff
 blame = blame -blnpu
 amend = amend --rebase
-dl = sl -r "draft() - obsolete() - present(bookmark('re:ad.+'))" -T '{sl}'
+#dl = sl -r "draft() - obsolete() - present(bookmark('re:ad.+'))" -T '{sl}'
+dl = !$HG sl --config smartlog.names=master "$@"
 
 # See commit template with `hg debugcommitmessage`
 [committemplate]
