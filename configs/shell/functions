@@ -38,7 +38,7 @@ function cad {
 }
 
 function cdd {
-    cd "$HOME/dev"
+    cd "$HOME/dev/devenv"
 }
 
 function maybe_source {
