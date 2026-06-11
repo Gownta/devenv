@@ -40,3 +40,13 @@ fi
 if [ -v ENVRCDIR ] ; then
   maybe_source "$ENVRCDIR/envrc"
 fi
+
+######################################################################
+### HGRC MONKEYPATCH (OnDemand only)
+######################################################################
+
+# On OnDemands, repos may not be mounted at login, so patch their hgrc
+# files in a detached background process that retries until they appear.
+if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami 2>/dev/null ; then
+  ( "$NJORMROD_DEVENV/bin/hgrc_monkeypatch.py" & ) >/dev/null 2>&1
+fi
