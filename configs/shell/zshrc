@@ -17,13 +17,6 @@ bindkey '^R' history-incremental-search-backward   # iTerm: map cmd-R to ^R (0x1
 autoload -U compinit
 compinit
 
-# Prompt cosmetics (PROMPT_VAR_*) — must load before PROMPT is set below.
-maybe_source ~/.prompt_vars
-maybe_source ~/.envrc
-
-# Per-host prompt cosmetics. ENVRCDIR itself is computed in .zshenv.
-[ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/envrc"
-
 # Prompt: a timed, exit-status-aware line rendered by prompt_gen.py.
 setopt PROMPT_SUBST
 timer_start=0
@@ -41,5 +34,4 @@ precmd_functions+=(njo_pre_prompt)
 PROMPT=$'%F{238}╰─%f$PROMPT_VAR_ART '
 
 # Per-host overrides, last word.
-maybe_source "$HOME/.env_profile"
 [ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/zshrc"
