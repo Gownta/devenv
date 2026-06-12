@@ -67,3 +67,7 @@ else
   done
   unset envs_dir device candidates candidate
 fi
+
+# Source the per-host equivalent in $ENVRCDIR, if present.
+# (maybe_source isn't defined yet — it lives in functions, sourced by .zshrc.)
+[ -f "$ENVRCDIR/zshenv" ] && source "$ENVRCDIR/zshenv"

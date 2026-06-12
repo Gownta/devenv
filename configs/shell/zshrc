@@ -42,3 +42,4 @@ PROMPT=$'%F{238}╰─%f$PROMPT_VAR_ART '
 
 # Per-host overrides, last word.
 maybe_source "$HOME/.env_profile"
+[ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/zshrc"

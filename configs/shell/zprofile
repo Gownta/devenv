@@ -11,3 +11,6 @@ fi
 
 # Secrets (API keys, etc.) — environment, inherited by subshells.
 [ -f ~/.secrets ] && source ~/.secrets
+
+# Source the per-host equivalent in $ENVRCDIR (set in .zshenv), if present.
+[ -f "$ENVRCDIR/zprofile" ] && source "$ENVRCDIR/zprofile"
