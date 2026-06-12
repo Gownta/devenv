@@ -50,7 +50,7 @@ export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin
 # Per-host config dir (ENVRCDIR), selected from /etc/fbwhoami.
 if [ ! -f /etc/fbwhoami ]; then
   # Not a Meta-managed host (e.g. laptop).
-  export ENVRCDIR="$NJORMROD_DEVENV/envs/mbp/envrcdir"
+  export ENVRCDIR="$NJORMROD_DEVENV/envs/mbp"
 else
   envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
   if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami; then
