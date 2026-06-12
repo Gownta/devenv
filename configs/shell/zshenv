@@ -40,3 +40,28 @@ export LSCOLORS=cxgxcxdxfxegedabagacad
 
 # Cosmos
 export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin
+
+################################################################################
+#### ENVRCDIR
+################################################################################
+
+# Per-host config dir (ENVRCDIR), selected from /etc/fbwhoami.
+if [ ! -f /etc/fbwhoami ]; then
+  # Not a Meta-managed host (e.g. laptop).
+  export ENVRCDIR="$NJORMROD_DEVENV/envs/mbp/envrcdir"
+else
+  envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
+  if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami; then
+    candidates=(od default)
+  else
+    device="$(sed -n 's/^DEVICE_NAME=//p' /etc/fbwhoami)"
+    candidates=("${device%.facebook.com}" devserver default)
+  fi
+  for candidate in $candidates; do
+    if [ -n "$candidate" ] && [ -d "$envs_dir/$candidate" ]; then
+      export ENVRCDIR="$envs_dir/$candidate"
+      break
+    fi
+  done
+  unset envs_dir device candidates candidate
+fi

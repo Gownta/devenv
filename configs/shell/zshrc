@@ -21,18 +21,7 @@ compinit
 maybe_source ~/.prompt_vars
 maybe_source ~/.envrc
 
-# Per-host config dir (prompt vars, etc.); fall back to a hostname match.
-if [ ! -v ENVRCDIR ]; then
-  envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
-  host="$(hostname)"
-  for candidate in "$host" "${host%.facebook.com}" "default"; do
-    if [ -d "$envs_dir/$candidate" ]; then
-      export ENVRCDIR="$envs_dir/$candidate"
-      break
-    fi
-  done
-  unset envs_dir host candidate
-fi
+# Per-host prompt cosmetics. ENVRCDIR itself is computed in .zshenv.
 [ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/envrc"
 
 # Prompt: a timed, exit-status-aware line rendered by prompt_gen.py.
