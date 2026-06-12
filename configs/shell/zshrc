@@ -1,7 +1,55 @@
-source "$NJORMROD_DEVENV/configs/shell/profile"
-source "$NJORMROD_DEVENV/configs/shell/profile.zsh"
-maybe_source "$HOME/.env_profile"
+# ~/.zshrc — sourced for interactive shells.
+#
+# Merged from the former profile + profile.zsh: aliases, functions, completion,
+# keybindings, and the prompt. Environment and PATH live in .zshenv;
+# once-per-login setup lives in .zprofile.
 
-#export NVM_DIR="$HOME/.nvm"
-#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+source "$NJORMROD_DEVENV/configs/shell/functions"
+source "$NJORMROD_DEVENV/configs/shell/aliases"
+
+# Solid bar cursor instead of a box.
+printf '\e[6 q'
+
+# Editing mode, history, completion.
+bindkey -v
+setopt HIST_IGNORE_DUPS
+bindkey '^R' history-incremental-search-backward   # iTerm: map cmd-R to ^R (0x12)
+autoload -U compinit
+compinit
+
+# Prompt cosmetics (PROMPT_VAR_*) — must load before PROMPT is set below.
+maybe_source ~/.prompt_vars
+maybe_source ~/.envrc
+
+# Per-host config dir (prompt vars, etc.); fall back to a hostname match.
+if [ ! -v ENVRCDIR ]; then
+  envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
+  host="$(hostname)"
+  for candidate in "$host" "${host%.facebook.com}" "default"; do
+    if [ -d "$envs_dir/$candidate" ]; then
+      export ENVRCDIR="$envs_dir/$candidate"
+      break
+    fi
+  done
+  unset envs_dir host candidate
+fi
+[ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/envrc"
+
+# Prompt: a timed, exit-status-aware line rendered by prompt_gen.py.
+setopt PROMPT_SUBST
+timer_start=0
+njo_time_start() {
+  timer_start="$(date +%s%N)"
+  timed_cmd="$1"
+}
+njo_pre_prompt() {
+  "$NJORMROD_DEVENV/bin/prompt_gen.py" $timer_start $COLUMNS $? "$timed_cmd"
+  timer_start=0
+  timed_cmd=""
+}
+preexec_functions+=(njo_time_start)
+precmd_functions+=(njo_pre_prompt)
+PROMPT=$'%F{238}╰─%f$PROMPT_VAR_ART '
+
+# Per-host overrides, last word.
+maybe_source "$HOME/.env_profile"

@@ -142,22 +142,29 @@
         - .bashrc
         - .bash_logout
         - .bash_profile
-        - .zshrc
+        - .zshenv
         - .zprofile
+        - .zshrc
+        - .zlogin
+        - .zlogout
     when: not originals_check.stat.exists
 
   - name: Symlink dotfiles
     file:
       path: "~/{{ item.path }}"
       state: link
+      force: yes
       src: "~/dev/devenv/{{ item.src }}"
     with_items:
       - { path: ".gitconfig", src: "configs/gitconfig" }
       - { path: ".tm_properties", src: "configs/textmate_properties" }
       - { path: ".tmux.conf", src: "configs/tmux.conf" }
       - { path: ".vimrc", src: "configs/vimrc" }
-      - { path: ".zshenv", src: "configs/shell/env" }
+      - { path: ".zshenv", src: "configs/shell/zshenv" }
+      - { path: ".zprofile", src: "configs/shell/zprofile" }
       - { path: ".zshrc", src: "configs/shell/zshrc" }
+      - { path: ".zlogin", src: "configs/shell/zlogin" }
+      - { path: ".zlogout", src: "configs/shell/zlogout" }
       - { path: ".config/systemd/user", src: "systemd" }
       - { path: ".env_profile", src: "envs/{{ devenv }}/env_profile" }
       - { path: ".aws/config", src: "configs/aws_config" }

@@ -1,0 +1,13 @@
+# ~/.zprofile — sourced for login shells, before .zshrc.
+#
+# Establish session-wide state once per login; subshells (tmux panes, nested
+# shells) inherit it through the environment, so it does not belong in .zshrc.
+
+# Start a single ssh-agent per login (not one per tmux pane) and load the key.
+if [ -z "$SSH_AGENT_PID" ]; then
+  eval "$(ssh-agent -s)" >/dev/null
+  ssh-add ~/.ssh/id_ed25519
+fi
+
+# Secrets (API keys, etc.) — environment, inherited by subshells.
+[ -f ~/.secrets ] && source ~/.secrets

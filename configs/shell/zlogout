@@ -1,0 +1,3 @@
+# ~/.zlogout — sourced when a login shell exits.
+
+clear

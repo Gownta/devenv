@@ -1,0 +1,12 @@
+# ~/.zlogin — sourced for login shells, after .zshrc.
+#
+# One-time login actions (not environment setup — that goes in .zprofile).
+
+# OnDemand: repos may not be mounted yet at login, so patch their hgrc files in
+# a detached background process that retries until the repos appear.
+if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami 2>/dev/null; then
+  ( "$NJORMROD_DEVENV/bin/hgrc_monkeypatch.py" & ) >/dev/null 2>&1
+fi
+
+# (Login greetings — banner art, ssh_command.py — currently live per-host in
+# envs/<host>/zlogin; fold them in here if you want them on every host.)
