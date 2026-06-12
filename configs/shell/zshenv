@@ -6,6 +6,7 @@ export NJORMROD_DEVENV="$HOME/dev/devenv"
 typeset -U path PATH
 path=(
   .
+  $HOME/bin(N)
   $HOME/fbsource/users/nj/njormrod/bin
   $HOME/dev/devenv/bin(N)
 
