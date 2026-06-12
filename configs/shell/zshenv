@@ -10,6 +10,8 @@ path=(
   $HOME/fbsource/users/nj/njormrod/bin
   $HOME/dev/devenv/bin(N)
 
+  /var/www/scripts/bin(N)
+
   $HOME/dev/libai/bin(N)
   $HOME/dev/homebrew/bin(N)
   $HOME/dev/homebrew/sbin(N)
