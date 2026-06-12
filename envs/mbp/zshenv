@@ -1,0 +1,5 @@
+# zshenv — environment for every shell (per-host: default).
+
+export HOST_ICON=
+export PROMPT_VAR_HOST="%F{162}∫%f"
+export PROMPT_VAR_ART="%F{red}❱%F{208}❱%F{green}❱%f"
