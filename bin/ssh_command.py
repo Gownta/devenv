@@ -93,11 +93,12 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False):
             get_yubi=True,
         ))
 
+    # Plain ssh handles the YubiKey itself during authentication; the --yubi
+    # flag is dev-connect-only, so don't pre-capture an OTP here.
     ret.append(Dst(
         f"{short_hostname} (ssh)",
         f"ssh'ing into {full_hostname}",
         f"ssh {full_hostname}",
-        get_yubi=True,
     ))
 
     if with_tunnel:
@@ -105,7 +106,6 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False):
             f"{short_hostname} (-L)",
             f"ssh'ing into {full_hostname}; tunneling in on port 3000",
             f"ssh {full_hostname} -L 3000:localhost:3000",
-            get_yubi=True,
         ))
 
     return ret
