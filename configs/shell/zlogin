@@ -8,5 +8,6 @@ if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami 2>/dev/null; then
   ( "$NJORMROD_DEVENV/bin/hgrc_monkeypatch.py" & ) >/dev/null 2>&1
 fi
 
-# (Login greetings — banner art, ssh_command.py — currently live per-host in
-# envs/<host>/zlogin; fold them in here if you want them on every host.)
+
+# Per-host overrides, last word.
+[ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/zlogin"
