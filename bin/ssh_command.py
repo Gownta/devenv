@@ -89,7 +89,7 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False):
         ret.append(Dst(
             f"{short_hostname} (eternal)",
             f"eternally connecting to {full_hostname}",
-            f"dev connect -e -n {full_hostname}",
+            f"TERM=tmux-256color dev connect -e -n {full_hostname}",
             get_yubi=True,
         ))
 
@@ -98,7 +98,7 @@ def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False):
     ret.append(Dst(
         f"{short_hostname} (ssh)",
         f"ssh'ing into {full_hostname}",
-        f"ssh {full_hostname}",
+        f"TERM=tmux-256color ssh {full_hostname}",
     ))
 
     if with_tunnel:
@@ -117,7 +117,7 @@ Dsts = (
         Dst(
             "OnDemand (eternal tmux)",
             "Connecting to WWW+FBSource+Configerator OnDemand",
-            "dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt tmux_go",
+            "TERM=tmux-256color dev connect --type www_fbsource_configerator --connection eternalterminal --release-without-prompt tmux_go",
             get_yubi=True,
         ),
     ]
