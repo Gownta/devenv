@@ -121,6 +121,7 @@ Dsts = (
             get_yubi=True,
         ),
     ]
+    + make_devserver_dsts("devvm62897.cco0", with_eternal=True)
     + make_devserver_dsts("devvm7569.cco0", with_eternal=True)
     + [Dst("localhost")]
 )
