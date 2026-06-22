@@ -25,6 +25,9 @@ path=(
 )
 export PATH
 
+# Prompt
+export PROMPT_VAR_ART="%F{red}❱%F{208}❱%F{green}❱%f"
+
 # Rust
 # Instructions from https://www.rust-lang.org/tools/install are to run
 # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
