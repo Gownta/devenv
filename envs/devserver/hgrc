@@ -42,7 +42,7 @@ ack = update-prev sl-short-headers amend-autorebase commitcloud-old-commits revn
 # sudo feature install difftastic --- gets me difft
 [extensions]
 extdiff =
-hidegenerated = /data/users/njormrod/repos/fbsource/users/nj/njormrod/bin/hidegenerated.py
+# hidegenerated = /data/users/njormrod/repos/fbsource/users/nj/njormrod/bin/hidegenerated.py
 
 
 #[extdiff]
