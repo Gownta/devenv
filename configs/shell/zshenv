@@ -60,7 +60,7 @@ else
     candidates=(od default)
   else
     device="$(sed -n 's/^DEVICE_NAME=//p' /etc/fbwhoami)"
-    candidates=("${device%.facebook.com}" devserver default)
+    candidates=("${device%.facebook.com}" default)
   fi
   for candidate in $candidates; do
     if [ -n "$candidate" ] && [ -d "$envs_dir/$candidate" ]; then
