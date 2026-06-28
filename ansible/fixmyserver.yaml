@@ -104,6 +104,7 @@
       - { root: "dev", maker: "Gownta", name: "idle_civ" }
       - { root: "dev", maker: "Gownta", name: "template" }
       - { root: "dev", maker: "Gownta", name: "flip7" }
+      - { root: "dev", maker: "Gownta", name: "botc" }
       - { root: ".vim/bundle", maker: "VundleVim", name: "Vundle.vim" }
       - { root: "repos", maker: "sharkdp", name: "bat" }
       - { root: "repos", maker: "eza-community", name: "eza" }
