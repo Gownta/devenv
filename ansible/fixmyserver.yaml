@@ -178,15 +178,6 @@
       - { path: ".secrets", content: "# Add lines to this file like export SECRET=ABC\n" }
       - { path: ".tmux.panes", content: "# ~\n# ~\n# ~\n# ~\n# ~\n" }
 
-  - name: Create initial dotfiles
-    copy:
-      src: "~/dev/devenv/{{ item.src }}"
-      remote_src: true
-      dest: "~/{{ item.dest }}"
-      force: false
-    with_items:
-      - { src: "configs/shell/envrc", dest: ".envrc" }
-
   - name: Check if cargo is installed
     shell: command -v cargo
     register: cargo_exists
