@@ -166,7 +166,6 @@
       - { path: ".zlogin", src: "configs/shell/zlogin" }
       - { path: ".zlogout", src: "configs/shell/zlogout" }
       - { path: ".config/systemd/user", src: "systemd" }
-      - { path: ".env_profile", src: "envs/{{ devenv }}/env_profile" }
       - { path: ".aws/config", src: "configs/aws_config" }
 
   - name: Create template dotfiles
