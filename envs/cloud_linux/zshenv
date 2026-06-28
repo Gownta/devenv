@@ -1,3 +1,4 @@
 # zshenv — environment for every shell (per-host: default).
 
-export HOST_ICON=
+#export HOST_ICON=
+export HOST_ICON=
