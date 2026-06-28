@@ -50,11 +50,9 @@ export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin
 #### ENVRCDIR
 ################################################################################
 
-# Per-host config dir (ENVRCDIR), selected from /etc/fbwhoami.
-if [ ! -f /etc/fbwhoami ]; then
-  # Not a Meta-managed host (e.g. laptop).
-  export ENVRCDIR="$NJORMROD_DEVENV/envs/mbp"
-else
+# Per-host config dir (ENVRCDIR), selected from /etc/fbwhoami or AWS detection.
+if [ -f /etc/fbwhoami ]; then
+  # Meta-managed host (devserver).
   envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
   if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami; then
     candidates=(od default)
@@ -69,6 +67,12 @@ else
     fi
   done
   unset envs_dir device candidates candidate
+elif [ "$(head -n1 /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null)" = "Amazon EC2" ]; then
+  # AWS EC2 instance.
+  export ENVRCDIR="$NJORMROD_DEVENV/envs/cloud_linux"
+else
+  # Other host (e.g. laptop).
+  export ENVRCDIR="$NJORMROD_DEVENV/envs/mbp"
 fi
 
 # Source the per-host equivalent in $ENVRCDIR, if present.
