@@ -81,6 +81,22 @@ def get_yubikey(length=YUBIKEY_LENGTH):
     return "".join(buf[-length:])
 
 
+def is_aws_host(host):
+    """AWS EC2 hosts look like ec2-18-236-167-19.us-west-2.compute.amazonaws.com."""
+    return host.endswith("amazonaws.com") or host.endswith("amazon.com")
+
+
+def aws_dst(host):
+    """A destination that ssh's into an AWS host, forwarding port 5000 back to
+    the laptop so a service running on the host is reachable locally.
+    """
+    return Dst(
+        host,
+        f"ssh'ing into {host}; tunneling in on port 5000",
+        f"ssh -L 5000:localhost:5000 {host}",
+    )
+
+
 def make_devserver_dsts(short_hostname, with_eternal=False, with_tunnel=False):
     full_hostname = short_hostname + ".facebook.com"
 
@@ -141,20 +157,22 @@ def get_dst_cmd(dsts, default=None):
     def in_dst(n):
         flavor = "Destination"
         while True:
-            dst = input(f"{flavor} [0-{n-1}]: ")
-            if dst == "" and default is not None:
-                return default
+            choice = input(f"{flavor} [0-{n-1}]: ")
+            if choice == "" and default is not None:
+                return dsts[default]
+            # An AWS hostname instead of a number ssh's there with a tunnel.
+            if is_aws_host(choice):
+                return aws_dst(choice)
             try:
-                i = int(dst)
+                i = int(choice)
                 if i < 0 or i >= n:
                     flavor = "We haven't conquered that host yet."
                 else:
-                    return i
+                    return dsts[i]
             except Exception:
                 flavor = "That destination is above your pay grade, sir."
 
-    dst_idx = in_dst(len(dsts))
-    dst = dsts[dst_idx]
+    dst = in_dst(len(dsts))
     cmd = dst.cmd
     if dst.message:
         print(dst.message)

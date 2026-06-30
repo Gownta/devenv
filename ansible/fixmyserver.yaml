@@ -41,6 +41,8 @@
         - meson
         - pytest
         - coverage
+        - qrcode
+        - Pillow
       state: present
 
   - name: systemd enable
