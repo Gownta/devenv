@@ -11,6 +11,7 @@ PASSWORD TO PMBP. lastpass > github
 in github, add the new key
 git clone git@github.com:Gownta/devenv.git
 also lexemes, tmux-power, and phoenix
+Add the new ssh key to ~/.ssh/authorized_keys in my AWS EC2 instance
 
 In settings,
 invert scrolling
