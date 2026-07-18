@@ -30,6 +30,10 @@ Change font to Nerd Noto Mono
 
 Used homebrew to install tmux
 
+Install Claude Code:
+(instructions: https://claude.ai/code/family)
+curl -fsSL https://claude.ai/install.sh | bash
+
 # Homebrew
 
 Sigh... I installed homebrew:
