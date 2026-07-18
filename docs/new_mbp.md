@@ -59,3 +59,10 @@ Install some other apps:
 - Discord
 - Unity
 - Android Studio
+
+Set hostname
+```
+sudo scutil --set ComputerName "valkyrie"
+sudo scutil --set LocalHostName "valkyrie"
+sudo scutil --set HostName "valkyrie"
+```

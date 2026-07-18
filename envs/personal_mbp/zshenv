@@ -1,4 +1,5 @@
 export NJO_VIM_DISABLE_PLUGINS=1
+export ENVRCDIR="/Users/njormrod/dev/devenv/envs/personal_mbp"
 
 export HOST_ICON=💻
 export PROMPT_VAR_HOST="%F{162}⌘%f"

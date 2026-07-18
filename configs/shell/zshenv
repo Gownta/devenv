@@ -51,7 +51,9 @@ export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin
 ################################################################################
 
 # Per-host config dir (ENVRCDIR), selected from /etc/fbwhoami or AWS detection.
-if [ -f /etc/fbwhoami ]; then
+if [ "$(hostname)" = "elyra" ]; then
+  export ENVRCDIR="$NJORMROD_DEVENV/envs/personal_mbp"
+elif [ -f /etc/fbwhoami ]; then
   # Meta-managed host (devserver).
   envs_dir="$HOME/fbsource/users/nj/njormrod/envs"
   if grep -q '^DEVICE_HOSTNAME_SCHEME=od$' /etc/fbwhoami; then
