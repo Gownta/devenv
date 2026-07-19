@@ -35,6 +35,15 @@ Install Claude Code:
 (instructions: https://claude.ai/code/family)
 curl -fsSL https://claude.ai/install.sh | bash
 
+# Profile picture
+
+I programmatically changed my profile picture like so:
+```
+sudo dscl . delete /Users/njormrod JPEGPhoto
+sudo dscl . delete /Users/njormrod Picture
+sudo dscl . create /Users/njormrod Picture /Users/njormrod/dev/devenv/art/raptor.jpg
+```
+
 # Homebrew
 
 Sigh... I installed homebrew:
