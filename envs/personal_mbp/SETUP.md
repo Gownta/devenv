@@ -21,9 +21,6 @@ keyboard > rebind caps lock to escape
 
 ln -s gitconfig, tmux.conf, vimrc, zshrc, zshenv
 
-Install Nerd Font "Noto", unzipped into ~/Library/Fonts
-https://www.nerdfonts.com/
-
 Load my iterm config
 Needed to go to settings > keys > navigation shortcuts, and therein, disable the shortcut to change tabs, since that was interfering with my cmd-N tmux switch overrides
 Change font size in iterm to 16. 11 is too small
@@ -34,6 +31,14 @@ Used homebrew to install tmux
 Install Claude Code:
 (instructions: https://claude.ai/code/family)
 curl -fsSL https://claude.ai/install.sh | bash
+
+# Font shenanigans
+
+Install Nerd Font "Noto", unzipped into ~/Library/Fonts
+https://www.nerdfonts.com/
+
+In iTerm, set the default font to NerdMono
+AND set the cofig that uses a different font for non-ascii characters, and then select regular Nerd font. This one uses bigger icons, which I want, since small icons fit in one cell width but then they are very short.
 
 # Profile picture
 
