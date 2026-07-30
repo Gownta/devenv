@@ -1,5 +1,2 @@
-#model = "claude-opus-4-8[1m]"
-#effort = "xhigh"
-
-model = "fable"
-effort = "high"
+model = "claude-opus-4-8[1m]"
+effort = "xhigh"
