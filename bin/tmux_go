@@ -101,6 +101,53 @@ def get_panes_config():
     )
 
 
+def check_server_binary():
+    """Warn when the running server predates a tmux upgrade.
+
+    A tmux server keeps executing the binary it started with; a package
+    upgrade replaces the one on disk. Both may report the same protocol
+    version, so has-session/list-windows/new-session keep working and nothing
+    looks wrong -- but the identify handshake has changed underneath, the
+    server never registers the client's stdin fd, and attach-session dies with
+    "open terminal failed: not a terminal". Chasing that as a tty problem is a
+    dead end, so name it up front.
+
+    Returns the path to a recovered matching binary, or None.
+    """
+    ret = tmux("display -p #{pid}", text=True, capture_output=True)
+    if ret.returncode != 0:
+        return None
+    pid = ret.stdout.strip()
+    try:
+        exe = os.readlink(f"/proc/{pid}/exe")
+    except OSError:
+        return None
+    if not exe.endswith("(deleted)"):
+        return None
+
+    # The deleted binary is still readable through /proc, so a client that
+    # matches the server can be recovered rather than losing the session.
+    recovered = os.path.join(tmux_dir, "tmux-server-binary")
+    try:
+        shutil.copyfile(f"/proc/{pid}/exe", recovered)
+        os.chmod(recovered, 0o755)
+        version = subprocess.run(
+            [recovered, "-V"], text=True, capture_output=True
+        ).stdout.strip()
+    except OSError as e:
+        log(f"could not recover the server's binary: {e}")
+        recovered, version = None, "unknown"
+
+    on_disk = subprocess.run(
+        ["tmux", "-V"], text=True, capture_output=True
+    ).stdout.strip()
+    log(f"server (pid {pid}) runs a DELETED binary: {version}; on disk: {on_disk}")
+    log("tmux was upgraded under the running server -- attach will likely fail")
+    if recovered:
+        log(f"to attach anyway: {recovered} -S {socket_dir} attach -t me")
+    return recovered
+
+
 def start():
     # Get the terminal size
     cols, rows = shutil.get_terminal_size()
@@ -123,6 +170,8 @@ def start():
             tmux(f"splitw -h -c {wdir}")
         tmux("select-window -t 1")
     rebalance()
+
+    check_server_binary()
 
     # attach-session is the one command here that needs a terminal: the client
     # hands the server ttyname(stdin), and an empty one gets refused with
