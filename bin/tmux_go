@@ -62,6 +62,24 @@ def log(msg):
         f.write(f"{stamp} {msg}\n")
 
 
+def describe_fd(name, fd):
+    """Describe an fd the way tmux cares about it.
+
+    isatty() alone is not the test: the tmux client sends ttyname(stdin) to
+    the server, and an fd that is a tty but has no reachable /dev/pts entry
+    sends an empty name -- which the server reports as "not a terminal".
+    """
+    try:
+        ttyname = os.ttyname(fd)
+    except OSError as e:
+        ttyname = f"<none: {e.strerror}>"
+    try:
+        target = os.readlink(f"/proc/self/fd/{fd}")
+    except OSError as e:
+        target = f"<{e.strerror}>"
+    return f"{name}(isatty={os.isatty(fd)} ttyname={ttyname} fd->{target})"
+
+
 def tmux(s, **kwargs):
     cmd = ["tmux", "-S", socket_dir] + s.split()
     #print(" ".join(cmd))
@@ -119,19 +137,23 @@ def start():
     if ret.returncode != 0:
         err = (ret.stderr or "").strip()
         log(f"attach-session failed (exit {ret.returncode}): {err}")
-        log(
-            f"tty: stdin={sys.stdin.isatty()} stdout={sys.stdout.isatty()} "
-            f"stderr={sys.stderr.isatty()}"
-        )
+        for name, fd in (("stdin", 0), ("stdout", 1), ("stderr", 2)):
+            log(describe_fd(name, fd))
         log(
             f"env: TERM={os.getenv('TERM')!r} TMUX={os.getenv('TMUX')!r} "
             f"SSH_TTY={os.getenv('SSH_TTY')!r} socket={socket_dir}"
         )
-        if not sys.stdin.isatty():
+        if not os.isatty(0):
             log(
                 "stdin is not a terminal -- attach needs one. Run tmux_go from "
                 "an interactive shell, or allocate a pty: `ssh -t <host> "
                 "tmux_go`. The session itself is up; reattach any time."
+            )
+        elif "<none:" in describe_fd("stdin", 0):
+            log(
+                "stdin IS a tty but has no ttyname -- the /dev/pts entry is "
+                "unreachable from here (mount namespace, container, chroot). "
+                "That is why tmux disagrees with you about being in a terminal."
             )
         sys.exit(ret.returncode)
 
