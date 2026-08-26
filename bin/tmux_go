@@ -34,6 +34,7 @@ Notes on split-window:
 """
 
 
+import datetime
 import os
 import shutil
 import subprocess
@@ -45,6 +46,20 @@ import sys
 tmux_dir = os.path.join(os.getenv("NJORMROD_DEVENV"), "workspace", "tmux")
 os.makedirs(tmux_dir, exist_ok=True)
 socket_dir = os.path.join(tmux_dir, "tmux_socket")
+log_path = os.path.join(tmux_dir, "tmux_go.log")
+
+
+def log(msg):
+    """Diagnostics go to stderr and to log_path.
+
+    The log file matters because the interesting failures happen while
+    attaching, when whatever is on stderr tends to get wiped or scrolled away
+    by the terminal handoff.
+    """
+    print(f"tmux_go: {msg}", file=sys.stderr)
+    stamp = datetime.datetime.now().isoformat(timespec="seconds")
+    with open(log_path, "a") as f:
+        f.write(f"{stamp} {msg}\n")
 
 
 def tmux(s, **kwargs):
@@ -91,7 +106,34 @@ def start():
         tmux("select-window -t 1")
     rebalance()
 
-    tmux(f"attach-session -d -t {session_name}")
+    # attach-session is the one command here that needs a terminal: the client
+    # hands the server ttyname(stdin), and an empty one gets refused with
+    # "open terminal failed: not a terminal". Capture stderr (safe -- the
+    # server draws onto the stdin fd, not stdout) so a failure can be
+    # explained rather than just printed and lost.
+    ret = tmux(
+        f"attach-session -d -t {session_name}",
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if ret.returncode != 0:
+        err = (ret.stderr or "").strip()
+        log(f"attach-session failed (exit {ret.returncode}): {err}")
+        log(
+            f"tty: stdin={sys.stdin.isatty()} stdout={sys.stdout.isatty()} "
+            f"stderr={sys.stderr.isatty()}"
+        )
+        log(
+            f"env: TERM={os.getenv('TERM')!r} TMUX={os.getenv('TMUX')!r} "
+            f"SSH_TTY={os.getenv('SSH_TTY')!r} socket={socket_dir}"
+        )
+        if not sys.stdin.isatty():
+            log(
+                "stdin is not a terminal -- attach needs one. Run tmux_go from "
+                "an interactive shell, or allocate a pty: `ssh -t <host> "
+                "tmux_go`. The session itself is up; reattach any time."
+            )
+        sys.exit(ret.returncode)
 
 
 def rebalance():
