@@ -40,6 +40,8 @@ endif
 
 set autoindent
 set backspace=indent,eol,start
+set backupdir=~/.local/state/vim/backup//
+set directory=~/.local/state/vim/swap//
 set display=lastline
 set expandtab
 set hlsearch
@@ -62,6 +64,7 @@ set smartcase
 set softtabstop=2
 set tabstop=2
 set tags=tags;/
+set undodir=~/.local/state/vim/undo
 set undolevels=1000
 set viminfo='50,"50
 
@@ -69,6 +72,15 @@ set viminfo='50,"50
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Advanced configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Vim won't create the backupdir/directory/undodir targets itself, and ~/.local
+" isn't synced by dotsync, so make them here on each new host.
+for s:statedir in ['backup', 'swap', 'undo']
+  let s:path = expand('~/.local/state/vim/' . s:statedir)
+  if !isdirectory(s:path)
+    call mkdir(s:path, 'p', 0700)
+  endif
+endfor
 
 " remember last position
 " https://vim.fandom.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
