@@ -16,6 +16,11 @@ pane's grid, places it correctly, and redraws it. The image then survives
 scrolling, repaints and detach/reattach, none of which passthrough does. No
 allow-passthrough is needed or wanted -- tmux handles sixel itself.
 
+--next-pane exists because a full-screen TUI cannot show an image in its own
+pane: it repaints constantly and erases anything drawn there. Writing to a
+neighbouring pane's tty is display-only -- bytes written to the slave side of
+a pty are output, not input, so nothing reaches that shell's input buffer.
+
 References:
 - sixel graphics:
     https://en.wikipedia.org/wiki/Sixel
@@ -55,9 +60,64 @@ FALLBACK_CELL = (10, 20)
 FALLBACK_GRID = (80, 24)
 
 
-def tmux(s, **kwargs):
+def tmux(*args, **kwargs):
     """Run a tmux command against the server we are running inside."""
-    return subprocess.run(["tmux"] + s.split(), **kwargs)
+    return subprocess.run(["tmux", *args], **kwargs)
+
+
+def tmux_out(*args):
+    """A tmux command's stdout, or "" if it failed."""
+    ret = tmux(*args, text=True, capture_output=True)
+    return ret.stdout.strip() if ret.returncode == 0 else ""
+
+
+def next_pane_tty():
+    """The tty of the next pane, cyclically by index, in this window.
+
+    Worked out from $TMUX_PANE rather than tmux's {next} target, because
+    {next} is relative to the *client's active* pane rather than to whoever
+    is asking. With an agent running in %8 and the shell focused in %9,
+    `display -p -t {next}` run from %8 answers %8.
+    """
+    me = os.getenv("TMUX_PANE")
+    if not me:
+        return None
+    window = tmux_out("display", "-p", "-t", me, "#{window_id}")
+    if not window:
+        return None
+    listing = tmux_out("list-panes", "-t", window,
+                       "-F", "#{pane_id} #{pane_tty}")
+    panes = [line.split(None, 1) for line in listing.splitlines() if line.strip()]
+    ids = [pane[0] for pane in panes]
+    if len(panes) < 2 or me not in ids:
+        return None
+    return panes[(ids.index(me) + 1) % len(panes)][1]
+
+
+def open_sink(use_next_pane):
+    """Where the sixel goes, plus any bytes to send ahead of it.
+
+    Whatever comes back is also what the geometry is read from. Panes in one
+    window are not the same size -- 128x81 next to 126x81 here -- so an image
+    measured against stdout would be sized for the wrong pane.
+    """
+    if use_next_pane:
+        tty = next_pane_tty()
+        if tty is None:
+            print("imgcat: --next-pane: no other pane in this window; "
+                  "rendering here instead", file=sys.stderr)
+        else:
+            try:
+                # The leading newline keeps the image off the tail of
+                # whatever prompt that pane is sitting at.
+                return open(tty, "wb", buffering=0), b"\n"
+            except OSError as e:
+                print(f"imgcat: --next-pane: cannot write to {tty}: {e}; "
+                      "rendering here instead", file=sys.stderr)
+    if not sys.stdout.isatty():
+        print("imgcat: stdout is not a terminal; the sixel data will land in "
+              "whatever it is redirected to", file=sys.stderr)
+    return sys.stdout.buffer, b""
 
 
 def terminal_geometry(fd):
@@ -247,9 +307,7 @@ def warn_if_no_sixel():
     """Sixel support is not universal, and the failure mode is a blank pane."""
     if not os.getenv("TMUX"):
         return
-    ret = tmux("display -p #{client_termfeatures}", text=True,
-               capture_output=True)
-    features = ret.stdout.strip() if ret.returncode == 0 else ""
+    features = tmux_out("display", "-p", "#{client_termfeatures}")
     if features and "sixel" not in features.split(","):
         print(f"imgcat: terminal reports no sixel support ({features})",
               file=sys.stderr)
@@ -272,6 +330,10 @@ def main():
         "--height", type=int, metavar="ROWS",
         help="bounding height in cells (default: half the pane's height)",
     )
+    parser.add_argument(
+        "--next-pane", action="store_true",
+        help="render into the next pane of this window instead of here",
+    )
     args = parser.parse_args()
 
     if args.image and args.image_flag:
@@ -283,19 +345,15 @@ def main():
         parser.error(f"{path}: not a file")
 
     warn_if_no_sixel()
-    out = sys.stdout
-    if not out.isatty():
-        print("imgcat: stdout is not a terminal; the sixel data will land in "
-              "whatever it is redirected to", file=sys.stderr)
+    sink, lead = open_sink(args.next_pane)
 
-    geometry = terminal_geometry(out.fileno())
+    geometry = terminal_geometry(sink.fileno())
     box = choose_box(path, geometry, args.width, args.height)
     dcs, _ = encode(path, geometry, box)
 
-    out.flush()
-    sys.stdout.buffer.write(dcs)
-    sys.stdout.buffer.write(b"\n")
-    sys.stdout.buffer.flush()
+    sys.stdout.flush()
+    sink.write(lead + dcs + b"\n")
+    sink.flush()
 
 
 if __name__ == "__main__":
