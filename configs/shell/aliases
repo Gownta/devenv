@@ -1,5 +1,10 @@
 # Default options on common commands
-alias grep='grep --color=auto -s --no-group-separator'
+# --no-group-separator is GNU-only; BSD grep (macOS) bails on it, so probe first.
+if echo | command grep -q --no-group-separator '' 2>/dev/null; then
+  alias grep='grep --color=auto -s --no-group-separator'
+else
+  alias grep='grep --color=auto -s'
+fi
 alias fgrep='grep -F'
 alias egrep='grep -E'
 alias ls='ls --color=auto'
