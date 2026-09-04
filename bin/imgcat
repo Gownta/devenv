@@ -1,0 +1,302 @@
+#!/usr/bin/python3
+
+"""imgcat renders an image in the terminal, as sixel.
+
+Sixel rather than iTerm2's OSC 1337, which looks like the better option on
+paper -- OSC 1337 ships the file's bytes verbatim, so it is byte-exact 24-bit
+where sixel is a 256-entry palette at 0-100 per channel. It does not work
+here. tmux forwards a passthrough sequence with a raw write that never
+positions the terminal's cursor at the pane's cursor first, so the terminal
+draws the image wherever its cursor happens to be sitting -- measured on this
+setup, at the top-left of the *window*, on top of whatever pane is there.
+Placement is arbitrary by construction in a split layout.
+
+Sixel works because tmux models it: it parses the DCS, stores the image in the
+pane's grid, places it correctly, and redraws it. The image then survives
+scrolling, repaints and detach/reattach, none of which passthrough does. No
+allow-passthrough is needed or wanted -- tmux handles sixel itself.
+
+References:
+- sixel graphics:
+    https://en.wikipedia.org/wiki/Sixel
+- chafa, used as the encoder:
+    https://hpjansson.org/chafa/
+- tmux man page:
+    https://man7.org/linux/man-pages/man1/tmux.1.html
+"""
+
+import argparse
+import fcntl
+import math
+import os
+import pty
+import re
+import select
+import struct
+import subprocess
+import sys
+import tempfile
+import termios
+
+
+CHAFA = "chafa"
+
+# A sixel image is a single DCS, and tmux discards any escape sequence longer
+# than INPUT_BUF_LIMIT (1 MiB) silently and entirely. Sixel size tracks image
+# detail, not file size, and the spread is enormous: measured at 2400x1600,
+# a smooth gradient encodes to 168 KB and random noise to 18 MB. So the
+# payload has to be measured and the image shrunk until it fits, or busy
+# screenshots would simply vanish.
+SIXEL_LIMIT = 900_000
+SHRINK_ATTEMPTS = 5
+
+# Fallbacks for when stdout is not a terminal and there is no geometry to read.
+FALLBACK_CELL = (10, 20)
+FALLBACK_GRID = (80, 24)
+
+
+def tmux(s, **kwargs):
+    """Run a tmux command against the server we are running inside."""
+    return subprocess.run(["tmux"] + s.split(), **kwargs)
+
+
+def terminal_geometry(fd):
+    """(cols, rows, cell_width_px, cell_height_px) for an output fd.
+
+    tmux propagates the client's pixel dimensions down to each pane's pty, so
+    this is exact rather than a guess -- 20x38 px cells on a Retina display,
+    against the ~9x20 chafa assumes when it cannot see a terminal.
+    """
+    try:
+        packed = fcntl.ioctl(fd, termios.TIOCGWINSZ, b"\0" * 8)
+    except OSError:
+        return FALLBACK_GRID + FALLBACK_CELL
+    rows, cols, xpixel, ypixel = struct.unpack("HHHH", packed)
+    if not (rows and cols):
+        return FALLBACK_GRID + FALLBACK_CELL
+    if not (xpixel and ypixel):
+        return cols, rows, FALLBACK_CELL[0], FALLBACK_CELL[1]
+    return cols, rows, xpixel // cols, ypixel // rows
+
+
+def image_size(path):
+    """Pixel (width, height), or None when the format is not one we parse.
+
+    Only enough of PNG, JPEG and GIF is decoded to read the dimensions. It is
+    used to avoid upscaling: chafa given an -s larger than the image will
+    happily blow it up, which adds no detail and multiplies the payload.
+    """
+    with open(path, "rb") as f:
+        head = f.read(26)
+        if head[:8] == b"\x89PNG\r\n\x1a\n":
+            return struct.unpack(">II", head[16:24])
+        if head[:6] in (b"GIF87a", b"GIF89a"):
+            return struct.unpack("<HH", head[6:10])
+        if head[:2] != b"\xff\xd8":
+            return None
+
+        # JPEG: walk the marker chain to a start-of-frame, which carries the
+        # dimensions. SOF0-SOF15 minus the three that are not frame headers.
+        f.seek(2)
+        while True:
+            byte = f.read(1)
+            if not byte:
+                return None
+            if byte != b"\xff":
+                continue
+            marker = f.read(1)
+            while marker == b"\xff":
+                marker = f.read(1)
+            if not marker:
+                return None
+            code = marker[0]
+            if code == 0x01 or 0xD0 <= code <= 0xD9:
+                continue
+            segment = f.read(2)
+            if len(segment) < 2:
+                return None
+            length = struct.unpack(">H", segment)[0]
+            if 0xC0 <= code <= 0xCF and code not in (0xC4, 0xC8, 0xCC):
+                body = f.read(5)
+                if len(body) < 5:
+                    return None
+                height, width = struct.unpack(">HH", body[1:5])
+                return width, height
+            f.seek(length - 2, 1)
+
+
+def run_chafa(path, box, geometry):
+    """Encode to sixel at a given box in cells, returning the raw output.
+
+    chafa's stdout goes to a pty rather than a pipe. It sizes sixel output
+    from the terminal's pixel dimensions via TIOCGWINSZ, and handed a pipe it
+    falls back to a guess that comes out at roughly half size on a Retina
+    display. A pty gets the geometry right and still lets the payload be
+    measured before anything is committed to the real terminal.
+    """
+    cols, rows, cell_w, cell_h = geometry
+    master, slave = pty.openpty()
+    fcntl.ioctl(slave, termios.TIOCSWINSZ,
+                struct.pack("HHHH", rows, cols, cols * cell_w, rows * cell_h))
+
+    args = [CHAFA, "-f", "sixel", "--passthrough", "none"]
+    if box:
+        args += ["-s", f"{box[0]}x{box[1]}"]
+    args.append(os.path.abspath(path))
+
+    with tempfile.TemporaryFile() as errfile:
+        try:
+            proc = subprocess.Popen(args, stdout=slave, stderr=errfile)
+        except FileNotFoundError:
+            os.close(master)
+            os.close(slave)
+            sys.exit(f"imgcat: {CHAFA} not found; install it with "
+                     f"`sudo dnf install -y chafa`")
+        os.close(slave)
+        chunks = []
+        while True:
+            ready, _, _ = select.select([master], [], [], 60.0)
+            if not ready:
+                break
+            try:
+                data = os.read(master, 1 << 20)
+            except OSError:
+                break
+            if not data:
+                break
+            chunks.append(data)
+        proc.wait()
+        os.close(master)
+        errfile.seek(0)
+        return b"".join(chunks), proc.returncode, errfile.read()
+
+
+def extract_dcs(data):
+    """Pull just the sixel DCS out of chafa's output.
+
+    chafa also emits cursor-hiding and DEC private mode changes around the
+    image. tmux is doing the placement, so those are noise at best; sixel
+    payload is printable ASCII, so the first ESC-backslash after ESC-P is
+    unambiguously the terminator.
+    """
+    start = data.find(b"\x1bP")
+    if start < 0:
+        return None
+    end = data.find(b"\x1b\\", start)
+    if end < 0:
+        return None
+    return data[start:end + 2]
+
+
+def raster_cells(dcs, cell_w, cell_h):
+    """The rendered size in cells, from the sixel raster attributes."""
+    match = re.search(rb'"(\d+);(\d+);(\d+);(\d+)', dcs)
+    if not match:
+        return None
+    width, height = int(match.group(3)), int(match.group(4))
+    return max(1, math.ceil(width / cell_w)), max(1, math.ceil(height / cell_h))
+
+
+def choose_box(path, geometry, want_cols, want_rows):
+    """The bounding box in cells to render into.
+
+    Capped at half the pane's height by default: a portrait image scaled to
+    the full width is tall enough to push everything else off the screen,
+    which is not what you want from something you ran to take a look. Never
+    larger than the image's natural size, because upscaling costs payload and
+    adds nothing.
+    """
+    cols, rows, cell_w, cell_h = geometry
+    max_cols = want_cols or cols
+    max_rows = want_rows or max(1, min(rows - 2, rows // 2))
+
+    size = image_size(path)
+    if not size:
+        return max_cols, max_rows
+    natural = (max(1, math.ceil(size[0] / cell_w)),
+               max(1, math.ceil(size[1] / cell_h)))
+    return min(max_cols, natural[0]), min(max_rows, natural[1])
+
+
+def encode(path, geometry, box):
+    """Encode, shrinking until the sixel fits under tmux's per-sequence cap."""
+    cell_w, cell_h = geometry[2], geometry[3]
+    for _ in range(SHRINK_ATTEMPTS):
+        raw, code, err = run_chafa(path, box, geometry)
+        if code != 0:
+            sys.exit(f"imgcat: chafa failed: "
+                     f"{err.decode('utf8', 'replace').strip() or code}")
+        dcs = extract_dcs(raw)
+        if dcs is None:
+            sys.exit("imgcat: chafa produced no sixel data")
+        if len(dcs) <= SIXEL_LIMIT:
+            return dcs, box
+        # Sixel length tracks pixel count, so scale both axes by the square
+        # root of the overshoot, with a margin because the relationship is
+        # only approximate.
+        rendered = raster_cells(dcs, cell_w, cell_h) or box
+        factor = math.sqrt(SIXEL_LIMIT / len(dcs)) * 0.9
+        box = (max(1, int(rendered[0] * factor)),
+               max(1, int(rendered[1] * factor)))
+    print(f"imgcat: could not get the image under {SIXEL_LIMIT} bytes; "
+          "tmux will drop it", file=sys.stderr)
+    return dcs, box
+
+
+def warn_if_no_sixel():
+    """Sixel support is not universal, and the failure mode is a blank pane."""
+    if not os.getenv("TMUX"):
+        return
+    ret = tmux("display -p #{client_termfeatures}", text=True,
+               capture_output=True)
+    features = ret.stdout.strip() if ret.returncode == 0 else ""
+    if features and "sixel" not in features.split(","):
+        print(f"imgcat: terminal reports no sixel support ({features})",
+              file=sys.stderr)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Render an image in the terminal as sixel."
+    )
+    parser.add_argument("image", nargs="?", help="image to render")
+    parser.add_argument(
+        "-i", "--image", dest="image_flag", metavar="IMAGE",
+        help="image to render (same as the positional argument)",
+    )
+    parser.add_argument(
+        "--width", type=int, metavar="COLS",
+        help="bounding width in character cells (default: the pane's width)",
+    )
+    parser.add_argument(
+        "--height", type=int, metavar="ROWS",
+        help="bounding height in cells (default: half the pane's height)",
+    )
+    args = parser.parse_args()
+
+    if args.image and args.image_flag:
+        parser.error("image given twice, both positionally and with -i")
+    path = args.image or args.image_flag
+    if not path:
+        parser.error("no image given; pass it positionally or with -i")
+    if not os.path.isfile(path):
+        parser.error(f"{path}: not a file")
+
+    warn_if_no_sixel()
+    out = sys.stdout
+    if not out.isatty():
+        print("imgcat: stdout is not a terminal; the sixel data will land in "
+              "whatever it is redirected to", file=sys.stderr)
+
+    geometry = terminal_geometry(out.fileno())
+    box = choose_box(path, geometry, args.width, args.height)
+    dcs, _ = encode(path, geometry, box)
+
+    out.flush()
+    sys.stdout.buffer.write(dcs)
+    sys.stdout.buffer.write(b"\n")
+    sys.stdout.buffer.flush()
+
+
+if __name__ == "__main__":
+    main()
