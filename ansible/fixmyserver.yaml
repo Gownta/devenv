@@ -115,6 +115,7 @@
       - { root: "repos", maker: "atanunq", name: "viu" }
       - { root: "repos", maker: "en-wl", name: "wordlist" }
       - { root: "repos", maker: "dwyl", name: "english-words" }
+      - { root: "repos", maker: "david47k", name: "top-english-wordlists" }
 
   - name: Check if the files are actually original
     stat:
