@@ -114,6 +114,7 @@
       - { root: "repos", maker: "wube", name: "factorio-data" }
       - { root: "repos", maker: "atanunq", name: "viu" }
       - { root: "repos", maker: "en-wl", name: "wordlist" }
+      - { root: "repos", maker: "dwyl", name: "english-words" }
 
   - name: Check if the files are actually original
     stat:
