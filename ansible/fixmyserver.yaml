@@ -181,7 +181,6 @@
       force: false
     with_items:
       - { path: ".secrets", content: "# Add lines to this file like export SECRET=ABC\n" }
-      - { path: ".tmux.panes", content: "# ~\n# ~\n# ~\n# ~\n# ~\n" }
 
   - name: Check if cargo is installed
     shell: command -v cargo
