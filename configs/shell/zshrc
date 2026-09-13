@@ -35,3 +35,6 @@ PROMPT=$'%F{238}╰─%f$PROMPT_VAR_ART '
 
 # Per-host overrides, last word.
 [ -v ENVRCDIR ] && maybe_source "$ENVRCDIR/zshrc"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

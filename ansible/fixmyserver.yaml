@@ -113,6 +113,7 @@
       - { root: "repos", maker: "romkatv", name: "powerlevel10k" }
       - { root: "repos", maker: "wube", name: "factorio-data" }
       - { root: "repos", maker: "atanunq", name: "viu" }
+      - { root: "repos", maker: "en-wl", name: "wordlist" }
 
   - name: Check if the files are actually original
     stat:
