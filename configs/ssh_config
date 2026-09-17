@@ -1,0 +1,3 @@
+# ~/.ssh/config
+Host ec2-*.compute.amazonaws.com
+  StrictHostKeyChecking accept-new
