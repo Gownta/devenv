@@ -7,3 +7,6 @@
 
 [alias]
   st = status
+
+[pull]
+  rebase = true
