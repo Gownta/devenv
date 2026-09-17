@@ -19,7 +19,7 @@ hot corners
 dark mode was done during computer setup
 keyboard > rebind caps lock to escape
 
-ln -s gitconfig, tmux.conf, vimrc, zshrc, zshenv
+ln -s gitconfig, tmux.conf, vimrc, zshrc, zshenv, ssh/config
 
 Load my iterm config
 Needed to go to settings > keys > navigation shortcuts, and therein, disable the shortcut to change tabs, since that was interfering with my cmd-N tmux switch overrides
