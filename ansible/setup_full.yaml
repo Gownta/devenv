@@ -1,3 +1,5 @@
+# Run setup_devenv.yaml first; this builds on the devenv checkout and dotfiles.
+
 - name: Install packages
   hosts: all
   become: yes
@@ -14,7 +16,6 @@
         - atop
         - clang
         - clang-tools-extra
-        - git
         # - grpcio
         # - grpcio-tools
         - htop
@@ -22,9 +23,6 @@
         - jq
         - nodejs
         - npm
-        - pip
-        - tmux
-        - zsh
       state: present
 
   # Don't install pips; they should be in venvs.
@@ -71,12 +69,9 @@
       state: directory
       recurse: yes
     with_items:
-      - dev
       - jupyter
       - repos
-      - .aws
       - .config/pyopensky
-      - .config/systemd
 
   - name: Clone github repos
     # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html
@@ -88,7 +83,6 @@
       accept_hostkey: yes
       key_file: "~/.ssh/id_ed25519"
     with_items:
-      - { root: "dev", maker: "Gownta", name: "devenv" }
       - { root: "dev", maker: "Gownta", name: "starlang" }
       - { root: "dev", maker: "Gownta", name: "factorio" }
       - { root: "dev", maker: "Gownta", name: "values" }
@@ -116,71 +110,6 @@
       - { root: "repos", maker: "en-wl", name: "wordlist" }
       - { root: "repos", maker: "dwyl", name: "english-words" }
       - { root: "repos", maker: "david47k", name: "top-english-wordlists" }
-
-  - name: Check if the files are actually original
-    stat:
-      path: "~/dev/devenv/originals"
-    register: originals_check
-
-  - block:
-    - name: Create dotfile save dir
-      file:
-        path: "~/dev/devenv/originals"
-        state: directory
-
-    - name: Save dotfiles
-      ignore_errors: yes
-      copy:
-        src: "~/{{ item }}"
-        remote_src: true
-        dest: "~/dev/devenv/originals/{{ item | regex_replace('^\\.', '') }}"
-        force: false
-      with_items: "{{ existing_dotfiles }}"
-
-    - name: Delete dotfiles
-      file:
-        path: "~/{{ item }}"
-        state: absent
-      with_items: "{{ existing_dotfiles }}"
-
-    vars:
-      existing_dotfiles:
-        - .bashrc
-        - .bash_logout
-        - .bash_profile
-        - .zshenv
-        - .zprofile
-        - .zshrc
-        - .zlogin
-        - .zlogout
-    when: not originals_check.stat.exists
-
-  - name: Symlink dotfiles
-    file:
-      path: "~/{{ item.path }}"
-      state: link
-      force: yes
-      src: "~/dev/devenv/{{ item.src }}"
-    with_items:
-      - { path: ".gitconfig", src: "configs/gitconfig" }
-      - { path: ".tm_properties", src: "configs/textmate_properties" }
-      - { path: ".tmux.conf", src: "configs/tmux.conf" }
-      - { path: ".vimrc", src: "configs/vimrc" }
-      - { path: ".zshenv", src: "configs/shell/zshenv" }
-      - { path: ".zprofile", src: "configs/shell/zprofile" }
-      - { path: ".zshrc", src: "configs/shell/zshrc" }
-      - { path: ".zlogin", src: "configs/shell/zlogin" }
-      - { path: ".zlogout", src: "configs/shell/zlogout" }
-      - { path: ".config/systemd/user", src: "systemd" }
-      - { path: ".aws/config", src: "configs/aws_config" }
-
-  - name: Create template dotfiles
-    copy:
-      dest: "~/{{ item.path }}"
-      content: "{{ item.content }}"
-      force: false
-    with_items:
-      - { path: ".secrets", content: "# Add lines to this file like export SECRET=ABC\n" }
 
   - name: Check if cargo is installed
     shell: command -v cargo

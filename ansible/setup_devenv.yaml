@@ -1,0 +1,107 @@
+- name: Install devenv packages
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Install packages
+    dnf:
+      name:
+        - git
+        - pip
+        - tmux
+        - zsh
+      state: present
+
+
+- name: Configure devenv
+  hosts: all
+  vars:
+    username: "njormrod"
+  become: yes
+  become_user: "{{ username }}"
+
+  tasks:
+  - name: Create directories
+    file:
+      path: "~/{{ item }}"
+      state: directory
+      recurse: yes
+    with_items:
+      - dev
+      - .aws
+      - .config/systemd
+
+  - name: Clone devenv
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html
+    ansible.builtin.git:
+      repo: "git@github.com:Gownta/devenv.git"
+      dest: "~/dev/devenv"
+      force: false
+      update: false
+      accept_hostkey: yes
+      key_file: "~/.ssh/id_ed25519"
+
+  - name: Check if the files are actually original
+    stat:
+      path: "~/dev/devenv/originals"
+    register: originals_check
+
+  - block:
+    - name: Create dotfile save dir
+      file:
+        path: "~/dev/devenv/originals"
+        state: directory
+
+    - name: Save dotfiles
+      ignore_errors: yes
+      copy:
+        src: "~/{{ item }}"
+        remote_src: true
+        dest: "~/dev/devenv/originals/{{ item | regex_replace('^\\.', '') }}"
+        force: false
+      with_items: "{{ existing_dotfiles }}"
+
+    - name: Delete dotfiles
+      file:
+        path: "~/{{ item }}"
+        state: absent
+      with_items: "{{ existing_dotfiles }}"
+
+    vars:
+      existing_dotfiles:
+        - .bashrc
+        - .bash_logout
+        - .bash_profile
+        - .zshenv
+        - .zprofile
+        - .zshrc
+        - .zlogin
+        - .zlogout
+    when: not originals_check.stat.exists
+
+  - name: Symlink dotfiles
+    file:
+      path: "~/{{ item.path }}"
+      state: link
+      force: yes
+      src: "~/dev/devenv/{{ item.src }}"
+    with_items:
+      - { path: ".gitconfig", src: "configs/gitconfig" }
+      - { path: ".tm_properties", src: "configs/textmate_properties" }
+      - { path: ".tmux.conf", src: "configs/tmux.conf" }
+      - { path: ".vimrc", src: "configs/vimrc" }
+      - { path: ".zshenv", src: "configs/shell/zshenv" }
+      - { path: ".zprofile", src: "configs/shell/zprofile" }
+      - { path: ".zshrc", src: "configs/shell/zshrc" }
+      - { path: ".zlogin", src: "configs/shell/zlogin" }
+      - { path: ".zlogout", src: "configs/shell/zlogout" }
+      - { path: ".config/systemd/user", src: "systemd" }
+      - { path: ".aws/config", src: "configs/aws_config" }
+
+  - name: Create template dotfiles
+    copy:
+      dest: "~/{{ item.path }}"
+      content: "{{ item.content }}"
+      force: false
+    with_items:
+      - { path: ".secrets", content: "# Add lines to this file like export SECRET=ABC\n" }

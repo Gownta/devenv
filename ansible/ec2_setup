@@ -5,4 +5,4 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-ansible-playbook -v -i $1, -e ansible_user=ec2-user setup_user.yaml fixmyserver.yaml
+ansible-playbook -v -i $1, -e ansible_user=ec2-user setup_user.yaml setup_devenv.yaml setup_full.yaml
