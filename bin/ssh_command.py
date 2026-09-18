@@ -140,7 +140,7 @@ Dsts = (
     + make_devserver_dsts("devvm62897.cco0", with_eternal=True)
     + [
         Dst("localhost"),
-        Dst("botc", "ssh'ing into botc (32.188.239.15)", "ssh 32.188.239.15"),
+        Dst("botc", "ssh'ing into botc", "ssh playbotc.app"),
     ]
 )
 #host[3]="alpha-pi"

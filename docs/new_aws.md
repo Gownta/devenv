@@ -1,7 +1,7 @@
 # AWS hosts
 
 Keypair, 2026-09-17
-Enable ssh connection from anywhere in Network/Security
+Enable ssh connection from my IP in Network/Security
 In EC2 console, press the Connect button (top right)
 Edit ~/.ssh/authorized_keys to be the same as my other server
 Run ansible to setup_user and setup_devenv
