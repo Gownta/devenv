@@ -31,15 +31,18 @@
       - .aws
       - .config/systemd
 
-  - name: Clone devenv
+  - name: Clone devenv repos
     # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html
     ansible.builtin.git:
-      repo: "git@github.com:Gownta/devenv.git"
-      dest: "~/dev/devenv"
+      repo: "git@github.com:Gownta/{{ item }}.git"
+      dest: "~/dev/{{ item }}"
       force: false
       update: false
       accept_hostkey: yes
       key_file: "~/.ssh/id_ed25519"
+    with_items:
+      - devenv
+      - tmux-power # used by configs/tmux.conf
 
   - name: Check if the files are actually original
     stat:

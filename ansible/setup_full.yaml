@@ -90,7 +90,6 @@
       - { root: "dev", maker: "Gownta", name: "farmwars" }
       - { root: "dev", maker: "Gownta", name: "opensky" }
       - { root: "dev", maker: "Gownta", name: "libai" }
-      - { root: "dev", maker: "Gownta", name: "tmux-power" }
       - { root: "dev", maker: "Gownta", name: "lexemes" }
       - { root: "dev", maker: "Gownta", name: "factorio" }
       - { root: "dev", maker: "Gownta", name: "quacks_of_quedlinburg" }
