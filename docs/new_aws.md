@@ -12,7 +12,7 @@ Importing key-pair: EC2 > Key Pairs > Import
 1. Create a new AWS instance
   - Use Amazon Linux
   - m7a.xlarge: 4 cores, enough memory
-  - Network Settings: "Create Security Group", "Allow SSH traffic from: Anywhere"
+  - Network Settings: "Create Security Group", "Allow SSH traffic from: my IP"
   - Select more than 64GB of EBS
 2. In the instance page, get the "Public IPv4 DNS" hostname
 3. `ssh ec2-user@<hostname>`
