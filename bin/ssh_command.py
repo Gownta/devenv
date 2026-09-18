@@ -140,7 +140,7 @@ Dsts = (
     + make_devserver_dsts("devvm62897.cco0", with_eternal=True)
     + [
         Dst("localhost"),
-        Dst("botc", "ssh'ing into botc", "ssh $BOTC_IP"),
+        Dst("botc", "ssh'ing into botc", "ssh botc@$BOTC_IP"),
     ]
 )
 #host[3]="alpha-pi"
