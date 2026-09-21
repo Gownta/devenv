@@ -7,7 +7,7 @@ typeset -U path PATH
 path=(
   .
   $HOME/bin(N)
-  $HOME/fbsource/users/nj/njormrod/bin
+  $HOME/fbsource/users/nj/njormrod/bin(N)
   $HOME/dev/devenv/bin(N)
 
   /var/www/scripts/bin(N)
