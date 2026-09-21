@@ -50,9 +50,11 @@ export COSMOS_BIN=/Users/njormrod/dev/starlang/cosmos/bin
 #### ENVRCDIR
 ################################################################################
 
-# Per-host config dir (ENVRCDIR). ~/.envrcdir (a dir or symlink to one) overrides;
-# otherwise it's selected from /etc/fbwhoami or AWS detection.
-if [ -d "$HOME/.envrcdir" ]; then
+# Per-host config dir (ENVRCDIR). ~/envrcdir, then ~/.envrcdir (a dir or symlink
+# to one) override; otherwise it's selected from /etc/fbwhoami or AWS detection.
+if [ -d "$HOME/envrcdir" ]; then
+  export ENVRCDIR="$HOME/envrcdir"
+elif [ -d "$HOME/.envrcdir" ]; then
   export ENVRCDIR="$HOME/.envrcdir"
 elif [ "$(hostname)" = "elyra" ]; then
   export ENVRCDIR="$NJORMROD_DEVENV/envs/personal_mbp"
