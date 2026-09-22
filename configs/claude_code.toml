@@ -1,2 +1,2 @@
-model = "claude-opus-5[1m]"
-effort = "xhigh"
+#model = "claude-opus-5[1m]"
+#effort = "xhigh"
