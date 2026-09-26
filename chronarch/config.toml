@@ -1,0 +1,31 @@
+# Chronarch defaults. Crons override these in their info.toml.
+
+# Runtime directory, used when $CHRONARCH_ROOT is unset.
+root = "~/.local/state/chronarch"
+
+# Where cron specs live. Relative paths are relative to this file.
+spec_dir = "spec"
+
+# How often drive rescans spec/ and checks active runs for kill_ts.
+sweep_interval_s = 60
+
+[ai]
+provider = "claude"
+
+# Per-provider defaults. `args` are passed verbatim to the CLI; crons run
+# unattended, so they have to skip permission prompts to do anything useful.
+[ai.claude]
+model = "opus"
+effort = "high"
+args = ["--dangerously-skip-permissions"]
+
+[ai.codex]
+# model = ""  # unset: codex's own default
+effort = "high"
+args = ["--dangerously-bypass-approvals-and-sandbox", "--skip-git-repo-check"]
+
+[process]
+timeout_s = 3600
+max_concurrent = 1
+# Seconds between SIGTERM and SIGKILL when killing a run.
+kill_grace_s = 10
