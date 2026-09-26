@@ -141,6 +141,7 @@ Dsts = (
     + [
         Dst("localhost"),
         Dst("botc", "ssh'ing into botc", "ssh botc@$BOTC_IP"),
+        Dst("claude-ec2", "ssh'ing into claude-ec2", "ssh $CLAUDE_EC2"),
     ]
 )
 #host[3]="alpha-pi"
