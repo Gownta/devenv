@@ -161,13 +161,14 @@ def start():
     tmux("start-server")
     ret = tmux(f"has-session -t {session_name}", capture_output=True)
     if ret.returncode == 1:
+        # Each line is `name dir [right_dir]`; the right pane defaults to dir.
         for i, line in enumerate(panes_config.rstrip().splitlines()):
-            wname, wdir = line.split(' ', maxsplit=1)
-            wdir = os.path.realpath(os.path.expanduser(wdir))
+            wname, *dirs = line.split()
+            left_dir, right_dir = [os.path.realpath(os.path.expanduser(d)) for d in (dirs + dirs)[:2]]
             cmd = "session -d -s" if i == 0 else "window -t"
-            tmux(f"new-{cmd} {session_name} -n {wname} -c {wdir} ")
+            tmux(f"new-{cmd} {session_name} -n {wname} -c {left_dir} ")
             #tmux(f"resize-window -t {i+1} -x {cols} -y {rows - 1}")
-            tmux(f"splitw -h -c {wdir}")
+            tmux(f"splitw -h -c {right_dir}")
         tmux("select-window -t 1")
     rebalance()
 
