@@ -30,10 +30,11 @@ class EngineTest(unittest.TestCase):
         self.dir = Path(self.tmp.name)
         self.root = self.dir / "root"
         (self.dir / "config.toml").write_text(
-            f'root = "{self.root}"\nspec_dir = "spec"\nsweep_interval_s = 1\n'
+            'spec_dir = "spec"\nsweep_interval_s = 1\n'
             "[process]\ntimeout_s = 60\nkill_grace_s = 1\n"
         )
-        self.env = {k: v for k, v in os.environ.items() if k not in ("CHRONARCH_ROOT", "CHRONARCH_SPECDIRS")}
+        self.env = {k: v for k, v in os.environ.items() if k != "CHRONARCH_SPECDIRS"}
+        self.env["CHRONARCH_ROOT"] = str(self.root)
         self.bg = []
 
     def tearDown(self):
@@ -144,6 +145,14 @@ class TestRun(EngineTest):
     def test_unknown_cron(self):
         self.assertEqual(self.rr("run", "nope", capture_output=True).returncode, 2)
 
+    def test_no_root(self):
+        del self.env["CHRONARCH_ROOT"]
+        for args in (["drive"], ["run", "a"], ["kill", "a"]):
+            with self.subTest(args=args):
+                proc = self.rr(*args, capture_output=True, text=True, timeout=10)
+                self.assertEqual(proc.returncode, 2)
+                self.assertIn("no chronarch root", proc.stderr)
+
     def test_timeout_kills_group(self):
         self.cron("slow", "sleep 100 & echo $! > sleeper; wait", "[process]\ntimeout_s = 1\n")
         self.assertEqual(self.rr("run", "slow", capture_output=True).returncode, 128 + signal.SIGTERM)
@@ -227,8 +236,24 @@ class TestDrive(EngineTest):
         (self.dir / "spec/fast/info.toml").write_text('description = "d"\nschedule = "*:*:*"\nexe = "run.sh"\n')
         lines = self.drive(3.5)
         self.assertGreaterEqual(len(self.runs("fast")), 2)
-        self.assertGreaterEqual(len(lines), 2)
-        self.assertRegex(lines[0], r"^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d  fast  \d+$")
+        launches = [line for line in lines if line.endswith(tuple("0123456789"))]
+        self.assertGreaterEqual(len(launches), 2)
+        self.assertRegex(launches[0], r"^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d  fast  \d+$")
+
+    def test_boot_report(self):
+        self.cron("a", "true")
+        self.cron("b/c", "true")
+        (self.dir / "spec/b/c/info.toml").write_text('description = "d"\nschedule = ["daily", "weekly"]\nexe = "run.sh"\n')
+        self.cron("bad", "true")
+        (self.dir / "spec/bad/info.toml").write_text('description = "d"\nschedule = "bogus"\nexe = "run.sh"\n')
+        lines = self.drive(0.5)
+        self.assertRegex(lines[0], rf"^\d{{4}}-.*  drive started; root {self.root}$")
+        self.assertEqual(lines.pop(1), f"  specdirs {self.dir / 'spec'}")
+        self.assertRegex(lines[1], rf"^  a    next \d{{4}}-\S+ 00:00:00 \S+  \[yearly\]  {self.dir / 'spec/a'}$")
+        self.assertRegex(lines[2], rf"^  b/c  next \d{{4}}-\S+ 00:00:00 \S+  \[daily, weekly\]  {self.dir / 'spec/b/c'}$")
+        self.assertRegex(lines[3], r"^  bad  ERROR bad calendar spec 'bogus'")
+        self.assertEqual(len(lines), 4)
+        self.assertIn(f"drive started; root {self.root}", (self.root / "logs").read_text())
 
     def test_bad_specs_logged_once(self):
         self.cron("bad", "true")
@@ -237,7 +262,7 @@ class TestDrive(EngineTest):
         self.cron("ok/nested", "true")
         self.drive(2.5)
         log = (self.root / "logs").read_text()
-        self.assertEqual(log.count("bad calendar spec 'bogus'"), 1)
+        self.assertEqual(log.count("ERROR bad: bad calendar spec 'bogus'"), 1)
         self.assertEqual(log.count("ignoring nested cron ok/nested"), 1)
 
     def test_reclaims_orphan_on_timeout(self):

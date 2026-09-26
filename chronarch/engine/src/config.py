@@ -70,9 +70,12 @@ def load_config(path: Optional[Path] = None, specdirs: Sequence[str] = (), local
     path = Path(path or DEFAULT_CONFIG).resolve()
     with open(path, "rb") as f:
         raw = tomllib.load(f)
-    root = os.environ.get("CHRONARCH_ROOT") or raw.get("root")
-    if not root:
-        raise SpecError(f"$CHRONARCH_ROOT is unset and {path} has no `root`")
+    if os.environ.get("CHRONARCH_ROOT"):
+        root = Path(os.path.expanduser(os.environ["CHRONARCH_ROOT"]))
+    elif raw.get("root"):
+        root = path.parent / os.path.expanduser(raw["root"])
+    else:
+        raise SpecError(f"no chronarch root: $CHRONARCH_ROOT is not set, and {path} has no `root`")
     dirs = [str(path.parent / os.path.expanduser(raw.get("spec_dir", "spec")))] if local_specdir else []
     dirs += [d for d in os.environ.get("CHRONARCH_SPECDIRS", "").split(":") if d]
     dirs += specdirs
@@ -83,7 +86,7 @@ def load_config(path: Optional[Path] = None, specdirs: Sequence[str] = (), local
             spec_dirs.append(resolved)
     return Config(
         path=path,
-        root=Path(os.path.expanduser(root)).resolve(),
+        root=root.resolve(),
         spec_dirs=spec_dirs,
         sweep_interval_s=float(raw.get("sweep_interval_s", 60)),
         raw=raw,

@@ -1,7 +1,7 @@
 # Chronarch defaults. Crons override these in their info.toml.
 
-# Runtime directory, used when $CHRONARCH_ROOT is unset.
-root = "~/.local/state/chronarch"
+# Runtime directory, used when $CHRONARCH_ROOT is unset. Relative to this file.
+root = "~/chronarch"
 
 # The local spec dir, searched before $CHRONARCH_SPECDIRS. Relative to this file.
 spec_dir = "spec"

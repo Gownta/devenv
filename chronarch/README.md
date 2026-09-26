@@ -100,7 +100,7 @@ Tests: `python3 -m unittest discover -s engine/test`
 
 Requires python >= 3.11, or `tomli` on older pythons, and `systemd-analyze`, which evaluates the calendar specs (in local time).
 
-`$CHRONARCH_ROOT` falls back to `root` in config.toml.
+`$CHRONARCH_ROOT` falls back to `root` in config.toml; rr refuses to start if neither is set.
 Besides `$CHRONARCH_RUNDIR`, crons also get `$CHRONARCH_CRON` (their name) and `$CHRONARCH_ROOT`.
 AI crons get their .md file on stdin: `claude -p` or `codex exec -`, plus the provider's `args` from config.toml.
 `root_dir` (relative to the spec root) is the working directory; it defaults to the spec root.

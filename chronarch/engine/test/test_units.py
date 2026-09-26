@@ -62,13 +62,17 @@ class TestSpecs(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.dir = Path(self.tmp.name)
         (self.dir / "config.toml").write_text(
-            'root = "root"\nspec_dir = "spec"\n'
+            'spec_dir = "spec"\n'
             '[ai]\nprovider = "claude"\n[ai.claude]\nmodel = "opus"\neffort = "high"\nargs = ["--x"]\n'
             '[process]\ntimeout_s = 100\n'
         )
+        self.saved_env = {k: os.environ.pop(k) for k in ("CHRONARCH_ROOT", "CHRONARCH_SPECDIRS") if k in os.environ}
+        os.environ["CHRONARCH_ROOT"] = str(self.dir / "root")
         self.cfg = configs.load_config(self.dir / "config.toml")
 
     def tearDown(self):
+        os.environ.pop("CHRONARCH_ROOT", None)
+        os.environ.update(self.saved_env)
         self.tmp.cleanup()
 
     def spec(self, name, info, spec_dir="spec"):
@@ -137,12 +141,16 @@ class TestSpecs(unittest.TestCase):
         # Same info.toml, different dir: drive must notice the move.
         self.assertNotEqual(configs.load_cron(cfg, "a").fingerprint, configs.load_cron(unshadowed, "a").fingerprint)
 
-    def test_root_from_env(self):
-        os.environ["CHRONARCH_ROOT"] = str(self.dir / "elsewhere")
-        try:
-            self.assertEqual(configs.load_config(self.dir / "config.toml").root, self.dir / "elsewhere")
-        finally:
-            del os.environ["CHRONARCH_ROOT"]
+    def test_root(self):
+        self.assertEqual(self.cfg.root, self.dir / "root")
+        del os.environ["CHRONARCH_ROOT"]
+        with self.assertRaisesRegex(SpecError, "no chronarch root"):
+            configs.load_config(self.dir / "config.toml")
+        config = self.dir / "config.toml"
+        config.write_text('root = "from_config"\n' + config.read_text())
+        self.assertEqual(configs.load_config(config).root, self.dir / "from_config")
+        os.environ["CHRONARCH_ROOT"] = str(self.dir / "env")
+        self.assertEqual(configs.load_config(self.dir / "config.toml").root, self.dir / "env")
 
 
 class TestRundir(unittest.TestCase):

@@ -39,8 +39,8 @@ class Driver:
     def __init__(self, cfg: Config):
         self.cfg = cfg
         self.scheduled: Dict[str, Scheduled] = {}
-        # fingerprint of info.toml files we've already complained about, keyed by name
-        self.bad: Dict[str, Optional[str]] = {}
+        # The error for each cron that failed to load, so each is only logged once.
+        self.bad: Dict[str, str] = {}
         self.nested_errors: Set[str] = set()
 
     def rescan(self, now: float) -> None:
@@ -57,10 +57,7 @@ class Driver:
             try:
                 cron = configs.load_cron(self.cfg, name)
             except SpecError as e:
-                if self.bad.get(name) != str(e):
-                    log.error("%s", e)
-                    self.bad[name] = str(e)
-                self.scheduled.pop(name, None)
+                self._bad(name, str(e))
                 continue
             old = self.scheduled.get(name)
             if old and old.cron.fingerprint == cron.fingerprint:
@@ -68,14 +65,40 @@ class Driver:
             try:
                 next_ts = next_fire(cron.schedules, now)
             except SpecError as e:
-                if self.bad.get(name) != cron.fingerprint:
-                    log.error("%s: %s", name, e)
-                    self.bad[name] = cron.fingerprint
-                self.scheduled.pop(name, None)
+                self._bad(name, f"{name}: {e}")
                 continue
             self.bad.pop(name, None)
             log.info("%s: %s, next at %s", "updated" if old else "loaded", name, _fmt(next_ts))
             self.scheduled[name] = Scheduled(cron, next_ts)
+
+    def _bad(self, name: str, error: str) -> None:
+        if self.bad.get(name) != error:
+            log.error("%s", error)
+            self.bad[name] = error
+        self.scheduled.pop(name, None)
+
+    def boot_report(self) -> None:
+        """Print every cron, its schedules, and when it next runs."""
+        lines = [
+            f"drive started; root {self.cfg.root}",
+            f"  specdirs {':'.join(map(str, self.cfg.spec_dirs))}",
+        ]
+        width = max(map(len, [*self.scheduled, *self.bad]), default=0)
+        for name in sorted([*self.scheduled, *self.bad]):
+            entry = self.scheduled.get(name)
+            if entry:
+                schedules = ", ".join(entry.cron.schedules)
+                lines.append(f"  {name:{width}}  next {_fmt(entry.next_ts)}  [{schedules}]  {entry.cron.spec_root}")
+            else:
+                error = self.bad[name]
+                error = error[len(name) + 2 :] if error.startswith(f"{name}: ") else error
+                lines.append(f"  {name:{width}}  ERROR {error}")
+        if width == 0:
+            lines.append("  (no crons)")
+        stamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{stamp}  " + "\n".join(lines), flush=True)
+        for line in lines:
+            log.info("%s", line)
 
     def sweep(self, now: float) -> None:
         """Finalize or kill runs whose engine process is gone."""
@@ -94,7 +117,8 @@ class Driver:
             db.close()
 
     def loop(self) -> None:
-        log.info("drive started: specdirs %s, root %s", ":".join(map(str, self.cfg.spec_dirs)), self.cfg.root)
+        self.rescan(time.time())
+        self.boot_report()
         next_sweep = 0.0
         while True:
             now = time.time()
