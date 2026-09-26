@@ -2,7 +2,7 @@
 
 Chronarch is an AI cron engine.
 
-Crons are stored in spec/.
+Crons are stored in spec/ directories.
 The engine/ reads and executes the crons in spec/.
   src/ and test/ subdirs
 Runtime information is stored in `$CHRONARCH_ROOT`.
@@ -15,6 +15,13 @@ Executable ./rr function that invokes the engine.
 Any (recursive) subdirectory of spec/ that contains info.toml is a cron spec root.
 
 The name of a cron spec is the relative path between spec/ and info.toml. spec/foo/bar/info.toml is the foo/bar cron. Crons cannot be nested; foo/bar precludes foo/bar/part.
+
+Spec dirs are searched in order, like `$PATH`:
+1. the local spec/ (`spec_dir` in config.toml), unless `--no-local-specdir`
+2. `$CHRONARCH_SPECDIRS`, colon-separated
+3. each `--specdir DIR`
+
+If two spec dirs define the same cron name, the first one wins; the shadowed cron is logged and ignored.
 
 info.toml contains:
 - `description`, a string explanation of what the cron does
@@ -84,6 +91,7 @@ There is a log file at `$CHRONARCH_ROOT/logs`.
 ./rr run foo/bar    # run a cron now, in the foreground; exits with its exit code (128+N if killed by signal N)
 ./rr kill foo/bar   # cancel all active runs of a cron
 ./rr --config other.toml ...
+./rr --specdir ~/more/spec --no-local-specdir drive
 ```
 
 Ctrl-C or SIGTERM on `./rr run` cancels the run.

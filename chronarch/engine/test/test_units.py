@@ -71,8 +71,8 @@ class TestSpecs(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def spec(self, name, info):
-        d = self.dir / "spec" / name
+    def spec(self, name, info, spec_dir="spec"):
+        d = self.dir / spec_dir / name
         d.mkdir(parents=True)
         (d / "info.toml").write_text(info)
 
@@ -82,14 +82,14 @@ class TestSpecs(unittest.TestCase):
         self.spec("b/c/d", "")
         names, errors = configs.discover(self.cfg)
         self.assertEqual(names, ["a", "b/c"])
-        self.assertEqual(errors, ["ignoring nested cron b/c/d inside b/c"])
+        self.assertEqual(errors, [f"ignoring nested cron b/c/d inside b/c in {self.dir / 'spec'}"])
 
     def test_defaults(self):
         self.spec("a", 'description = "d"\nschedule = "daily"\nexe = "x.sh"\n')
         cron = configs.load_cron(self.cfg, "a")
         self.assertEqual(cron.schedules, ["daily"])
-        self.assertEqual(cron.exe, self.cfg.spec_dir / "a" / "x.sh")
-        self.assertEqual(cron.root_dir, self.cfg.spec_dir / "a")
+        self.assertEqual(cron.exe, self.cfg.spec_dirs[0] / "a" / "x.sh")
+        self.assertEqual(cron.root_dir, self.cfg.spec_dirs[0] / "a")
         self.assertEqual(cron.timeout_s, 100)
         self.assertEqual(cron.max_concurrent, 1)
         self.assertFalse(cron.is_ai)
@@ -110,6 +110,32 @@ class TestSpecs(unittest.TestCase):
         for name in ["missing", "provider", "nonexistent", "../escape"]:
             with self.subTest(name=name), self.assertRaises(SpecError):
                 configs.load_cron(self.cfg, name)
+
+    def test_specdir_order(self):
+        os.environ["CHRONARCH_SPECDIRS"] = f"{self.dir / 'e1'}::{self.dir / 'e2'}:{self.dir / 'spec'}"
+        try:
+            cfg = configs.load_config(self.dir / "config.toml", [str(self.dir / "c1"), str(self.dir / "e1")])
+            self.assertEqual(cfg.spec_dirs, [self.dir / d for d in ["spec", "e1", "e2", "c1"]])
+            cfg = configs.load_config(self.dir / "config.toml", [str(self.dir / "c1")], local_specdir=False)
+            self.assertEqual(cfg.spec_dirs, [self.dir / d for d in ["e1", "e2", "spec", "c1"]])
+        finally:
+            del os.environ["CHRONARCH_SPECDIRS"]
+
+    def test_shadowing(self):
+        info = 'description = "d"\nschedule = "daily"\nexe = "x.sh"\n'
+        self.spec("a", info)
+        self.spec("a", info, "other")
+        self.spec("b", info, "other")
+        cfg = configs.load_config(self.dir / "config.toml", [str(self.dir / "other")])
+        names, errors = configs.discover(cfg)
+        self.assertEqual(names, ["a", "b"])
+        self.assertEqual(errors, [f"ignoring cron a in {self.dir / 'other'}: shadowed by {self.dir / 'spec'}"])
+        self.assertEqual(configs.load_cron(cfg, "a").spec_root, self.dir / "spec" / "a")
+        self.assertEqual(configs.load_cron(cfg, "b").spec_root, self.dir / "other" / "b")
+        unshadowed = configs.load_config(self.dir / "config.toml", [str(self.dir / "other")], local_specdir=False)
+        self.assertEqual(configs.load_cron(unshadowed, "a").spec_root, self.dir / "other" / "a")
+        # Same info.toml, different dir: drive must notice the move.
+        self.assertNotEqual(configs.load_cron(cfg, "a").fingerprint, configs.load_cron(unshadowed, "a").fingerprint)
 
     def test_root_from_env(self):
         os.environ["CHRONARCH_ROOT"] = str(self.dir / "elsewhere")

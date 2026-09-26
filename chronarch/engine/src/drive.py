@@ -94,7 +94,7 @@ class Driver:
             db.close()
 
     def loop(self) -> None:
-        log.info("drive started: spec %s, root %s", self.cfg.spec_dir, self.cfg.root)
+        log.info("drive started: specdirs %s, root %s", ":".join(map(str, self.cfg.spec_dirs)), self.cfg.root)
         next_sweep = 0.0
         while True:
             now = time.time()

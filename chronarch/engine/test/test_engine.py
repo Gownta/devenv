@@ -33,7 +33,7 @@ class EngineTest(unittest.TestCase):
             f'root = "{self.root}"\nspec_dir = "spec"\nsweep_interval_s = 1\n'
             "[process]\ntimeout_s = 60\nkill_grace_s = 1\n"
         )
-        self.env = {k: v for k, v in os.environ.items() if k != "CHRONARCH_ROOT"}
+        self.env = {k: v for k, v in os.environ.items() if k not in ("CHRONARCH_ROOT", "CHRONARCH_SPECDIRS")}
         self.bg = []
 
     def tearDown(self):
@@ -44,8 +44,8 @@ class EngineTest(unittest.TestCase):
             p.stdout.close()
         self.tmp.cleanup()
 
-    def cron(self, name, script, info=""):
-        d = self.dir / "spec" / name
+    def cron(self, name, script, info="", spec_dir="spec"):
+        d = self.dir / spec_dir / name
         d.mkdir(parents=True)
         (d / "info.toml").write_text(f'description = "test"\nschedule = "yearly"\nexe = "run.sh"\n{info}')
         (d / "run.sh").write_text(f"#!/bin/bash\n{script}\n")
@@ -113,6 +113,25 @@ class TestRun(EngineTest):
         self.assertNotIn("kill_reason", meta)
         self.assertTrue({"start_time", "end_time", "duration_s", "pid"} <= meta.keys())
         self.assertEqual(self.active_rows(), [])
+
+    def test_specdirs(self):
+        for spec_dir in ["spec", "env", "flag"]:
+            self.cron(f"{spec_dir}_only", "true", spec_dir=spec_dir)
+        self.cron("shared", "exit 1")
+        self.cron("shared", "exit 3", spec_dir="flag")
+        self.env["CHRONARCH_SPECDIRS"] = str(self.dir / "env")
+        flag = ["--specdir", str(self.dir / "flag")]
+        for args, name, code in [
+            ([], "env_only", 0),
+            ([], "flag_only", 2),
+            (flag, "flag_only", 0),
+            (flag, "spec_only", 0),
+            (flag, "shared", 1),
+            (flag + ["--no-local-specdir"], "spec_only", 2),
+            (flag + ["--no-local-specdir"], "shared", 3),
+        ]:
+            with self.subTest(args=args, name=name):
+                self.assertEqual(self.rr(*args, "run", name, capture_output=True).returncode, code)
 
     def test_not_executable(self):
         self.cron("a", "true")

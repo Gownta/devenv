@@ -71,6 +71,13 @@ def cmd_kill(cfg, args) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(prog="rr", description="An AI cron engine.")
     parser.add_argument("--config", help="path to config.toml (default: the one next to engine/)")
+    parser.add_argument(
+        "--specdir",
+        action="append",
+        default=[],
+        help="another spec dir, searched after spec/ and $CHRONARCH_SPECDIRS (repeatable)",
+    )
+    parser.add_argument("--no-local-specdir", action="store_true", help="don't use the local spec/")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("drive", help="schedule and run crons, forever").set_defaults(func=cmd_drive)
     run = sub.add_parser("run", help="run a cron now, in the foreground")
@@ -82,7 +89,7 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        cfg = configs.load_config(args.config)
+        cfg = configs.load_config(args.config, args.specdir, local_specdir=not args.no_local_specdir)
         setup_logging(cfg)
         return args.func(cfg, args)
     except SpecError as e:

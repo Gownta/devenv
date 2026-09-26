@@ -3,7 +3,7 @@
 # Runtime directory, used when $CHRONARCH_ROOT is unset.
 root = "~/.local/state/chronarch"
 
-# Where cron specs live. Relative paths are relative to this file.
+# The local spec dir, searched before $CHRONARCH_SPECDIRS. Relative to this file.
 spec_dir = "spec"
 
 # How often drive rescans spec/ and checks active runs for kill_ts.
